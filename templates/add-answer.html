@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block head %} <title> Add answer </title> {% endblock %}
+
+{% block body %}
+    <h1>Post your answer</h1>
+    <form method="POST">
+        <label for="message">Answer</label>
+        <textarea name="message" id="message" rows="4" cols="50"></textarea><br><br>
+        <input type="submit">
+    </form>
+{% endblock %}

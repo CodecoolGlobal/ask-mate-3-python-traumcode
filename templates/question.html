@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+    <title>THE QUESTION</title>
+{% endblock %}
+
+
+{% block body %}
+<h2>THE QUESTION</h2>
+
+    {% for item in show_questions %}
+        <p>{{ item }}</p>
+    {% endfor %}
+
+<h3> Answers </h3>
+
+    {% for item in show_answers %}
+        <p>{{ item }} </p>
+    {% endfor %}
+
+    <a href="{{ url_for('main_page') }}">☚ Return to The List</a>
+    <a href="{{ url_for('add_answer', question_id=question_id) }}">Answer!</a>
+
+    <form action="{{ url_for('delete_question', question_id=question_id) }}" method="POST">
+        <button type="submit">Delete this question!</button>
+    </form>
+
+{% endblock %}

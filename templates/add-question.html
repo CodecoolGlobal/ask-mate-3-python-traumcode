@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+    <h1>Ask a question</h1>
+    <form method="POST">
+        <label for="title">Title</label><br>
+            <input type="text" name="title" id="title"> <br><br>
+
+        <label for="message">Message</label><br>
+            <textarea name="message" id="message" rows="5" cols="60"></textarea><br><br>
+            <input type="submit">
+
+    </form>
+
+
+
+{% endblock %}

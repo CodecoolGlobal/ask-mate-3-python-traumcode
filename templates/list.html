@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+
+{% block head %}
+    <title>ASK MATE</title>
+{% endblock %}
+
+
+{% block body %}
+    <h1>ASK MATE</h1>
+    <form method="get">
+        <label for="order_by">Sort by:</label>
+        <select id="order_by" name="order_by">
+          <option value="title">Title</option>
+          <option value="submission_time">Submission Time</option>
+          <option value="view_number">View Number</option>
+          <option value="vote_number">Vote Number</option>
+          <option value="message">Message</option>
+        </select>
+         <select id="order_direction" name="order_direction">
+           <option value="asc">Ascended</option>
+          <option value="desc">Descendent</option>
+         </select>
+        <input type="submit">
+    </form>
+    <table>
+        <thead>
+            <th>ID</th>
+            <th>Submission Time</th>
+            <th>View Number</th>
+            <th>Vote Number</th>
+            <th>Title</th>
+            <th>Message</th>
+            <th>Image</th>
+        </thead>
+        <tbody>
+            {% for line in questions %}
+            <tr>
+                <td>{{line.id}}</td>
+                <td>{{line.submission_time}}</td>
+                <td>{{line.view_number}}</td>
+                <td>{{line.vote_number}}</td>
+                <td><a href="{{ url_for('display_question', question_id=line.id) }}">{{line.title}}</a></td>
+                <td>{{line.message}}</td>
+                <td>{{line.image}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('add_question') }}">Ask a question</a>
+{% endblock %}
