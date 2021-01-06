@@ -4,6 +4,7 @@ import time
 import datetime
 
 
+
 ANSWERS_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 QUESTIONS_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 ANSWERS = 'sample_data/answer.csv'
@@ -38,7 +39,7 @@ def create_id(filename):
 
 
 def write_question(result):
-    # timestamp = int(time.time())
+    timestamp = int(time.time())
     result['id'] = create_id(QUESTIONS)
     result['submission_time'] = timestamp
     result['view_number'] = 0
@@ -53,7 +54,7 @@ def write_question(result):
 
 
 def write_answer(result, question_id):
-    # timestamp = int(time.time())
+    timestamp = int(time.time())
     result['id'] = create_id(ANSWERS)
     result['submission_time'] = timestamp
     result['vote_number'] = 0
@@ -114,4 +115,70 @@ def delete_question_answers(question_id):
         writer.writeheader()
 
         for item in myanswers:
+            writer.writerow(item)
+
+
+def delete_answer(answer_id):
+    myanswers = []
+    with open(ANSWERS, newline='') as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            if int(row['id']) != answer_id:
+                myanswers.append(row)
+    print(myanswers)
+    
+    with open(ANSWERS, "w", newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=ANSWERS_HEADER)
+        writer.writeheader()
+
+        for item in myanswers:
+            writer.writerow(item)
+
+
+def edit_question(edited_question, question_id):
+    questions = read_file(QUESTIONS)
+    for item in questions:
+        if int(item['id']) == int(edited_question['id']):
+            item.update(edited_question)
+    with open(QUESTIONS, "w", newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_HEADER)
+        writer.writeheader()
+
+        for item in questions:
+            writer.writerow(item)
+
+
+def vote_up_down(question_id, action):
+    questions = read_file(QUESTIONS)
+    if action == "up":
+        for item in questions:
+            if int(item['id']) == question_id:
+                item['vote_number'] = str(int(item['vote_number']) + 1) 
+    elif action == "down":
+        for item in questions:
+            if int(item['id']) == question_id:
+                item['vote_number'] = str(int(item['vote_number']) - 1)
+    with open(QUESTIONS, "w", newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_HEADER)
+        writer.writeheader()
+
+        for item in questions:
+            writer.writerow(item)
+            
+
+def vote_up_down_answer(answer_id, action):
+    answers = read_file(ANSWERS)
+    if action == "up":
+        for item in answers:
+            if int(item['id']) == answer_id:
+                item['vote_number'] = str(int(item['vote_number']) + 1)
+    elif action == "down":
+        for item in answers:
+            if int(item['id']) == answer_id:
+                item['vote_number'] = str(int(item['vote_number']) - 1)
+    with open(ANSWERS, "w", newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=ANSWERS_HEADER)
+        writer.writeheader()
+
+        for item in answers:
             writer.writerow(item)

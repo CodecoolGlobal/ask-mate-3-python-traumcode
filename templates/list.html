@@ -14,7 +14,7 @@
           <option value="title">Title</option>
           <option value="submission_time">Submission Time</option>
           <option value="view_number">View Number</option>
-          <option value="vote_number">Vote Number</option>
+          <option value="vote_number">Vote Number</option> 
           <option value="message">Message</option>
         </select>
          <select id="order_direction" name="order_direction">
@@ -39,7 +39,7 @@
                 <td>{{line.id}}</td>
                 <td>{{line.submission_time}}</td>
                 <td>{{line.view_number}}</td>
-                <td>{{line.vote_number}}</td>
+                <td>{{line.vote_number}}<a href="{{ url_for('vote_up_question', question_id=line.id) }}">Vote up</a><br><br><a href="{{ url_for('vote_down_question', question_id=line.id) }}">Vote down</a></td>
                 <td><a href="{{ url_for('display_question', question_id=line.id) }}">{{line.title}}</a></td>
                 <td>{{line.message}}</td>
                 <td>{{line.image}}</td>
