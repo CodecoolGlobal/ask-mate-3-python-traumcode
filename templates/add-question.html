@@ -6,6 +6,7 @@
 
 
 {% block body %}
+<div class="box">
     <h1>Ask a question</h1>
     <form method="POST" enctype="multipart/form-data">
         <label for="title">Title</label><br>
@@ -16,10 +17,9 @@
 
         <label for="image">Image</label><br>
         <input type="file" name="file"><br><br>
-        <button type="submit">Submit</button>
+        <input type="submit"><br><br>
 
     </form>
-    <a href="{{ url_for('main_page') }}">☚ Return to The List</a><br><br>
-
+</div>
 
 {% endblock %}

@@ -1,12 +1,46 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:500");
+@import url('https://fonts.googleapis.com/css2?family=Dosis');
 
-  
+body {
+  background-color: #efefef;
+  font-family: "Dosis", sans-serif; 
+  font-weight: 500;
+  font-size: 1.125rem;
+  color: #37474f;
+}
+
+table {
+  color: #37474f
+}
+
 .textdecoration {
 text-decoration: none;
 }
 
+.textdecoration2:hover {
+  text-decoration: none;
+  color: #4ac8ad
+}
+.textdecoration2 {
+  text-decoration: none;
+  color: #4ac8ad
+}
+
+.textdecoration-return-button {
+  color:#37474f;
+}
+
+.textdecoration-return-button:active {
+  color:#4ac8ad;
+}
+
+.textdecoration-return-button:hover {
+  color:#4ac8ad;
+}
+
 .text-center {
     text-align: center;
+    
+   
   }
   
 .text {
@@ -17,11 +51,128 @@ text-decoration: none;
 .container {
 display: grid;
 grid-template-columns: 1fr 1fr;
-margin-bottom: 10px;
-margin-top: 50px;
+margin-bottom: 0.625rem;
+margin-top: 3.125rem;
+
 
   }
 
+.navbar2 {
+  grid-column: 1 / 4;
+  grid-row: 1 / 2;
+  background-color: #88eed8;
+  height: 30%;
+  text-align: right;
+}
 
-
+.navbar {
+  display: grid;
+  background-color: #39484f;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  height: 14.375rem;
+  padding-top: 0;
+  margin-top: -40px;
   
+  
+}
+
+.navbar-header {
+  grid-column: 1 / 2;
+  
+}
+
+.navbar-links{
+  grid-column: 3 / 4;
+  grid-row: 2 / 3;
+  text-align: center;
+  
+}
+
+.navbar-links-buttons:hover {
+  color: #81efda;
+  font-size: 20px;  
+}
+
+.navbar-links-buttons:active {
+  text-decoration: none;
+  color: #81efda;
+  font-size: 25px;
+  
+}
+
+.navbar-links-buttons {
+  text-decoration: none;
+  color: #efefef;
+  margin-right: 30px;
+  font-size: 20px;
+
+}
+
+
+.headers-color {
+  color: #4ac8ad;
+  text-align: center;
+  font-size: 50px;
+}
+
+.logo-image {
+  color: white;
+  width: 50px;
+}
+
+
+.box {
+margin: 0 auto;
+width: 1000px;
+text-align: left;
+margin-top: 40px;
+  
+}
+
+
+.container-question-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+ 
+}
+
+.question-buttons1 {
+  grid-column: 1 / 2;
+}
+
+
+.question-buttons2 {
+  grid-column: 2 / 3;
+}
+
+
+.question-buttons3 {
+  grid-column: 3 / 4;
+}
+
+
+.submit-button {
+  
+  color: #4ac8ad;
+
+}
+
+.submit-button:hover{
+border: 1px solid red;
+border-radius: 5px;
+}
+
+.margin-top {
+  margin-top: 40px;
+}
+
+.up-down {
+color: #406967;
+}
+
+button[type="submit"] {
+border: none;
+outline: none;
+}
+

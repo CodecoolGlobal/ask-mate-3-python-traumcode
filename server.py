@@ -32,7 +32,6 @@ def main_page():
 def display_question(question_id):
     questions = data_handler.read_file(data_handler.QUESTIONS)
     answers = data_handler.read_file(data_handler.ANSWERS)
-
     show_question = data_handler.read_question(question_id)
     show_answers = []
     
@@ -46,7 +45,11 @@ def display_question(question_id):
         if int(line['question_id']) == question_id:
             show_answers.append(line)
 
-    return render_template('question.html', show_question=show_question, show_answers=show_answers, question_id=question_id)
+    for answer in show_answers:
+        answer['submission_time'] = datetime.utcfromtimestamp(int(float(answer['submission_time'])))
+
+    len_answers = len(show_answers)
+    return render_template('question.html', show_question=show_question, show_answers=show_answers, question_id=question_id, len_answers=len_answers)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -91,7 +94,7 @@ def edit_question(question_id):
             item = data_handler.read_question(question_id)
             if not item:
                 abort(404)
-            return render_template("edit-question.html", question=item)
+            return render_template("edit-question.html", question=item, question_id=question_id)
 
 
 @app.route('/question/<int:question_id>/new-answer', methods=['GET', 'POST'])
@@ -129,8 +132,11 @@ def delete_question(question_id):
 
 
         for row in all_answers:
-            if int(row['question_id']) == question_id:
-                os.remove("static/images/" + row['image'])
+            try:
+                if int(row['question_id']) == question_id:
+                    os.remove("static/images/" + row['image'])
+            except:
+                pass
         
         data_handler.delete_question(question_id)
         return redirect("/list")

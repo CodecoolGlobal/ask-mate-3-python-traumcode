@@ -42,27 +42,6 @@ def create_id(filename):
 
 
 def question_csv2obj(csv_dict):
-    # '7', '1609922180',  '2', '2', 'Loooollll' ,'Jgjhgjhb',
-    #  7,  datetime(...),  2,   2,  'Loooollll' ,'Jgjhgjhb',
-    # {
-    #     'id': '232',
-    #     'submission_time': '12234235435',
-    #     'view_number': '213',
-    #     'vote_number': '2',
-    #     'title': 'vceva',
-    #     'message': 'ceva pe linii',
-    #     'image': '',
-    # }
-    # {
-    #     'id': 232,
-    #     'submission_time': datetime.datetime(),
-    #     'view_number': 213,
-    #     'vote_number': 2,
-    #     'title': 'vceva',
-    #     'message': 'ceva pe linii',
-    #     'image': '',
-    # }
-
 
     question_obj = {}
     question_obj['id'] = int(csv_dict['id'])
@@ -90,7 +69,8 @@ def _read_questions(question_id=None):
 
     for question in questions:
         question['submission_time'] = datetime.utcfromtimestamp(int(float(question['submission_time'])))
-        # item['vote_number'] = int(item['vote'])
+        question['vote_number'] = int(question['vote_number'])
+        question['view_number'] = int(question['view_number'])
     return questions
     # return [ question_csv2obj(q) for q in all_questions ]
 

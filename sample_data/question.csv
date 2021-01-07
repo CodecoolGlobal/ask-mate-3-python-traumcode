@@ -1,26 +1,15 @@
 id,submission_time,view_number,vote_number,title,message,image
-1,1609849581,89,2,Whats the difference between {$var} and $var?,"I would like to know when and why should i use {$var}
+1,1609849581,118,4,Whats the difference between {$var} and $var?,"I would like to know when and why should i use {$var}
 
 echo ""this is a test using {$var}"";
 and when (and why) should i use the simple form $var
 
 echo ""this is a test using $var"";",
-2,1609849637,40,3,Elasticsearch query to get all the value of multiple attributes linked to a keyname,"I want to convert my timestamp to datetime in jinja2..
+5,1610047876,13,25,Input button active styling? (without anchors),"However, styling the ""pressed down"" state is proving difficult. everywhere i look online, designers seem to bypass this problem by using anchors, and then taking advantage of css's :active pseudo-class. unfortunately, it appears buttons do not have this. they have :focus, but that doesn't really work the same way.
 
-here's my sample code:",
-3,1609849683,42,5,Dictionary runtime problem at python hackerrank question (noob question),"All test cases done except for one and that one had runtime error.. i am not one-liner, because i am beginner.. is there any solution for my level?
+so my question is this: is it possible to style a ""down"" state without modifying this html? i am willing to use jquery if necessary, but i'm mostly hoping that there is a pure css solution that doesn't involve anchors. what do you all recommend?
 
-here is my code:
-
-n = int(input())
-phonelist = dict()
-for i in range(n):
-    user = input().strip().split()
-    phonelist[user[0]] = user[1]    
-for i in range(n):
-    ask = str(input())
-    if ask in phonelist:
-        print(f""{ask}={phonelist[ask]}"")
-    else:
-        print(""not found"") #runtime error at case 1",
-6,1409921442,10,0,Python - go through list without last element,Jdgjfgj,
+thanks!",
+6,1610048536,10,14,How to remove outline border from input button,"When click somewhere else the border disappears, tried onfocus none, but didn't help, how to make ugly button border disappear when click on?",c5f4c434-bd3a-4dab-aed8-535e52d3d996Screenshot_from_2020-12-21_15-10-15.png
+7,1610048655,3,20,Creating a figure with for loops,I'm fairly new to java and i have to print out the following figure by using for loops,870e62ed-4000-4223-bb21-e02f5e03a885Screenshot_from_2020-12-21_15-10-47.png
+8,1610048722,32,20,Can i prevent an inherited virtual method from being overridden in subclasses?,"Is it possible to prevent the c class from overriding the render method, without breaking the following code?",

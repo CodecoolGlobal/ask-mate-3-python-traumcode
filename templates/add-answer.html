@@ -1,14 +1,22 @@
 {% extends 'layout.html' %}
 
-{% block head %} <title> Add answer </title> {% endblock %}
+{% block head %}
+
+{% endblock %}
+
 
 {% block body %}
+<div class="box">
     <h1>Post your answer</h1>
     <form method="POST" enctype="multipart/form-data">
-        <label for="message">Answer</label><br>
+        <label for="message"></label><br>
         <textarea name="message" id="message" rows="4" cols="50"></textarea><br><br>
         <label id="image" for="image">Image</label>
         <input type="file" name="file"><br><br>
-        <input type="submit">
+        <input type="submit"><br><br>
     </form>
+    <a class="textdecoration-return-button textdecoration" href="{{ url_for('display_question', question_id=question_id) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
+</div>
+
+
 {% endblock %}
