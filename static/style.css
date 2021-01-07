@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:500");
+
+  
+.textdecoration {
+text-decoration: none;
+}
+
+.text-center {
+    text-align: center;
+  }
+  
+.text {
+    text-align: end;
+  }
+
+
+.container {
+display: grid;
+grid-template-columns: 1fr 1fr;
+margin-bottom: 10px;
+margin-top: 50px;
+
+  }
+
+
+
+  

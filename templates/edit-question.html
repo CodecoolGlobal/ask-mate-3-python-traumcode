@@ -4,15 +4,13 @@
 
 {% block body %} 
 <h1>Edit question</h1>
-{% for item in question_for_edit %}
 <form method="POST">
     <label for="title">Title</label><br>
-    <input type="text" name="title" id="title" value="{{ item['title'] }}"> <br><br>
+    <input type="text" name="title" id="title" value="{{ question['title'] }}"> <br><br>
 
     <label for="message">Message</label><br>
-    <textarea name="message" id="message" rows="5" cols="60">{{ item['message'] }}</textarea><br><br>
+    <textarea name="message" id="message" rows="5" cols="60">{{ question['message'] }}</textarea><br><br>
     <input type="submit">
-    {% endfor %}
 </form>
 
 {% endblock %}

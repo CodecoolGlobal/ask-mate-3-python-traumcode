@@ -1,14 +1,14 @@
 id,submission_time,view_number,vote_number,title,message,image
-1,1609849581,74,2,Whats the difference between {$var} and $var?,"I would like to know when and why should i use {$var}
+1,1609849581,89,2,Whats the difference between {$var} and $var?,"I would like to know when and why should i use {$var}
 
 echo ""this is a test using {$var}"";
 and when (and why) should i use the simple form $var
 
 echo ""this is a test using $var"";",
-2,1609849637,37,3,Elasticsearch query to get all the value of multiple attributes linked to a keyname,"I want to convert my timestamp to datetime in jinja2..
+2,1609849637,40,3,Elasticsearch query to get all the value of multiple attributes linked to a keyname,"I want to convert my timestamp to datetime in jinja2..
 
 here's my sample code:",
-3,1609849683,32,4,Dictionary runtime problem at python hackerrank question (noob question),"All test cases done except for one and that one had runtime error.. i am not one-liner, because i am beginner.. is there any solution for my level?
+3,1609849683,42,5,Dictionary runtime problem at python hackerrank question (noob question),"All test cases done except for one and that one had runtime error.. i am not one-liner, because i am beginner.. is there any solution for my level?
 
 here is my code:
 
@@ -23,8 +23,4 @@ for i in range(n):
         print(f""{ask}={phonelist[ask]}"")
     else:
         print(""not found"") #runtime error at case 1",
-4,1609849809,88,2,Deleting empty columns from excel worksheet,"####I have an excel file, with multiple worksheets. i need to delete empty columns from every worksheet.
-
-empty columns numbers are variable.
-
-is there any way to implement this?",
+6,1409921442,10,0,Python - go through list without last element,Jdgjfgj,

@@ -4,9 +4,11 @@
 
 {% block body %}
     <h1>Post your answer</h1>
-    <form method="POST">
-        <label for="message">Answer</label>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="message">Answer</label><br>
         <textarea name="message" id="message" rows="4" cols="50"></textarea><br><br>
+        <label id="image" for="image">Image</label>
+        <input type="file" name="file"><br><br>
         <input type="submit">
     </form>
 {% endblock %}

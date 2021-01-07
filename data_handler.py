@@ -1,7 +1,7 @@
 import os
 import csv
 import time
-import datetime
+from datetime import datetime
 
 
 
@@ -20,12 +20,15 @@ def read_file(filename):
 
         for row in reader:
             mylist.append(row)
-
-        # for line in mylist:
-        #     if line['submission_time']:
-        #         line['submission_time'] = time.strftime("%d/%m/%Y %H:%M", time.localtime(int(line['submission_time'])))
-
         return mylist
+
+
+def create_question_id():
+    return create_id(QUESTIONS)
+
+
+def create_answer_id():
+    return create_id(ANSWERS)
 
 
 def create_id(filename):
@@ -38,19 +41,96 @@ def create_id(filename):
     return id_count
 
 
-def write_question(result):
-    timestamp = int(time.time())
-    result['id'] = create_id(QUESTIONS)
-    result['submission_time'] = timestamp
-    result['view_number'] = 0
-    result['vote_number'] = 0
-    result['image'] = ""
-    result['title'] = result['title'].capitalize()
-    result['message'] = result['message'].capitalize()
+def question_csv2obj(csv_dict):
+    # '7', '1609922180',  '2', '2', 'Loooollll' ,'Jgjhgjhb',
+    #  7,  datetime(...),  2,   2,  'Loooollll' ,'Jgjhgjhb',
+    # {
+    #     'id': '232',
+    #     'submission_time': '12234235435',
+    #     'view_number': '213',
+    #     'vote_number': '2',
+    #     'title': 'vceva',
+    #     'message': 'ceva pe linii',
+    #     'image': '',
+    # }
+    # {
+    #     'id': 232,
+    #     'submission_time': datetime.datetime(),
+    #     'view_number': 213,
+    #     'vote_number': 2,
+    #     'title': 'vceva',
+    #     'message': 'ceva pe linii',
+    #     'image': '',
+    # }
 
-    with open(QUESTIONS, "a", newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_HEADER)
-        writer.writerow(result)
+
+    question_obj = {}
+    question_obj['id'] = int(csv_dict['id'])
+    question_obj['submission_time'] = datetime.fromtimestamp(int(float(csv_dict['submission_time'])))
+    # orice str care contine int devine pe bune un int
+    return question_obj
+
+
+def question_obj2csv(obj_dict):
+    csv_obj = {}
+    # csv_obj['id'] = str(obj_dict['id'])
+    csv_obj['submission_time'] = int(obj_dict['submission_time'].timestamp())
+    return csv_obj
+
+
+def _read_questions(question_id=None):
+    all_questions = read_file(QUESTIONS)
+    questions = []
+    if question_id is not None:
+        for question in all_questions:
+            if int(question['id']) == question_id:
+                questions.append(question)
+    else:
+        questions = all_questions
+
+    for question in questions:
+        question['submission_time'] = datetime.utcfromtimestamp(int(float(question['submission_time'])))
+        # item['vote_number'] = int(item['vote'])
+    return questions
+    # return [ question_csv2obj(q) for q in all_questions ]
+
+
+def read_answers(question_id):
+    pass
+
+
+def read_questions():
+    return _read_questions()
+
+
+def read_question(question_id):
+    questions = _read_questions(question_id)
+    if questions:
+        return questions[0]
+    else:
+        return None
+
+
+def write_question(result):
+    result['submission_time'] = int(datetime.now().timestamp())
+    result['submission_time'] = int(result['submission_time'])
+    
+    if not result.get('id'):
+        result['id'] = create_question_id()
+        with open(QUESTIONS, "a", newline='') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_HEADER)
+            writer.writerow(result)
+    else:
+        questions = read_file(QUESTIONS)
+        for item in questions:
+            if int(item['id']) == int(result['id']):
+                item.update(result)
+        with open(QUESTIONS, "w", newline='') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_HEADER)
+            writer.writeheader()
+
+            for item in questions:
+                writer.writerow(item)
 
 
 def write_answer(result, question_id):
@@ -60,7 +140,7 @@ def write_answer(result, question_id):
     result['vote_number'] = 0
     result['question_id'] = question_id
     result['message'] = result['message'].capitalize()
-    result['image'] = ''
+    
 
     with open(ANSWERS, "a", newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=ANSWERS_HEADER)
@@ -77,10 +157,6 @@ def write_count(count, question_id):
         for line in dict_list:
             if int(line['id']) == question_id:
                 line['view_number'] = str(count)
-            # if line['submission_time']:
-            #     line['submission_time'] = int(time.mktime(datetime.datetime.strptime(line['submission_time'],
-            #                                                                          "%d/%m/%Y %H:%M").timetuple()))
-
             writer.writerow(line)
 
 
@@ -91,14 +167,15 @@ def delete_question(question_id):
         for row in reader:
             if int(row['id'])!= question_id:
                 myquestion.append(row)
-
+    
     with open(QUESTIONS, "w", newline='') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_HEADER)
         writer.writeheader()
-
+    
         for item in myquestion:
             writer.writerow(item)
-
+    
+   
     delete_question_answers(question_id)
 
 
@@ -106,6 +183,7 @@ def delete_question_answers(question_id):
     myanswers = []
     with open(ANSWERS, newline='') as csv_file:
         reader = csv.DictReader(csv_file)
+        
         for row in reader:
             if int(row['question_id']) != question_id:
                 myanswers.append(row)
@@ -136,17 +214,7 @@ def delete_answer(answer_id):
 
 
 def edit_question(edited_question, question_id):
-    questions = read_file(QUESTIONS)
-    for item in questions:
-        if int(item['id']) == int(edited_question['id']):
-            item.update(edited_question)
-    with open(QUESTIONS, "w", newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=QUESTIONS_HEADER)
-        writer.writeheader()
-
-        for item in questions:
-            writer.writerow(item)
-
+    pass
 
 def vote_up_down(question_id, action):
     questions = read_file(QUESTIONS)
@@ -182,3 +250,20 @@ def vote_up_down_answer(answer_id, action):
 
         for item in answers:
             writer.writerow(item)
+
+
+
+# def get_time_submission():
+    
+#     list_of_questions = read_file(QUESTIONS)
+#     questions_with_transformed_submission_times = [int(submission['submission_time']) for submission in list_of_questions]
+#     return submission_time
+
+
+# def transform_time(list_time):
+#     list_of_dates = []
+
+#     for item in list_time:
+#         item = datetime.utcfromtimestamp(int(float(item)))
+#         list_of_dates.append(item)
+#     return list_of_dates
