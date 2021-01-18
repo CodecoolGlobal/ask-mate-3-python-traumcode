@@ -1,14 +1,14 @@
 
 import datetime
 
-import time
+import timmme
 
 import os
 import psycopg2
 import psycopg2.extras
 
 
-def get_connection_string():
+def get_connection_string1():
     user_name = os.environ.get('PSQL_USER_NAME')
     password = os.environ.get('PSQL_PASSWORD')
     host = os.environ.get('PSQL_HOST')
