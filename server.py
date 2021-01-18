@@ -4,8 +4,6 @@ import database_manager
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
-from uuid import uuid4 as uuid
-from psycopg2.extras import RealDictCursor
 
 
 app = Flask(__name__)
@@ -19,6 +17,17 @@ app.config['UPLOAD_PATH'] = 'static/images'
 @app.route("/list")
 def main_page():
     questions = database_manager.get_all_questions()
+
+    header = request.args
+    order_by = request.args.get('order_by')
+    order_direction = request.args.get('order_direction')
+    reverse = True if order_direction == 'desc' else False
+
+    if order_by in header or order_direction:
+        questions = sorted(questions, key=lambda row: row[order_by], reverse=reverse)
+    else:
+        questions = sorted(questions, key=lambda row: row['submission_time'], reverse=True)
+
     return render_template("list.html", questions=questions)
 
 
@@ -28,7 +37,7 @@ def display_question(question_id):
     show_question = database_manager.display_question(question_id)
     show_answers = database_manager.display_answers(question_id)
 
-    return render_template('question.html', show_question=show_question, show_answers=show_answers)
+    return render_template('question.html', show_question=show_question, show_answers=show_answers, question_id=question_id)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -49,24 +58,16 @@ def add_question():
     return render_template('add-question.html')
 
 
-@app.route('/question/<int:question_id>/new-answer', methods=['GET', 'POST'])
+@app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):
     if request.method == "POST":
-        result = dict(request.form)
-        uploaded_file = request.files.get("file")
-        print(uploaded_file)
-        filename = ''
-        if uploaded_file:
-            unique_name = uuid()
-            filename = str(unique_name) + secure_filename(uploaded_file.filename)
-            file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-                abort(400)
-            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-        result['image'] = filename
-        data_handler.write_answer(result, question_id)
-        return redirect(url_for("display_question", question_id=question_id))
+        new_answer = request.form
+        submission_time = datetime.now()
+        message = new_answer['message']
+        image = ''
+        database_manager.add_answer(submission_time, question_id, message, image)
 
+        return redirect(url_for('display_question', question_id=question_id))
     return render_template('add-answer.html', question_id=question_id)
 
 

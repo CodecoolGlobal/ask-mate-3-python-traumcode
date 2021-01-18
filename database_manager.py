@@ -13,9 +13,28 @@ def get_all_questions(cursor: RealDictCursor) -> list:
 
 
 @database_common.connection_handler
+def sort_all_question(cursor: RealDictCursor, order_by, order_direction) -> list:
+    query = f"""
+    SELECT * FROM question
+    ORDER BY {order_by} {order_direction}"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_question_id(cursor: RealDictCursor):
     query = """
     SELECT id FROM question WHERE id = (SELECT max(id) FROM question)"""
+
+    cursor.execute(query)
+    return cursor.fetchone()
+
+
+@database_common.connection_handler
+def get_question_id_for_answer(cursor: RealDictCursor, id: int):
+    query = f"""
+    SELECT * FROM question WHERE id = '{id}'"""
 
     cursor.execute(query)
     return cursor.fetchone()
@@ -32,7 +51,7 @@ def display_question(cursor: RealDictCursor, question_id: str) -> list:
 
 
 @database_common.connection_handler
-def display_answers(cursor: RealDictCursor, question_id: str) -> list:
+def display_answers(cursor: RealDictCursor, question_id) -> list:
     query = f"""
     SELECT * FROM answer
     WHERE CAST (question_id AS text) LIKE '{question_id}'"""
@@ -42,8 +61,16 @@ def display_answers(cursor: RealDictCursor, question_id: str) -> list:
 
 
 @database_common.connection_handler
-def add_question(cursor: RealDictCursor, s_t, title, message, image):
+def add_question(cursor: RealDictCursor, s_t, title, message, image) -> list:
     query = f"""
     INSERT INTO question (submission_time, view_number, vote_number, title, message, image) VALUES ('{s_t}','0' ,'0', '{title}', '{message}', '{image}') """
+
+    cursor.execute(query)
+
+
+@database_common.connection_handler
+def add_answer(cursor: RealDictCursor, s_t, question_id, message, image) -> list:
+    query = f"""
+    INSERT INTO answer (submission_time, vote_number, question_id, message, image) VALUES ('{s_t}','0', '{question_id}', '{message}', '{image}') """
 
     cursor.execute(query)
