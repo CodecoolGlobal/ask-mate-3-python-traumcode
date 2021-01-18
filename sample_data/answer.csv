@@ -16,13 +16,3 @@ input[type=""button""]
     outline:none;
 }
 </style>",7d774ec7-b5b1-432b-b9ca-3539ae742effScreenshot_from_2020-12-21_15-10-52.png
-5,1610048736,2,8,"You can seal individual methods to prevent them from being overridable:
-
-public sealed override void render()
-{
-    // prepare the object for rendering        
-    specialrender();
-    // do some cleanup    
-}",
-6,1610048754,1,8,Yes. if you mark a method as sealed then it can not be overriden in a derived class.,
-7,1610048778,0,8,"Any explanation why is this better? sealed has a rather clean meaning. it says ""after some thinking i came to the conclusion that this should never be overridden",eeb4c60a-f526-4f85-9532-4e9bac42f2fdScreenshot_from_2020-12-21_15-10-47.png

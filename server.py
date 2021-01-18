@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, request, url_for, abort
 import data_handler
-import time
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
@@ -34,7 +33,7 @@ def display_question(question_id):
     answers = data_handler.read_file(data_handler.ANSWERS)
     show_question = data_handler.read_question(question_id)
     show_answers = []
-    
+
     for line in questions:
         count = int(line['view_number'])
         if int(line['id']) == question_id:
@@ -66,7 +65,7 @@ def add_question():
             if file_ext not in app.config['UPLOAD_EXTENSIONS']:
                 abort(400)
             uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-        
+
         result['view_number'] = 0
         result['vote_number'] = 0
         result['title'] = result['title'].capitalize()
@@ -76,25 +75,24 @@ def add_question():
         print(filename)
         data_handler.write_question(result)
         question_id = data_handler.create_id(data_handler.QUESTIONS)-1
-    
         return redirect(url_for("display_question", question_id=question_id))
     return render_template('add-question.html')
 
 
 @app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
-        if request.method == "POST":
-            edited_question = dict(request.form)
-            edited_question["id"] = str(question_id)
-            print(edited_question)
-            data_handler.write_question(edited_question)
-            return redirect(url_for("display_question", question_id=question_id))
-            
-        elif request.method == 'GET':  # OPTIONS, HEAD, PUT, PATCH, DELETE (HTTP methods...)
-            item = data_handler.read_question(question_id)
-            if not item:
-                abort(404)
-            return render_template("edit-question.html", question=item, question_id=question_id)
+    if request.method == "POST":
+        edited_question = dict(request.form)
+        edited_question["id"] = str(question_id)
+        print(edited_question)
+        data_handler.write_question(edited_question)
+        return redirect(url_for("display_question", question_id=question_id))
+
+    elif request.method == 'GET':  # OPTIONS, HEAD, PUT, PATCH, DELETE (HTTP methods...)
+        item = data_handler.read_question(question_id)
+        if not item:
+            abort(404)
+        return render_template("edit-question.html", question=item, question_id=question_id)
 
 
 @app.route('/question/<int:question_id>/new-answer', methods=['GET', 'POST'])
@@ -129,15 +127,13 @@ def delete_question(question_id):
                     os.remove("static/images/" + row['image'])
                 except:
                     pass
-
-
         for row in all_answers:
             try:
                 if int(row['question_id']) == question_id:
                     os.remove("static/images/" + row['image'])
             except:
                 pass
-        
+
         data_handler.delete_question(question_id)
         return redirect("/list")
 
@@ -155,12 +151,12 @@ def delete_answer(answer_id):
                     os.remove("static/images/" + row['image'])
                 except:
                     pass
-        
+
         data_handler.delete_answer(answer_id)
         question_url = url_for('display_question', question_id=question_id)
-        
+
         return redirect(question_url)
-    
+
 
 @app.route('/question/<int:question_id>/vote_up')
 def vote_up_question(question_id):
@@ -198,6 +194,11 @@ def vote_down_answer(answer_id):
     data_handler.vote_up_down_answer(answer_id, "down")
 
     return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 
 if __name__ == "__main__":

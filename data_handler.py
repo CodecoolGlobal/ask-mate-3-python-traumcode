@@ -1,8 +1,6 @@
-import os
 import csv
 import time
 from datetime import datetime
-
 
 
 ANSWERS_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
@@ -94,7 +92,7 @@ def read_question(question_id):
 def write_question(result):
     result['submission_time'] = int(datetime.now().timestamp())
     result['submission_time'] = int(result['submission_time'])
-    
+
     if not result.get('id'):
         result['id'] = create_question_id()
         with open(QUESTIONS, "a", newline='') as csv_file:
