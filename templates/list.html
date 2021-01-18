@@ -41,7 +41,7 @@
             {% for line in questions %}
             <tr>
                 <td>{{line.id}}</td>
-                <td>{{line.submission_time.strftime('%H:%M:%S %d-%m-%Y ')}}</td>
+                <td>{{line.submission_time}}</td>
                 <td>{{line.view_number}}</td>
                 <td class="text-center">{{line.vote_number}}<a class="textdecoration" href="{{ url_for('vote_up_question', question_id=line.id) }}"><br><span title="Useful Question"class="up-down">▲</span></a><a class="textdecoration"href="{{ url_for('vote_down_question', question_id=line.id) }}"><span title="This Question is useless"class="up-down">▼</span></a></td>
                 <td><a class="textdecoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title}}</a></td>

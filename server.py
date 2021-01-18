@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, request, url_for, abort
 import data_handler
+import database_manager
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4 as uuid
+from psycopg2.extras import RealDictCursor
 
 
 app = Flask(__name__)
@@ -16,67 +18,59 @@ app.config['UPLOAD_PATH'] = 'static/images'
 @app.route("/")
 @app.route("/list")
 def main_page():
-    params_of_get = dict(request.args)
-    order_by = params_of_get.get("order_by", 'submission_time')
-    order_direction = params_of_get.get('order_direction', 'desc') 
-    rev = True if order_direction == 'desc' else False
-
-    questions = data_handler.read_questions()
-    questions = sorted(questions, key=lambda q: q[order_by], reverse=rev)
-
+    questions = database_manager.get_all_questions()
     return render_template("list.html", questions=questions)
 
 
 @app.route("/question/<int:question_id>")
 def display_question(question_id):
-    questions = data_handler.read_file(data_handler.QUESTIONS)
-    answers = data_handler.read_file(data_handler.ANSWERS)
-    show_question = data_handler.read_question(question_id)
-    show_answers = []
 
-    for line in questions:
-        count = int(line['view_number'])
-        if int(line['id']) == question_id:
-            count += 1
-            data_handler.write_count(count, question_id)
+    show_question = database_manager.display_question(question_id)
+    show_answers = database_manager.display_answers(question_id)
 
-    for line in answers:
-        if int(line['question_id']) == question_id:
-            show_answers.append(line)
-
-    for answer in show_answers:
-        answer['submission_time'] = datetime.utcfromtimestamp(int(float(answer['submission_time'])))
-
-    len_answers = len(show_answers)
-    return render_template('question.html', show_question=show_question, show_answers=show_answers, question_id=question_id, len_answers=len_answers)
+    return render_template('question.html', show_question=show_question, show_answers=show_answers)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
-def add_question():
+def add_question(cursor: RealDictCursor):
     if request.method == "POST":
-        result = dict(request.form)
-        uploaded_file = request.files.get("file")
-        print(uploaded_file)
-        filename = ''
-        if uploaded_file:
-            unique_name = uuid()
-            filename = str(unique_name) + secure_filename(uploaded_file.filename)
-            file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-                abort(400)
-            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+        new_question = request.form
+        cursor.execute('SELECT id FROM question')
+        id = cursor.fetchone()
 
-        result['view_number'] = 0
-        result['vote_number'] = 0
-        result['title'] = result['title'].capitalize()
-        result['message'] = result['message'].capitalize()
-        result['image'] = filename
+        submission_time = datetime.now()
+        view_number = 0
+        vote_number = 0
+        title = new_question['title']
+        message = new_question['message']
+        image = ""
 
-        print(filename)
-        data_handler.write_question(result)
-        question_id = data_handler.create_id(data_handler.QUESTIONS)-1
-        return redirect(url_for("display_question", question_id=question_id))
+        database_manager.add_question(submission_time, view_number, vote_number, title, message, image)
+
+        return redirect(url_for("display_question"))
     return render_template('add-question.html')
+
+        # result = dict(request.form)
+        # uploaded_file = request.files.get("file")
+        # print(uploaded_file)
+        # filename = ''
+        # if uploaded_file:
+        #     unique_name = uuid()
+        #     filename = str(unique_name) + secure_filename(uploaded_file.filename)
+        #     file_ext = os.path.splitext(filename)[1]
+        #     if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+        #         abort(400)
+        #     uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+        #
+        # result['view_number'] = 0
+        # result['vote_number'] = 0
+        # result['title'] = result['title'].capitalize()
+        # result['message'] = result['message'].capitalize()
+        # result['image'] = filename
+        #
+        # print(filename)
+        # data_handler.write_question(result)
+        # question_id = data_handler.create_id(data_handler.QUESTIONS)-1
 
 
 @app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])

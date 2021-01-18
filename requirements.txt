@@ -1,0 +1,8 @@
+pip~=9.0.1
+wheel~=0.30.0
+cryptography~=2.1.4
+py~=1.9.0
+keyring~=10.6.0
+setuptools~=39.0.1
+Flask~=1.1.1
+Werkzeug~=0.16.0
