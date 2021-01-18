@@ -1,7 +1,6 @@
 
 import datetime
-
-import timme
+import time
 
 import os
 import psycopg2
