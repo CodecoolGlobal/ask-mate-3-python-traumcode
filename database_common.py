@@ -1,8 +1,8 @@
-<<<<<<< HEAD
+
 import datetime
-=======
+
 import time
->>>>>>> silviu
+
 import os
 import psycopg2
 import psycopg2.extras
