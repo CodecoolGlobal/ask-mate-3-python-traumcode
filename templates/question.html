@@ -8,21 +8,23 @@
 {% block body %}
 <div class="text-center container-show-question">
 <div class="box">
-<h2>{{ show_question.title }}</h2>
+{% for question in show_question %}
+    <h2>{{ question.title }}</h2>
 <hr>
-    <p>{{ show_question.message }}</p>
+    <p>{{ question.message }}</p>
+{% endfor %}
     
 <div class="container-question-buttons">
     <div class="question-buttons1">
-        <a class="textdecoration2" href="{{url_for('edit_question', question_id=show_question.id)}}">Edit this question</a>
+        <a class="textdecoration2" href="{{url_for('edit_question', question_id=question_id)}}">Edit this question</a>
     </div>
     <div class="question-buttons2">
-        <form action="{{ url_for('delete_question', question_id=show_question.id) }}" method="POST">
+        <form action="{{ url_for('delete_question', question_id=question_id) }}" method="POST">
             <button class="submit-button" type="submit">Delete Question!</button>
         </form>
     </div>
     <div class="question-buttons3">
-        <a class="textdecoration2" href="{{ url_for('add_answer', question_id=show_question.id) }}">Add answer</a>
+        <a class="textdecoration2" href="{{ url_for('add_answer', question_id=question_id) }}">Add answer</a>
     </div>
 </div>  
     
@@ -30,7 +32,7 @@
 <hr>
     <!-- <a href="{{ url_for('main_page') }}">☚ Return to The List</a><br><br> -->
     {% for item in show_answers %}
-        <small>{{item.submission_time.strftime('%H:%M:%S %d-%m-%Y')}}</small><br>
+        <small>{{item.submission_time}}</small><br>
         <p>{{ item.message }}</p>
         
         {% if item.image %}
@@ -38,16 +40,19 @@
         {% else %}
         <figure></figure><br>
         {% endif %}
-        
-        <a class="textdecoration" href="{{ url_for('vote_up_answer', answer_id=item.id) }}"><span title="This answer is useful" class="up-down">▲</span></a>
-        <small>&nbsp{{ item.vote_number }}</small>
-        <a class="textdecoration" href="{{ url_for('vote_down_answer', answer_id=item.id) }}"><span title="This answer is not useful" class="up-down">▼</span></a><br>
 
-        
+        <form action="{{ url_for('vote_up_answer', answer_id=item.id) }}" method="post">
+            <button type="submit">▲</button>
+        </form>
+        <small>&nbsp&nbsp&nbsp{{ item.vote_number }}</small>
+        <form action="{{ url_for('vote_down_answer', answer_id=item.id) }}" method="post">
+            <button type="submit">▼</button>
+        </form>
+
         <form action="{{ url_for('delete_answer', answer_id=item.id) }}" method="POST">
             <button class="submit-button" type="submit">Delete this answer!</button>
         </form>
-       
+
         <hr>
     {% endfor %}
     
