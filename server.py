@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for, abort
+from flask import Flask, render_template, redirect, request, url_for, abort, flash
 import database_manager
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -6,6 +6,8 @@ import os
 from uuid import uuid4 as uuid
 
 app = Flask(__name__)
+
+app.secret_key = 'alleluia'
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
@@ -49,8 +51,18 @@ def display_question(question_id):
     show_question = database_manager.display_question(question_id)
     show_answers = database_manager.display_answers(question_id)
 
-    return render_template('question.html', show_question=show_question, show_answers=show_answers,
-                           question_id=question_id)
+    all_tags = database_manager.get_all_tags()
+    question_tags = database_manager.get_all_question_tag()
+    tag_name_list = []
+    for q in question_tags:
+        for tag in all_tags:
+            if int(question_id) == q['question_id'] and q['tag_id'] == tag['id']:
+                tag_name_list.append(tag['name'])
+
+    len_answers = len(show_answers)
+    return render_template('question.html', show_question=show_question,
+                           show_answers=show_answers,
+                           question_id=question_id, len_answers=len_answers, tag_name_list=tag_name_list)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -62,6 +74,7 @@ def add_question():
 
         question_id = max_id['id'] + 1
         submission_time = datetime.now()
+        print(submission_time)
         title = new_question['title'].capitalize()
         message = new_question['message'].capitalize()
         image = filename
@@ -193,6 +206,32 @@ def vote_down_answer(answer_id):
     database_manager.vote_up_down_answer(answer_id, "down")
 
     return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
+def add_tag_to_questions(question_id):
+    all_tags = database_manager.get_all_tags()
+    list_of_tags = [tag['name'] for tag in all_tags]
+
+    if request.method == 'POST':
+        choose_tag = request.form.get('choose-tag')
+        inserted_tag = request.form.get('insert-tag')
+        if 'choose' in request.form:
+            try:
+                tag_id = database_manager.get_tag_id(choose_tag)
+                database_manager.ad_tag_in_question_tag(question_id, tag_id['id'])
+            except:
+                flash("Tag already exist!!")
+        elif 'insert' in request.form:
+            try:
+                database_manager.add_tag(inserted_tag)
+                tag_id = database_manager.get_tag_id(inserted_tag)
+                database_manager.ad_tag_in_question_tag(question_id, tag_id['id'])
+            except:
+                flash("Tag already exist!!")
+        return redirect(url_for('display_question', question_id=question_id))
+    else:
+        return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags)
 
 
 @app.errorhandler(404)

@@ -128,3 +128,47 @@ def vote_up_down_answer(cursor: RealDictCursor, answer_id, action):
         UPDATE answer SET vote_number = vote_number - 1 WHERE CAST(id as text) LIKE '{answer_id}'"""
 
     cursor.execute(query)
+
+
+@database_common.connection_handler
+def get_all_tags(cursor: RealDictCursor) -> list:
+    query = """
+        SELECT * FROM tag"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_all_question_tag(cursor: RealDictCursor) -> list:
+    query = """
+            SELECT * FROM question_tag"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_tag_id(cursor: RealDictCursor, name) -> list:
+    query = f"""
+            SELECT id FROM tag WHERE name LIKE '{name}'"""
+
+    cursor.execute(query)
+    return cursor.fetchone()
+
+
+@database_common.connection_handler
+def add_tag(cursor: RealDictCursor, name):
+    query = f"""
+            INSERT INTO tag (name) SELECT '{name}' WHERE NOT EXISTS (SELECT id FROM tag WHERE name LIKE '{name}') RETURNING id"""
+
+    cursor.execute(query)
+    return "tag added"
+
+
+@database_common.connection_handler
+def ad_tag_in_question_tag(cursor: RealDictCursor, question_id, tag_id):
+    query = f"""
+            INSERT INTO question_tag (question_id, tag_id) VALUES ('{question_id}', '{tag_id}')"""
+
+    cursor.execute(query)

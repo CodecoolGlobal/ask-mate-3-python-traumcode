@@ -54,7 +54,7 @@
                 <td><a class="textdecoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title}}</a></td>
                 <td>{{line.message}}</td>
                 {% if line.image %}
-                <td><a href="{{ url_for('static', filename='images/' + line.image) }}" target="_blank"><figure> <img src="{{url_for('static', filename='images/' + line.image) }}" height="150"></figure></a></td>
+                <td><figure> <img src="{{url_for('static', filename='images/' + line.image) }}" height="150"></figure></a></td>
                 {% else %}
                 <td></td>
                 {% endif %}
