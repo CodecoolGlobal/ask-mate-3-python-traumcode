@@ -1,17 +1,18 @@
-
-import datetime
-import time
-
 import os
 import psycopg2
 import psycopg2.extras
 
 
-def get_connnection_string():
+def get_connection_string():
+    os.environ['PSQL_USER_NAME'] = 'darkp'
+    os.environ['PSQL_PASSWORD'] = '12345'
+    os.environ['PSQL_HOST'] = 'localhost'
+    os.environ['PSQL_DB_NAME'] = 'askmate'
+
     user_name = os.environ.get('PSQL_USER_NAME')
     password = os.environ.get('PSQL_PASSWORD')
     host = os.environ.get('PSQL_HOST')
-    database_name = os.environ('PSQL_DB_NAME')
+    database_name = os.environ.get('PSQL_DB_NAME')
 
     env_variables_defined = user_name and password and host and database_name
 

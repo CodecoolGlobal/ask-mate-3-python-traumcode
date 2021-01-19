@@ -1,10 +1,9 @@
 from flask import Flask, render_template, redirect, request, url_for, abort
-import data_handler
+import database_manager
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4 as uuid
-
 
 app = Flask(__name__)
 
@@ -13,68 +12,62 @@ app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
 app.config['UPLOAD_PATH'] = 'static/images'
 
 
+def upload_image():
+    uploaded_file = request.files.get('file')
+    filename = ''
+    if uploaded_file:
+        unique_name = uuid()
+        filename = str(unique_name) + secure_filename(uploaded_file.filename)
+        file_ext = os.path.splitext(filename)[1]
+        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+            abort(400)
+        uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+
+    return filename
+
+
 @app.route("/")
 @app.route("/list")
 def main_page():
-    params_of_get = dict(request.args)
-    order_by = params_of_get.get("order_by", 'submission_time')
-    order_direction = params_of_get.get('order_direction', 'desc') 
-    rev = True if order_direction == 'desc' else False
+    questions = database_manager.get_all_questions()
 
-    questions = data_handler.read_questions()
-    questions = sorted(questions, key=lambda q: q[order_by], reverse=rev)
+    header = request.args
+    order_by = request.args.get('order_by')
+    order_direction = request.args.get('order_direction')
+    reverse = True if order_direction == 'desc' else False
+
+    if order_by in header or order_direction:
+        questions = sorted(questions, key=lambda row: row[order_by], reverse=reverse)
+    else:
+        questions = sorted(questions, key=lambda row: row['submission_time'], reverse=True)
 
     return render_template("list.html", questions=questions)
 
 
-@app.route("/question/<int:question_id>")
+@app.route("/question/<question_id>")
 def display_question(question_id):
-    questions = data_handler.read_file(data_handler.QUESTIONS)
-    answers = data_handler.read_file(data_handler.ANSWERS)
-    show_question = data_handler.read_question(question_id)
-    show_answers = []
+    show_question = database_manager.display_question(question_id)
+    show_answers = database_manager.display_answers(question_id)
 
-    for line in questions:
-        count = int(line['view_number'])
-        if int(line['id']) == question_id:
-            count += 1
-            data_handler.write_count(count, question_id)
-
-    for line in answers:
-        if int(line['question_id']) == question_id:
-            show_answers.append(line)
-
-    for answer in show_answers:
-        answer['submission_time'] = datetime.utcfromtimestamp(int(float(answer['submission_time'])))
-
-    len_answers = len(show_answers)
-    return render_template('question.html', show_question=show_question, show_answers=show_answers, question_id=question_id, len_answers=len_answers)
+    return render_template('question.html', show_question=show_question, show_answers=show_answers,
+                           question_id=question_id)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
 def add_question():
     if request.method == "POST":
-        result = dict(request.form)
-        uploaded_file = request.files.get("file")
-        print(uploaded_file)
-        filename = ''
-        if uploaded_file:
-            unique_name = uuid()
-            filename = str(unique_name) + secure_filename(uploaded_file.filename)
-            file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-                abort(400)
-            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+        new_question = request.form
+        max_id = database_manager.get_question_id()
+        filename = upload_image()
 
-        result['view_number'] = 0
-        result['vote_number'] = 0
-        result['title'] = result['title'].capitalize()
-        result['message'] = result['message'].capitalize()
-        result['image'] = filename
+        question_id = max_id['id'] + 1
+        submission_time = datetime.now()
+        title = new_question['title'].capitalize()
+        message = new_question['message'].capitalize()
+        image = filename
 
-        print(filename)
-        data_handler.write_question(result)
-        question_id = data_handler.create_id(data_handler.QUESTIONS)-1
+        database_manager.add_question(submission_time, title, message, image)
+
         return redirect(url_for("display_question", question_id=question_id))
     return render_template('add-question.html')
 
@@ -83,115 +76,121 @@ def add_question():
 def edit_question(question_id):
     if request.method == "POST":
         edited_question = dict(request.form)
-        edited_question["id"] = str(question_id)
-        print(edited_question)
-        data_handler.write_question(edited_question)
+
+        title = edited_question['title'].capitalize()
+        message = edited_question['message'].capitalize()
+
+        database_manager.edit_question(question_id, title, message)
+
         return redirect(url_for("display_question", question_id=question_id))
 
-    elif request.method == 'GET':  # OPTIONS, HEAD, PUT, PATCH, DELETE (HTTP methods...)
-        item = data_handler.read_question(question_id)
-        if not item:
+    elif request.method == 'GET':
+        details_question = database_manager.display_question(question_id)
+        for i in details_question:
+            details = {'message': i['message'],
+                       'title': i['title']}
+        if not details_question:
             abort(404)
-        return render_template("edit-question.html", question=item, question_id=question_id)
+        return render_template("edit-question.html", details=details, question_id=question_id)
 
 
-@app.route('/question/<int:question_id>/new-answer', methods=['GET', 'POST'])
+@app.route('/question/<question_id>/delete', methods=['POST'])
+def delete_question(question_id):
+    questions = database_manager.get_all_questions()
+    answers = database_manager.display_answers(question_id)
+    if request.method == 'POST':
+        for value in questions:
+            if value['id'] == int(question_id):
+                qimage_name = value['image']
+                print(value['id'])
+                print(qimage_name)
+                try:
+                    os.remove('static/images/' + qimage_name)
+                except:
+                    pass
+
+        for value in answers:
+            if value['question_id'] == int(question_id):
+                aimage_name = value['image']
+                try:
+                    os.remove('static/images/' + aimage_name)
+                except:
+                    pass
+
+        database_manager.delete_question(question_id)
+        return redirect("/list")
+
+
+@app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):
     if request.method == "POST":
-        result = dict(request.form)
-        uploaded_file = request.files.get("file")
-        print(uploaded_file)
-        filename = ''
-        if uploaded_file:
-            unique_name = uuid()
-            filename = str(unique_name) + secure_filename(uploaded_file.filename)
-            file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-                abort(400)
-            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-        result['image'] = filename
-        data_handler.write_answer(result, question_id)
-        return redirect(url_for("display_question", question_id=question_id))
+        filename = upload_image()
+        new_answer = request.form
+        submission_time = datetime.now()
+        message = new_answer['message']
+        image = filename
 
+        database_manager.add_answer(submission_time, question_id, message, image)
+
+        return redirect(url_for('display_question', question_id=question_id))
     return render_template('add-answer.html', question_id=question_id)
 
 
-@app.route('/question/<int:question_id>/delete', methods=['POST'])
-def delete_question(question_id):
-    all_answers = data_handler.read_file(data_handler.ANSWERS)
-    all_question = data_handler.read_file(data_handler.QUESTIONS)
-    if request.method == "POST":
-        for row in all_question:
-            if int(row['id']) == question_id:
-                try:
-                    os.remove("static/images/" + row['image'])
-                except:
-                    pass
-        for row in all_answers:
-            try:
-                if int(row['question_id']) == question_id:
-                    os.remove("static/images/" + row['image'])
-            except:
-                pass
-
-        data_handler.delete_question(question_id)
-        return redirect("/list")
-
-    return redirect("/list")
-
-
-@app.route('/answer/<int:answer_id>/delete', methods=['GET', 'POST'])
+@app.route('/answer/<answer_id>/delete', methods=['GET', 'POST'])
 def delete_answer(answer_id):
-    all_answers = data_handler.read_file(data_handler.ANSWERS)
-    if request.method == "POST":
-        for row in all_answers:
-            if int(row['id']) == answer_id:
-                question_id = int(row['question_id'])
-                try:
-                    os.remove("static/images/" + row['image'])
-                except:
-                    pass
+    if request.method == 'POST':
+        data = database_manager.get_question_id_for_answer(answer_id)
+        for value in data.values():
+            question_id = value
 
-        data_handler.delete_answer(answer_id)
-        question_url = url_for('display_question', question_id=question_id)
+        answers = database_manager.display_answers(question_id)
+        for value in answers:
+            image_name = value['image']
 
-        return redirect(question_url)
+        try:
+            os.remove('static/images/' + image_name)
+        except:
+            pass
+
+        database_manager.delete_answer(answer_id)
+
+        return redirect(url_for('display_question', question_id=question_id, answer_id=answer_id))
 
 
-@app.route('/question/<int:question_id>/vote_up')
+@app.route('/question/<int:question_id>/vote_up', methods=['POST'])
 def vote_up_question(question_id):
-    data_handler.vote_up_down(question_id, "up")
+    database_manager.vote_up_down_question(question_id, "up")
 
     return redirect('/list')
 
 
-@app.route('/question/<int:question_id>/vote_down')
+@app.route('/question/<int:question_id>/vote_down', methods=['POST'])
 def vote_down_question(question_id):
-    data_handler.vote_up_down(question_id, "down")
+    database_manager.vote_up_down_question(question_id, "down")
 
     return redirect('/list')
 
 
-@app.route('/answer/<int:answer_id>/vote_up')
+@app.route('/answer/<int:answer_id>/vote_up', methods=['POST'])
 def vote_up_answer(answer_id):
-    all_answers = data_handler.read_file(data_handler.ANSWERS)
-    for row in all_answers:
-        if int(row['id']) == answer_id:
-            question_id = int(row['question_id'])
+    data = database_manager.get_question_id_for_answer(answer_id)
 
-    data_handler.vote_up_down_answer(answer_id, "up")
+    for value in data.values():
+        question_id = value
+
+    database_manager.vote_up_down_answer(answer_id, "up")
 
     return redirect(url_for('display_question', question_id=question_id))
 
 
-@app.route('/answer/<int:answer_id>/vote_down')
+@app.route('/answer/<int:answer_id>/vote_down', methods=['POST'])
 def vote_down_answer(answer_id):
-    all_answers = data_handler.read_file(data_handler.ANSWERS)
-    for row in all_answers:
-        if int(row['id']) == answer_id:
-            question_id = int(row['question_id'])
+    data = database_manager.get_question_id_for_answer(answer_id)
 
-    data_handler.vote_up_down_answer(answer_id, "down")
+    for value in data.values():
+        question_id = value
+
+    database_manager.vote_up_down_answer(answer_id, "down")
 
     return redirect(url_for('display_question', question_id=question_id))
 
