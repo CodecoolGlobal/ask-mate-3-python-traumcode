@@ -1,5 +1,4 @@
 from flask import Flask, render_template, redirect, request, url_for, abort
-import data_handler
 import database_manager
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -120,7 +119,6 @@ def delete_question(question_id):
 
         database_manager.delete_question(question_id)
         return redirect("/list")
-
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
