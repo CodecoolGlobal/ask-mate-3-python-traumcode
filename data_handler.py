@@ -5,8 +5,8 @@ from datetime import datetime
 
 ANSWERS_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 QUESTIONS_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-ANSWERS = 'sample_data/answer.csv'
-QUESTIONS = 'sample_data/question.csv'
+ANSWERS = '/home/flori/data/Documents/projects-web/ask-mate-2-python-FloareDeMai/sample_data/answer.csv'
+QUESTIONS = '/home/flori/data/Documents/projects-web/ask-mate-2-python-FloareDeMai/sample_data/question.csv'
 
 
 def read_file(filename):
