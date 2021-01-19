@@ -71,9 +71,11 @@ def edit_question(cursor: RealDictCursor, question_id, title, message):
 @database_common.connection_handler
 def delete_question(cursor: RealDictCursor, question_id):
     query = f"""
+    DELETE FROM comment WHERE CAST(question_id AS text) LIKE '{question_id}';
     DELETE FROM answer WHERE CAST(question_id AS text) LIKE '{question_id}';
+    DELETE FROM question WHERE CAST(id AS text) LIKE '{question_id}';
     DELETE FROM question_tag WHERE CAST(question_id AS text) LIKE '{question_id}';
-    DELETE FROM question WHERE CAST(id AS text) LIKE '{question_id}';"""
+"""
 
     cursor.execute(query)
 
