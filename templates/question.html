@@ -40,16 +40,19 @@
         {% else %}
         <figure></figure><br>
         {% endif %}
-        
-        <a class="textdecoration" href="{{ url_for('vote_up_answer', answer_id=item.id) }}"><span title="This answer is useful" class="up-down">▲</span></a>
-        <small>&nbsp{{ item.vote_number }}</small>
-        <a class="textdecoration" href="{{ url_for('vote_down_answer', answer_id=item.id) }}"><span title="This answer is not useful" class="up-down">▼</span></a><br>
 
-        
-        <form action="{{ url_for('delete_answer', answer_id=show_answer.id) }}" method="POST">
+        <form action="{{ url_for('vote_up_answer', answer_id=item.id) }}" method="post">
+            <button type="submit">▲</button>
+        </form>
+        <small>&nbsp&nbsp&nbsp{{ item.vote_number }}</small>
+        <form action="{{ url_for('vote_down_answer', answer_id=item.id) }}" method="post">
+            <button type="submit">▼</button>
+        </form>
+
+        <form action="{{ url_for('delete_answer', answer_id=item.id) }}" method="POST">
             <button class="submit-button" type="submit">Delete this answer!</button>
         </form>
-       
+
         <hr>
     {% endfor %}
     

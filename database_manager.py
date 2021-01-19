@@ -102,3 +102,27 @@ def get_question_id_for_answer(cursor: RealDictCursor, answer_id):
 
     cursor.execute(query)
     return cursor.fetchone()
+
+
+@database_common.connection_handler
+def vote_up_down_question(cursor: RealDictCursor, question_id, action):
+    if action == "up":
+        query = f"""
+        UPDATE question SET vote_number = vote_number + 1 WHERE CAST(id AS text) LIKE '{question_id}' """
+    else:
+        query = f"""
+        UPDATE question SET vote_number = vote_number - 1 WHERE CAST(id AS text) LIKE '{question_id}'"""
+
+    cursor.execute(query)
+
+
+@database_common.connection_handler
+def vote_up_down_answer(cursor: RealDictCursor, answer_id, action):
+    if action == "up":
+        query = f"""
+        UPDATE answer SET vote_number = vote_number + 1 WHERE CAST(id AS text) LIKE '{answer_id}' """
+    else:
+        query = f"""
+        UPDATE answer SET vote_number = vote_number - 1 WHERE CAST(id as text) LIKE '{answer_id}'"""
+
+    cursor.execute(query)

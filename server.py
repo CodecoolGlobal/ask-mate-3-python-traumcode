@@ -31,7 +31,7 @@ def main_page():
     return render_template("list.html", questions=questions)
 
 
-@app.route("/question/<int:question_id>")
+@app.route("/question/<question_id>")
 def display_question(question_id):
 
     show_question = database_manager.display_question(question_id)
@@ -103,46 +103,50 @@ def add_answer(question_id):
 @app.route('/answer/<answer_id>/delete', methods=['GET', 'POST'])
 def delete_answer(answer_id):
     if request.method == 'POST':
-        question_id = database_manager.get_question_id_for_answer(answer_id)
+        data = database_manager.get_question_id_for_answer(answer_id)
+
+        for value in data.values():
+            question_id = value
+
         database_manager.delete_answer(answer_id)
-        # return render_template('display_question', question_id=question_id, answer_id=answer_id)
-        # return redirect(url_for('display_question', question_id=question_id, answer_id=answer_id))
+
+        return redirect(url_for('display_question', question_id=question_id, answer_id=answer_id))
 
 
-@app.route('/question/<int:question_id>/vote_up')
+@app.route('/question/<int:question_id>/vote_up', methods=['POST'])
 def vote_up_question(question_id):
-    data_handler.vote_up_down(question_id, "up")
+    database_manager.vote_up_down_question(question_id, "up")
 
     return redirect('/list')
 
 
-@app.route('/question/<int:question_id>/vote_down')
+@app.route('/question/<int:question_id>/vote_down', methods=['POST'])
 def vote_down_question(question_id):
-    data_handler.vote_up_down(question_id, "down")
+    database_manager.vote_up_down_question(question_id, "down")
 
     return redirect('/list')
 
 
-@app.route('/answer/<int:answer_id>/vote_up')
+@app.route('/answer/<int:answer_id>/vote_up', methods=['POST'])
 def vote_up_answer(answer_id):
-    all_answers = data_handler.read_file(data_handler.ANSWERS)
-    for row in all_answers:
-        if int(row['id']) == answer_id:
-            question_id = int(row['question_id'])
+    data = database_manager.get_question_id_for_answer(answer_id)
 
-    data_handler.vote_up_down_answer(answer_id, "up")
+    for value in data.values():
+        question_id = value
+
+    database_manager.vote_up_down_answer(answer_id, "up")
 
     return redirect(url_for('display_question', question_id=question_id))
 
 
-@app.route('/answer/<int:answer_id>/vote_down')
+@app.route('/answer/<int:answer_id>/vote_down', methods=['POST'])
 def vote_down_answer(answer_id):
-    all_answers = data_handler.read_file(data_handler.ANSWERS)
-    for row in all_answers:
-        if int(row['id']) == answer_id:
-            question_id = int(row['question_id'])
+    data = database_manager.get_question_id_for_answer(answer_id)
 
-    data_handler.vote_up_down_answer(answer_id, "down")
+    for value in data.values():
+        question_id = value
+
+    database_manager.vote_up_down_answer(answer_id, "down")
 
     return redirect(url_for('display_question', question_id=question_id))
 
