@@ -58,6 +58,35 @@ def add_question():
     return render_template('add-question.html')
 
 
+@app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])
+def edit_question(question_id):
+    if request.method == "POST":
+        edited_question = dict(request.form)
+
+        title = edited_question['title']
+        message = edited_question['message']
+
+        database_manager.edit_question(question_id, title, message)
+
+        return redirect(url_for("display_question", question_id=question_id))
+
+    elif request.method == 'GET':
+        details_question = database_manager.display_question(question_id)
+        for i in details_question:
+            details = {'message': i['message'],
+                       'title': i['title']}
+        if not details_question:
+            abort(404)
+        return render_template("edit-question.html", details=details, question_id=question_id)
+
+
+@app.route('/question/<question_id>/delete', methods=['POST'])
+def delete_question(question_id):
+    if request.method == 'POST':
+        database_manager.delete_question(question_id)
+        return redirect("/list")
+
+
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):
     if request.method == "POST":
@@ -71,62 +100,13 @@ def add_answer(question_id):
     return render_template('add-answer.html', question_id=question_id)
 
 
-@app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])
-def edit_question(question_id):
-    if request.method == "POST":
-        edited_question = dict(request.form)
-        edited_question["id"] = str(question_id)
-        print(edited_question)
-        data_handler.write_question(edited_question)
-        return redirect(url_for("display_question", question_id=question_id))
-
-    elif request.method == 'GET':  # OPTIONS, HEAD, PUT, PATCH, DELETE (HTTP methods...)
-        item = data_handler.read_question(question_id)
-        if not item:
-            abort(404)
-        return render_template("edit-question.html", question=item, question_id=question_id)
-
-
-@app.route('/question/<int:question_id>/delete', methods=['POST'])
-def delete_question(question_id):
-    all_answers = data_handler.read_file(data_handler.ANSWERS)
-    all_question = data_handler.read_file(data_handler.QUESTIONS)
-    if request.method == "POST":
-        for row in all_question:
-            if int(row['id']) == question_id:
-                try:
-                    os.remove("static/images/" + row['image'])
-                except:
-                    pass
-        for row in all_answers:
-            try:
-                if int(row['question_id']) == question_id:
-                    os.remove("static/images/" + row['image'])
-            except:
-                pass
-
-        data_handler.delete_question(question_id)
-        return redirect("/list")
-
-    return redirect("/list")
-
-
-@app.route('/answer/<int:answer_id>/delete', methods=['GET', 'POST'])
+@app.route('/answer/<answer_id>/delete', methods=['GET', 'POST'])
 def delete_answer(answer_id):
-    all_answers = data_handler.read_file(data_handler.ANSWERS)
-    if request.method == "POST":
-        for row in all_answers:
-            if int(row['id']) == answer_id:
-                question_id = int(row['question_id'])
-                try:
-                    os.remove("static/images/" + row['image'])
-                except:
-                    pass
-
-        data_handler.delete_answer(answer_id)
-        question_url = url_for('display_question', question_id=question_id)
-
-        return redirect(question_url)
+    if request.method == 'POST':
+        question_id = database_manager.get_question_id_for_answer(answer_id)
+        database_manager.delete_answer(answer_id)
+        # return render_template('display_question', question_id=question_id, answer_id=answer_id)
+        # return redirect(url_for('display_question', question_id=question_id, answer_id=answer_id))
 
 
 @app.route('/question/<int:question_id>/vote_up')
