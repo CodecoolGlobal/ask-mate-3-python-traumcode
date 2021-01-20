@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+
+{% block head %}
+    <title>ASK MATE</title>
+{% endblock %}
+
+
+{% block body %}
+<div class="container">
+    <div class="item-1"> <a class="textdecoration-return-button textdecoration" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img src="{{url_for('static', filename='/images/cloud-plus.svg')}}"></span></a> </div>
+    <div class="item-2">
+</div>
+</div>
+    <table class="table table-striped table-bordered" id="questions">
+        <thead class="thead-dark">
+            <th>ID</th>
+            <th>Added</th>
+            <th>Views</th>
+            <th>Votes</th>
+            <th>Title</th>
+            <th>Message</th>
+            <th>Image</th>
+        </thead>
+        <tbody>
+            {% for line in questions %}
+            <tr>
+                <td>{{line.id}}</td>
+                <td>{{line.submission_time}}</td>
+                <td>{{line.view_number}}</td>
+                <td class="text-center">{{line.vote_number}}
+                    <form action="{{ url_for('vote_up_question', question_id=line.id) }}" method="post">
+                        <button type="submit">▲</button>
+                    </form>
+                    <form action="{{ url_for('vote_down_question', question_id=line.id) }}" method="post">
+                        <button type="submit">▼</button>
+                    </form>
+                </td>
+                <td><a class="textdecoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title}}</a></td>
+                <td>{{line.message}}</td>
+                {% if line.image %}
+                <td><figure> <img src="{{url_for('static', filename='images/' + line.image) }}" height="150"></figure></a></td>
+                {% else %}
+                <td></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a class="textdecoration2"href="/list">All questions</a>
+{% endblock %}

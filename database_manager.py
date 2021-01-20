@@ -1,5 +1,4 @@
 from psycopg2.extras import RealDictCursor
-
 import database_common
 
 
@@ -53,8 +52,8 @@ def display_answers(cursor: RealDictCursor, question_id) -> list:
 
 @database_common.connection_handler
 def add_question(cursor: RealDictCursor, s_t, title, message, image) -> list:
-    query = f"""
-    INSERT INTO question (submission_time, view_number, vote_number, title, message, image) VALUES ('{s_t}','0' ,'0', '{title}', '{message}', '{image}') """
+    query = f""" 
+    INSERT INTO question (submission_time, view_number, vote_number, title, message, image) VALUES ('{s_t}','0' ,'0', '{title}', '{message}', '{image}');"""
 
     cursor.execute(query)
 
@@ -73,9 +72,8 @@ def delete_question(cursor: RealDictCursor, question_id):
     query = f"""
     DELETE FROM comment WHERE CAST(question_id AS text) LIKE '{question_id}';
     DELETE FROM answer WHERE CAST(question_id AS text) LIKE '{question_id}';
-    DELETE FROM question WHERE CAST(id AS text) LIKE '{question_id}';
-    DELETE FROM question_tag WHERE CAST(question_id AS text) LIKE '{question_id}';
-"""
+    DELETE FROM question_tag WHERE CAST(question_id AS text) LIKE '{question_id}' AND CAST(tag_id AS text) LIKE  '{question_id}';
+    DELETE FROM question WHERE CAST(id AS text) LIKE '{question_id}';  """
 
     cursor.execute(query)
 
@@ -160,7 +158,7 @@ def get_tag_id(cursor: RealDictCursor, name) -> list:
 @database_common.connection_handler
 def add_tag(cursor: RealDictCursor, name):
     query = f"""
-            INSERT INTO tag (name) SELECT '{name}' WHERE NOT EXISTS (SELECT id FROM tag WHERE name LIKE '{name}') 
+            INSERT INTO tag (name) SELECT lower('{name}') WHERE NOT EXISTS (SELECT id FROM tag WHERE name LIKE lower('{name}')) 
             RETURNING id"""
 
     cursor.execute(query)
@@ -183,3 +181,15 @@ def delete_tag(cursor: RealDictCursor, question_id, tag_id):
 
     cursor.execute(query)
 
+
+@database_common.connection_handler
+def get_latest_five_questions(cursor: RealDictCursor) -> list:
+    query = """
+                SELECT * FROM question ORDER BY  submission_time DESC LIMIT 5"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+# SELECT * FROM question ORDER BY submission_time DESC LIMIT 5;
+# SELECT title, message FROM question WHERE title LIKE  '%canvas%' or message LIKE '%canvas%'
+# SELECT message FROM  answer WHERE message LIKE '%canvas%';

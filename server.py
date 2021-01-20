@@ -29,8 +29,13 @@ def upload_image():
 
 
 @app.route("/")
-@app.route("/list")
 def main_page():
+    questions = database_manager.get_latest_five_questions()
+    return render_template('main-page.html', questions=questions)
+
+
+@app.route("/list")
+def list_page():
     questions = database_manager.get_all_questions()
 
     header = request.args
@@ -53,12 +58,20 @@ def display_question(question_id):
     all_tags = database_manager.get_all_tags()
     question_tags = database_manager.get_all_question_tag()
     tag_name_list = []
+
     tag_id = None
     for q in question_tags:
         for tag in all_tags:
             if int(question_id) == q['question_id'] and q['tag_id'] == tag['id']:
-                tag_name_list.append(tag['name'])
+                tag_name_list.append({
+                    'name': tag['name'],
+                    'id': q['tag_id']
+                })
+
                 tag_id = q['tag_id']
+
+    for tagg in tag_name_list:
+        print(tagg['name'])
     len_answers = len(show_answers)
     return render_template('question.html', show_question=show_question,
                            show_answers=show_answers,
@@ -173,14 +186,14 @@ def delete_answer(answer_id):
 def vote_up_question(question_id):
     database_manager.vote_up_down_question(question_id, "up")
 
-    return redirect('/list')
+    return redirect(request.referrer)
 
 
 @app.route('/question/<int:question_id>/vote_down', methods=['POST'])
 def vote_down_question(question_id):
     database_manager.vote_up_down_question(question_id, "down")
 
-    return redirect('/list')
+    return redirect(request.referrer)
 
 
 @app.route('/answer/<int:answer_id>/vote_up', methods=['POST'])
@@ -214,7 +227,7 @@ def add_tag_to_questions(question_id):
 
     if request.method == 'POST':
         choose_tag = request.form.get('choose-tag')
-        inserted_tag = request.form.get('insert-tag').lower()
+        inserted_tag = request.form.get('insert-tag')
         if 'choose' in request.form:
             try:
                 tag_id = database_manager.get_tag_id(choose_tag)

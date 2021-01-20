@@ -20,13 +20,13 @@
 
 <div class="grid-tags">
     <small><strong>Tags:</strong></small>
-    {% for tag in tag_name_list %}
 
-    <small class="tag">{{ tag }}<form action="{{ url_for('delete_tag',question_id=question_id, tag_id=tag_id ) }}" method="POST">
+    {% for tag in tag_name_list %}
+    <small class="tag">{{ tag['name'] }}<form action="{{ url_for('delete_tag',question_id=question_id, tag_id=tag['id'] ) }}" method="POST">
             <button class="x" type="submit">x</button>
         </form></small>
+     {% endfor %}
 
-    {% endfor %}
 </div>
 
 
@@ -60,7 +60,7 @@
         <p>{{ item.message }}</p>
         
         {% if item.image %}
-        <figure><a href="{{ url_for('static', filename='images/' + item.image) }}" target="_blank"><img  src="{{ url_for('static', filename='images/' + item.image) }}" height="150"></figure><br>
+        <figure><a href="{{ url_for('static', filename='images/' + item.image) }}" target="_blank"><img  src="{{ url_for('static', filename='images/' + item.image) }}" height="150"></a></figure><br>
         {% else %}
         <figure></figure><br>
         {% endif %}

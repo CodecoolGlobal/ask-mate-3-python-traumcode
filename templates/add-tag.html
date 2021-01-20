@@ -19,7 +19,7 @@
     </form>
     <form action="{{ url_for('add_tag_to_questions', question_id=question_id) }}" method="POST">
             <label for="insert-tag">Add Tag</label><br>
-                <input id="insert-tag" type="text" name="insert-tag" >
+                <input id="insert-tag" type="text" name="insert-tag" required>
             <button name="insert" class="submit-button-tag" type="submit">Add new tag</button>
     </form><br><br><br>
     <a class="textdecoration-return-button textdecoration" href="{{ url_for('display_question', question_id=question_id) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
