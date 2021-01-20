@@ -50,19 +50,19 @@ def main_page():
 def display_question(question_id):
     show_question = database_manager.display_question(question_id)
     show_answers = database_manager.display_answers(question_id)
-
     all_tags = database_manager.get_all_tags()
     question_tags = database_manager.get_all_question_tag()
     tag_name_list = []
+    tag_id = None
     for q in question_tags:
         for tag in all_tags:
             if int(question_id) == q['question_id'] and q['tag_id'] == tag['id']:
                 tag_name_list.append(tag['name'])
-
+                tag_id = q['tag_id']
     len_answers = len(show_answers)
     return render_template('question.html', show_question=show_question,
                            show_answers=show_answers,
-                           question_id=question_id, len_answers=len_answers, tag_name_list=tag_name_list)
+                           question_id=question_id, len_answers=len_answers, tag_name_list=tag_name_list, tag_id=tag_id)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -74,7 +74,6 @@ def add_question():
 
         question_id = max_id['id'] + 1
         submission_time = datetime.now()
-        print(submission_time)
         title = new_question['title'].capitalize()
         message = new_question['message'].capitalize()
         image = filename
@@ -215,7 +214,7 @@ def add_tag_to_questions(question_id):
 
     if request.method == 'POST':
         choose_tag = request.form.get('choose-tag')
-        inserted_tag = request.form.get('insert-tag')
+        inserted_tag = request.form.get('insert-tag').lower()
         if 'choose' in request.form:
             try:
                 tag_id = database_manager.get_tag_id(choose_tag)
@@ -232,6 +231,13 @@ def add_tag_to_questions(question_id):
         return redirect(url_for('display_question', question_id=question_id))
     else:
         return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags)
+
+
+@app.route('/question/<question_id>/tag/<tag_id>/delete', methods=['GET', 'POST'])
+def delete_tag(question_id, tag_id):
+    if request.method == 'POST':
+        database_manager.delete_tag(question_id, tag_id)
+        return redirect(url_for('display_question', question_id=question_id, tag_id=tag_id))
 
 
 @app.errorhandler(404)

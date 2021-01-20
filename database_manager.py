@@ -160,7 +160,8 @@ def get_tag_id(cursor: RealDictCursor, name) -> list:
 @database_common.connection_handler
 def add_tag(cursor: RealDictCursor, name):
     query = f"""
-            INSERT INTO tag (name) SELECT '{name}' WHERE NOT EXISTS (SELECT id FROM tag WHERE name LIKE '{name}') RETURNING id"""
+            INSERT INTO tag (name) SELECT '{name}' WHERE NOT EXISTS (SELECT id FROM tag WHERE name LIKE '{name}') 
+            RETURNING id"""
 
     cursor.execute(query)
     return "tag added"
@@ -172,3 +173,13 @@ def ad_tag_in_question_tag(cursor: RealDictCursor, question_id, tag_id):
             INSERT INTO question_tag (question_id, tag_id) VALUES ('{question_id}', '{tag_id}')"""
 
     cursor.execute(query)
+
+
+@database_common.connection_handler
+def delete_tag(cursor: RealDictCursor, question_id, tag_id):
+    query = f"""
+                DELETE FROM question_tag WHERE CAST(question_id AS text) LIKE '{question_id}' AND 
+                CAST(tag_id AS text) LIKE '{tag_id}'"""
+
+    cursor.execute(query)
+
