@@ -44,7 +44,7 @@ def display_question(cursor: RealDictCursor, question_id: str) -> list:
 def display_answers(cursor: RealDictCursor, question_id) -> list:
     query = f"""
     SELECT * FROM answer
-    WHERE CAST (question_id AS text) LIKE '{question_id}'"""
+    WHERE CAST (question_id AS text) LIKE '{question_id}' ORDER BY submission_time"""
 
     cursor.execute(query)
     return cursor.fetchall()
@@ -98,9 +98,9 @@ def delete_answer(cursor: RealDictCursor, answer_id):
 @database_common.connection_handler
 def get_question_id_for_answer(cursor: RealDictCursor, answer_id):
     query = f"""
-    SELECT question_id FROM answer WHERE CAST(id AS text) LIKE '{answer_id}'"""
+    SELECT question_id FROM answer WHERE id = %s"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'answer_id': answer_id})
     return cursor.fetchone()
 
 
@@ -190,6 +190,53 @@ def get_latest_five_questions(cursor: RealDictCursor) -> list:
     cursor.execute(query)
     return cursor.fetchall()
 
-# SELECT * FROM question ORDER BY submission_time DESC LIMIT 5;
-# SELECT title, message FROM question WHERE title LIKE  '%canvas%' or message LIKE '%canvas%'
-# SELECT message FROM  answer WHERE message LIKE '%canvas%';
+
+@database_common.connection_handler
+def add_comment_to_question(cursor: RealDictCursor, new_comment):
+
+    query = """
+            INSERT INTO comment (question_id, message, submission_time) VALUES (%s, %s, %s);
+            """
+    cursor.execute(query, (new_comment['question_id'],
+                           new_comment['new-comment'],
+                           new_comment['submission_time']))
+
+
+@database_common.connection_handler
+def get_comments_for_question(cursor: RealDictCursor, question_id):
+    query = """
+            SELECT * FROM comment WHERE question_id = %(question_id)s 
+            AND answer_id is NULL ORDER BY submission_time DESC;"""
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def add_comment_for_answer(cursor: RealDictCursor, new_comment):
+    query = """
+            INSERT INTO comment (answer_id, message, submission_time) VALUES (%s, %s, %s);"""
+    cursor.execute(query, (new_comment['answer_id'],
+                           new_comment['new-comment'],
+                           new_comment['submission_time']))
+
+
+@database_common.connection_handler
+def get_answer_by_answer_id(cursor, answer_id):
+    cursor.execute("""
+    SELECT * FROM answer 
+    WHERE id = %(answer_id)s
+    ORDER BY submission_time DESC;
+    """,
+                   {'answer_id': answer_id})
+    answers = cursor.fetchone()
+    return answers
+
+
+@database_common.connection_handler
+def get_comments_for_answer(cursor: RealDictCursor, answer_id):
+    query = """
+            SELECT * FROM comment WHERE answer_id = %(answer_id)s
+            AND question_id is NULL ORDER BY submission_time DESC;"""
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchall()
+

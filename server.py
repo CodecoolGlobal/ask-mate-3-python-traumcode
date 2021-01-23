@@ -70,12 +70,22 @@ def display_question(question_id):
 
                 tag_id = q['tag_id']
 
-    for tagg in tag_name_list:
-        print(tagg['name'])
     len_answers = len(show_answers)
+    comments_for_question = database_manager.get_comments_for_question(question_id)
+    for answer in show_answers:
+        answer['comments'] = database_manager.get_comments_for_answer(answer['id'])
+
+    for b in show_answers:
+        for c in b['comments']:
+            print(c['message'])
+
+
+
     return render_template('question.html', show_question=show_question,
                            show_answers=show_answers,
-                           question_id=question_id, len_answers=len_answers, tag_name_list=tag_name_list, tag_id=tag_id)
+                           question_id=question_id, len_answers=len_answers,
+                           tag_name_list=tag_name_list,
+                           tag_id=tag_id, comments_for_question=comments_for_question)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -251,6 +261,36 @@ def delete_tag(question_id, tag_id):
     if request.method == 'POST':
         database_manager.delete_tag(question_id, tag_id)
         return redirect(url_for('display_question', question_id=question_id, tag_id=tag_id))
+
+
+@app.route('/question/<int:question_id>/new-comment', methods=['GET', 'POST'])
+def add_comment_to_question(question_id):
+    if request.method == 'GET':
+        return render_template('add-comment-to-question.html', question_id=question_id)
+    elif request.method == 'POST':
+        dt = datetime.now()
+        new_comment_for_q = dict(request.form)
+        new_comment_for_q['question_id'] = question_id
+        new_comment_for_q['submission_time'] = dt
+        database_manager.add_comment_to_question(new_comment_for_q)
+        return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.route('/answer/<int:answer_id>/new-comment', methods=['GET', 'POST'])
+def add_comments_to_answer(answer_id):
+    if request.method == 'GET':
+        return render_template("add-comment-to-answer.html", answer_id=answer_id)
+    elif request.method == 'POST':
+        answer_obj = database_manager.get_answer_by_answer_id(answer_id)
+        question_id = answer_obj['question_id']
+
+        dt = datetime.now()
+        new_comment_for_a = dict(request.form)
+        new_comment_for_a['answer_id'] = answer_id
+        new_comment_for_a['submission_time'] = dt
+        database_manager.add_comment_for_answer(new_comment_for_a)
+
+        return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.errorhandler(404)

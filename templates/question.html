@@ -6,13 +6,14 @@
 
 
 {% block body %}
-<div class="text-center container-show-question">
+<div class="text-center container-show-question-and-comments">
 <div class="box">
 {% for question in show_question %}
     <h2>{{ question.title }}</h2>
 <hr>
     <p>{{ question.message }}</p>
 {% endfor %}
+
 
 {% for message in get_flashed_messages() %}
     <h3 class="alert-message">{{ message }}</h3>
@@ -30,7 +31,7 @@
 </div>
 
 
-<div class="container-question-buttons"><br>
+<div class="container-for-buttons"><br>
     <div class="question-buttons1">
         <a class="textdecoration2" href="{{url_for('edit_question', question_id=question_id)}}">Edit this question</a>
     </div>
@@ -42,11 +43,35 @@
     <div class="question-buttons3">
         <a class="textdecoration2" href="{{ url_for('add_answer', question_id=question_id) }}">Add answer</a>
     </div>
+    <div>
+        <a class="textdecoration2" href="{{ url_for('add_comment_to_question', question_id=question_id) }}">Add comment</a>
+    </div>
     <div class="question-button4">
         <a class="textdecoration2" href="{{ url_for('add_tag_to_questions', question_id=question_id) }}">Add tag</a>
     </div>
-</div>  
 
+</div>
+<hr>
+
+<div class="container-comments-for-question">
+    {% if comments_for_question %}
+        <h3>Comments:</h3>
+    {% else %}
+    {% endif %}
+    {% for comment in comments_for_question %}
+        <small>{{ comment['submission_time'] }}</small>
+        <p>{{ comment['message'] }}</p>
+        <hr>
+    {% endfor %}
+</div>
+
+</div>
+</div>
+
+
+
+<div class="container-answers-and-comments">
+<div class="box-answers-comments">
 {% if len_answers > 1 %}
 <h3 class="margin-top"> {{ len_answers }} answers </h3>
 <hr>
@@ -73,14 +98,27 @@
             <button type="submit">▼</button>
         </form>
 
-        <form action="{{ url_for('delete_answer', answer_id=item.id) }}" method="POST">
-            <button class="submit-button" type="submit">Delete this answer!</button>
-        </form>
-
+        <div class="container-for-buttons">
+            <div>
+                <a class="textdecoration2" href="{{ url_for('add_comments_to_answer', answer_id=item.id) }}">Add comment</a>
+            </div>
+            <form action="{{ url_for('delete_answer', answer_id=item.id) }}" method="POST">
+                <button class="submit-button" type="submit">Delete this answer!</button>
+            </form>
+        </div>
         <hr>
+           {% for comment in item['comments'] %}
+                <p>{{ comment['message'] }}</p>
+               <hr>
+            {% endfor %}
     {% endfor %}
+
+
+
+</div>
+</div>
     
     <a class="textdecoration-return-button textdecoration" href="{{ url_for('main_page') }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Return to The List</a><br><br>
-    </div>
-</div>
+
+
 {% endblock %}

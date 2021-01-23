@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+<div class="box">
+    <h1>Add new comment</h1>
+    <form action="{{ url_for('add_comment_to_question', question_id=question_id) }}" method="POST">
+        <label for="new-comment">Message:</label><br>
+        <textarea name="new-comment" id="new-comment" required rows="5" cols="32"></textarea><br>
+        <button class="submit-button-tag" type="submit">Submit</button>
+    </form><br><br>
+    <a class="textdecoration-return-button textdecoration" href="{{ url_for('display_question', question_id=question_id) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
+</div>
+
+
+{% endblock %}
