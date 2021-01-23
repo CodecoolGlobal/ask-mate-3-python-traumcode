@@ -21,22 +21,22 @@ def sort_all_question(cursor: RealDictCursor, order_by, order_direction) -> list
     return cursor.fetchall()
 
 
+# @database_common.connection_handler
+# def get_question_id(cursor: RealDictCursor):
+#     query = """
+#     SELECT id FROM question WHERE id = (SELECT max(id) FROM question)"""
+#
+#     cursor.execute(query)
+#     return cursor.fetchone()
+
+
 @database_common.connection_handler
-def get_question_id(cursor: RealDictCursor):
+def display_question(cursor: RealDictCursor, question_id) -> list:
     query = """
-    SELECT id FROM question WHERE id = (SELECT max(id) FROM question)"""
-
-    cursor.execute(query)
-    return cursor.fetchone()
-
-
-@database_common.connection_handler
-def display_question(cursor: RealDictCursor, question_id: str) -> list:
-    query = f"""
     SELECT * FROM question
-    WHERE CAST (id AS text) LIKE '{question_id}'"""
+    WHERE id = %(question_id)s;"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'question_id': question_id})
     return cursor.fetchall()
 
 
@@ -51,11 +51,17 @@ def display_answers(cursor: RealDictCursor, question_id) -> list:
 
 
 @database_common.connection_handler
-def add_question(cursor: RealDictCursor, s_t, title, message, image) -> list:
-    query = f""" 
-    INSERT INTO question (submission_time, view_number, vote_number, title, message, image) VALUES ('{s_t}','0' ,'0', '{title}', '{message}', '{image}');"""
+def add_question(cursor: RealDictCursor, new_question) -> list:
+    query = """ 
+    INSERT INTO question (submission_time, view_number, vote_number, title, message, image) 
+    VALUES (%s,0 ,0, %s, %s, %s) returning id;"""
 
-    cursor.execute(query)
+    cursor.execute(query, (new_question['submission_time'],
+                           new_question['title'],
+                           new_question['message'],
+                           new_question['image']))
+    question_id = cursor.fetchone()
+    return question_id
 
 
 @database_common.connection_handler
@@ -240,3 +246,13 @@ def get_comments_for_answer(cursor: RealDictCursor, answer_id):
     cursor.execute(query, {'answer_id': answer_id})
     return cursor.fetchall()
 
+
+@database_common.connection_handler
+def edit_answer(cursor: RealDictCursor, answer_id, new_answer):
+    query = """
+            UPDATE answer SET (message, image) = (%(message)s , %(image)s)
+            WHERE id = %(answer_id)s;
+            """
+    cursor.execute(query, {'message': new_answer['message'],
+                            'image': new_answer['image'],
+                            'answer_id': answer_id})

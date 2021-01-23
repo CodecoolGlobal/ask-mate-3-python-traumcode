@@ -53,6 +53,7 @@ def list_page():
 
 @app.route("/question/<question_id>")
 def display_question(question_id):
+    print(question_id)
     show_question = database_manager.display_question(question_id)
     show_answers = database_manager.display_answers(question_id)
     all_tags = database_manager.get_all_tags()
@@ -75,12 +76,6 @@ def display_question(question_id):
     for answer in show_answers:
         answer['comments'] = database_manager.get_comments_for_answer(answer['id'])
 
-    for b in show_answers:
-        for c in b['comments']:
-            print(c['message'])
-
-
-
     return render_template('question.html', show_question=show_question,
                            show_answers=show_answers,
                            question_id=question_id, len_answers=len_answers,
@@ -91,17 +86,17 @@ def display_question(question_id):
 @app.route('/add-question', methods=['GET', 'POST'])
 def add_question():
     if request.method == "POST":
-        new_question = request.form
-        max_id = database_manager.get_question_id()
+        new_question = dict(request.form)
+
         filename = upload_image()
-
-        question_id = max_id['id'] + 1
         submission_time = datetime.now()
-        title = new_question['title'].capitalize()
-        message = new_question['message'].capitalize()
-        image = filename
 
-        database_manager.add_question(submission_time, title, message, image)
+        new_question['submission_time'] = submission_time
+        new_question['image'] = filename
+
+        question_id = database_manager.add_question(new_question)
+        question_id = question_id['id']
+        database_manager.add_question(new_question)
 
         return redirect(url_for("display_question", question_id=question_id))
     return render_template('add-question.html')
@@ -291,6 +286,19 @@ def add_comments_to_answer(answer_id):
         database_manager.add_comment_for_answer(new_comment_for_a)
 
         return redirect(url_for('display_question', question_id=question_id))
+
+
+@app.route('/answer/<int:answer_id>/edit', methods=['GET', 'POST'])
+def edit_answer(answer_id):
+    answer_details = database_manager.get_answer_by_answer_id(answer_id)
+    if request.method == 'GET':
+        return render_template('edit-answer.html', answer_id=answer_id, answer_details=answer_details)
+    elif request.method == 'POST':
+        edited_answer = dict(request.form)
+        filename = upload_image()
+        edited_answer['image'] = filename
+        database_manager.edit_answer(answer_id, edited_answer)
+        return redirect(url_for('display_question', question_id=answer_details['question_id']))
 
 
 @app.errorhandler(404)
