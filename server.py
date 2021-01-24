@@ -55,31 +55,18 @@ def list_page():
 def display_question(question_id):
     show_question = database_manager.display_question(question_id)
     show_answers = database_manager.display_answers(question_id)
-    all_tags = database_manager.get_all_tags()
-    question_tags = database_manager.get_all_question_tag()
-    tag_name_list = []
+    question_tags_by_q_id = database_manager.get_tags_for_question_by_question_id(question_id)
 
-    tag_id = None
-    for q in question_tags:
-        for tag in all_tags:
-            if int(question_id) == q['question_id'] and q['tag_id'] == tag['id']:
-                tag_name_list.append({
-                    'name': tag['name'],
-                    'id': q['tag_id']
-                })
-
-                tag_id = q['tag_id']
-    # todo .strftime('%Y-%m-%d %H:%M:%S')
     len_answers = len(show_answers)
     comments_for_question = database_manager.get_comments_for_question(question_id)
+
     for answer in show_answers:
         answer['comments'] = database_manager.get_comments_for_answer(answer['id'])
 
     return render_template('question.html', show_question=show_question,
                            show_answers=show_answers,
                            question_id=question_id, len_answers=len_answers,
-                           tag_name_list=tag_name_list,
-                           tag_id=tag_id, comments_for_question=comments_for_question)
+                           question_tags_by_q_id=question_tags_by_q_id, comments_for_question=comments_for_question)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -154,7 +141,7 @@ def add_answer(question_id):
         filename = upload_image()
         submission_time = datetime.now()
 
-        new_answer['submission_time'] = submission_time
+        new_answer['submission_time'] = submission_time.strftime('%Y-%m-%d %H:%M:%S')
         new_answer['image'] = filename
 
         database_manager.add_answer(question_id, new_answer)
@@ -243,7 +230,8 @@ def add_tag_to_questions(question_id):
     #             flash("Tag already exist!!")
     if request.method == 'POST':
         existing_tag = request.form.get('choose-tag')
-        print(existing_tag)
+        inserted_tag = request.form.get('insert-tag')
+        print(inserted_tag)
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags)
 
@@ -263,7 +251,7 @@ def add_comment_to_question(question_id):
         dt = datetime.now()
         new_comment_for_q = dict(request.form)
         new_comment_for_q['question_id'] = question_id
-        new_comment_for_q['submission_time'] = dt
+        new_comment_for_q['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
         database_manager.add_comment_to_question(new_comment_for_q)
         return redirect(url_for('display_question', question_id=question_id))
 
@@ -278,7 +266,7 @@ def add_comments_to_answer(answer_id):
         dt = datetime.now()
         new_comment_for_a = dict(request.form)
         new_comment_for_a['answer_id'] = answer_id
-        new_comment_for_a['submission_time'] = dt
+        new_comment_for_a['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
         database_manager.add_comment_for_answer(new_comment_for_a)
 
         return redirect(url_for('display_question', question_id=question_id))

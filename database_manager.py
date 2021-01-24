@@ -146,6 +146,20 @@ def get_all_tags(cursor: RealDictCursor) -> list:
 
 
 @database_common.connection_handler
+def get_tags_for_question_by_question_id(cursor: RealDictCursor, question_id):
+    query = """
+    SELECT tag.id, name from tag 
+    INNER JOIN question_tag on
+    tag.id = question_tag.tag_id 
+    INNER JOIN question on
+    question.id = question_tag.question_id
+    WHERE question.id = %(question_id)s;
+    """
+    cursor.execute(query, {'question_id': question_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_all_question_tag(cursor: RealDictCursor) -> list:
     query = """
             SELECT * FROM question_tag"""
@@ -173,13 +187,15 @@ def add_tag(cursor: RealDictCursor, name):
 
 
 @database_common.connection_handler
-def ad_tag_in_question_tag(cursor: RealDictCursor, question_id, tag_id):
+def ad_tag_in_question_tag(cursor: RealDictCursor, tag, question_id):
     query = """
-            INSERT INTO question_tag (question_id, tag_id) 
-            VALUES (%(question_id)s, %(tag_id)s)"""
+            INSERT INTO question_tag (tag_id, question_id) 
+            VALUES ((SELECT id FROM tag WHERE name = %(tag)s), %(question_id)s)
+            ON CONFLICT ON CONSTRAINT pk_question_tag_id
+            DO NOTHING"""
 
-    cursor.execute(query, {'question_id': question_id,
-                           'tag_id': tag_id})
+    cursor.execute(query, {'tag': tag,
+                           'question_id': question_id})
 
 
 @database_common.connection_handler
@@ -238,7 +254,6 @@ def get_answer_by_answer_id(cursor, answer_id):
     """
     cursor.execute(query, {'answer_id': answer_id})
     return cursor.fetchone()
-
 
 
 @database_common.connection_handler

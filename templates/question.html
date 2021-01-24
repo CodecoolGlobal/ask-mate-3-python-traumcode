@@ -22,7 +22,7 @@
 <div class="grid-tags">
     <small><strong>Tags:</strong></small>
 
-    {% for tag in tag_name_list %}
+    {% for tag in question_tags_by_q_id %}
     <small class="tag">{{ tag['name'] }}<form action="{{ url_for('delete_tag',question_id=question_id, tag_id=tag['id'] ) }}" method="POST">
             <button class="x" type="submit">x</button>
         </form></small>
