@@ -6,24 +6,23 @@
 
 
 {% block body %}
-<div class="box">
+
+
+    <div class="box">
+
     <h1>Add tag</h1>
     <form action="{{ url_for('add_tag_to_questions', question_id=question_id) }}" method="POST">
-        <label for="choose-tag">Choose a tag:</label><br>
         <select id="choose-tag" name="choose-tag">
             {% for tag in list_of_tags %}
             <option value="{{ tag }}">{{ tag }}</option>
             {% endfor %}
-        </select>
-        <button name="choose" class="submit-button-tag" type="submit">Submit</button>
-    </form>
-    <form action="{{ url_for('add_tag_to_questions', question_id=question_id) }}" method="POST">
-            <label for="insert-tag">Add Tag</label><br>
-                <input id="insert-tag" type="text" name="insert-tag" required>
-            <button name="insert" class="submit-button-tag" type="submit">Add new tag</button>
+        </select><br><br>
+
+        <input id="insert-tag" type="text" name="insert-tag"><br><br>
+        <button class="submit-button-tag" type="submit">Add tag</button>
     </form><br><br><br>
     <a class="textdecoration-return-button textdecoration" href="{{ url_for('display_question', question_id=question_id) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
-</div>
+    </div>
 
 
 {% endblock %}

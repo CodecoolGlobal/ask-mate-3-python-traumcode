@@ -85,7 +85,6 @@ def add_answer(cursor: RealDictCursor, question_id, new_answer) -> list:
     VALUES (%(submission_time)s, 0, %(question_id)s, %(message)s, %(image)s) """
 
     cursor.execute(query, {'submission_time': new_answer['submission_time'],
-                           'vote_number': 0,
                            'question_id': question_id,
                            'message': new_answer['message'],
                            'image': new_answer['image']
@@ -94,16 +93,16 @@ def add_answer(cursor: RealDictCursor, question_id, new_answer) -> list:
 
 @database_common.connection_handler
 def delete_answer(cursor: RealDictCursor, answer_id):
-    query = f"""
-    DELETE FROM comment WHERE CAST(answer_id AS text) LIKE '{answer_id}';
-    DELETE FROM answer WHERE CAST (id AS text) LIKE '{answer_id}'"""
+    query = """
+    DELETE FROM comment WHERE answer_id = %(answer_id)s;
+    DELETE FROM answer WHERE id = %(answer_id)s;"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'answer_id': answer_id})
 
 
 @database_common.connection_handler
 def get_question_id_for_answer(cursor: RealDictCursor, answer_id):
-    query = f"""
+    query = """
     SELECT question_id FROM answer WHERE id = %(answer_id)s"""
 
     cursor.execute(query, {'answer_id': answer_id})
@@ -113,25 +112,29 @@ def get_question_id_for_answer(cursor: RealDictCursor, answer_id):
 @database_common.connection_handler
 def vote_up_down_question(cursor: RealDictCursor, question_id, action):
     if action == "up":
-        query = f"""
-        UPDATE question SET vote_number = vote_number + 1 WHERE CAST(id AS text) LIKE '{question_id}' """
+        query = """
+        UPDATE question SET vote_number = vote_number + 1 
+        WHERE id = %(question_id)s """
     else:
-        query = f"""
-        UPDATE question SET vote_number = vote_number - 1 WHERE CAST(id AS text) LIKE '{question_id}'"""
+        query = """
+        UPDATE question SET vote_number = vote_number - 1 
+        WHERE id = %(question_id)s"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'question_id': question_id})
 
 
 @database_common.connection_handler
 def vote_up_down_answer(cursor: RealDictCursor, answer_id, action):
     if action == "up":
-        query = f"""
-        UPDATE answer SET vote_number = vote_number + 1 WHERE CAST(id AS text) LIKE '{answer_id}' """
+        query = """
+        UPDATE answer SET vote_number = vote_number + 1 
+        WHERE id =  %(answer_id)s """
     else:
-        query = f"""
-        UPDATE answer SET vote_number = vote_number - 1 WHERE CAST(id as text) LIKE '{answer_id}'"""
+        query = """
+        UPDATE answer SET vote_number = vote_number - 1 
+        WHERE id = %(answer_id)s"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'answer_id': answer_id})
 
 
 @database_common.connection_handler
@@ -154,44 +157,46 @@ def get_all_question_tag(cursor: RealDictCursor) -> list:
 
 @database_common.connection_handler
 def get_tag_id(cursor: RealDictCursor, name) -> list:
-    query = f"""
-            SELECT id FROM tag WHERE name LIKE '{name}'"""
+    query = """
+            SELECT id FROM tag WHERE name = %(name)s;"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'name': name})
     return cursor.fetchone()
 
 
 @database_common.connection_handler
 def add_tag(cursor: RealDictCursor, name):
-    query = f"""
-            INSERT INTO tag (name) SELECT lower('{name}') WHERE NOT EXISTS (SELECT id FROM tag WHERE name LIKE lower('{name}')) 
-            RETURNING id"""
+    query = """
+            INSERT INTO tag (name)
+            VALUES (lower(%(name)s));"""
 
-    cursor.execute(query)
-    return "tag added"
+    cursor.execute(query, {'name': name})
 
 
 @database_common.connection_handler
 def ad_tag_in_question_tag(cursor: RealDictCursor, question_id, tag_id):
-    query = f"""
-            INSERT INTO question_tag (question_id, tag_id) VALUES ('{question_id}', '{tag_id}')"""
+    query = """
+            INSERT INTO question_tag (question_id, tag_id) 
+            VALUES (%(question_id)s, %(tag_id)s)"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'question_id': question_id,
+                           'tag_id': tag_id})
 
 
 @database_common.connection_handler
 def delete_tag(cursor: RealDictCursor, question_id, tag_id):
-    query = f"""
-                DELETE FROM question_tag WHERE CAST(question_id AS text) LIKE '{question_id}' AND 
-                CAST(tag_id AS text) LIKE '{tag_id}'"""
+    query = """
+                DELETE FROM question_tag WHERE question_id = %(question_id)s AND 
+                tag_id = %(tag_id)s;"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'question_id': question_id,
+                           'tag_id': tag_id})
 
 
 @database_common.connection_handler
 def get_latest_five_questions(cursor: RealDictCursor) -> list:
     query = """
-                SELECT * FROM question ORDER BY  submission_time DESC LIMIT 5"""
+                SELECT * FROM question ORDER BY submission_time DESC LIMIT 5"""
 
     cursor.execute(query)
     return cursor.fetchall()

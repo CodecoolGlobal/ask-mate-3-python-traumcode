@@ -59,7 +59,7 @@
     {% else %}
     {% endif %}
     {% for comment in comments_for_question %}
-        <small>{{ comment['submission_time'].strftime('%Y-%m-%d %H:%M:%S') }}</small>
+        <small>{{ comment['submission_time'] }}</small>
         <p>{{ comment['message'] }}</p>
         <hr>
     {% endfor %}
@@ -81,7 +81,7 @@
 {% endif %}
 
     {% for item in show_answers %}
-        <small>{{item.submission_time.strftime('%Y-%m-%d %H:%M:%S')}}</small><br>
+        <small>{{item.submission_time}}</small><br>
         <p><strong>A: </strong>{{ item.message }}</p>
         
         {% if item.image %}
@@ -113,7 +113,7 @@
         <div class="container-comments-for-question">
            {% for comment in item['comments'] %}
                 <p>{{ comment['message'] }}</p>
-               <small>{{ comment['submission_time'].strftime('%Y-%m-%d %H:%M:%S') }}</small>
+               <small>{{ comment['submission_time'] }}</small>
                <hr>
             {% endfor %}
         </div>

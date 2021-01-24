@@ -69,7 +69,7 @@ def display_question(question_id):
                 })
 
                 tag_id = q['tag_id']
-
+    # todo .strftime('%Y-%m-%d %H:%M:%S')
     len_answers = len(show_answers)
     comments_for_question = database_manager.get_comments_for_question(question_id)
     for answer in show_answers:
@@ -90,7 +90,7 @@ def add_question():
         filename = upload_image()
         submission_time = datetime.now()
 
-        new_question['submission_time'] = submission_time
+        new_question['submission_time'] = submission_time.strftime('%Y-%m-%d %H:%M:%S')
         new_question['image'] = filename
         new_question['message'] = new_question['message'].capitalize()
         new_question['title'] = new_question['title'].capitalize()
@@ -220,30 +220,32 @@ def vote_down_answer(answer_id):
     return redirect(url_for('display_question', question_id=question_id))
 
 
-@app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
+@app.route('/question/<int:question_id>/new-tag', methods=['GET', 'POST'])
 def add_tag_to_questions(question_id):
     all_tags = database_manager.get_all_tags()
     list_of_tags = [tag['name'] for tag in all_tags]
 
+    # if request.method == 'POST':
+    #     choose_tag = request.form.get('choose-tag')
+    #     inserted_tag = request.form.get('insert-tag')
+    #     if 'choose' in request.form:
+    #         try:
+    #             tag_id = database_manager.get_tag_id(choose_tag)
+    #             database_manager.ad_tag_in_question_tag(question_id, tag_id['id'])
+    #         except:
+    #             flash("Tag already exist!!")
+    #     elif 'insert' in request.form:
+    #         try:
+    #             database_manager.add_tag(inserted_tag)
+    #             tag_id = database_manager.get_tag_id(inserted_tag)
+    #             database_manager.ad_tag_in_question_tag(question_id, tag_id['id'])
+    #         except:
+    #             flash("Tag already exist!!")
     if request.method == 'POST':
-        choose_tag = request.form.get('choose-tag')
-        inserted_tag = request.form.get('insert-tag')
-        if 'choose' in request.form:
-            try:
-                tag_id = database_manager.get_tag_id(choose_tag)
-                database_manager.ad_tag_in_question_tag(question_id, tag_id['id'])
-            except:
-                flash("Tag already exist!!")
-        elif 'insert' in request.form:
-            try:
-                database_manager.add_tag(inserted_tag)
-                tag_id = database_manager.get_tag_id(inserted_tag)
-                database_manager.ad_tag_in_question_tag(question_id, tag_id['id'])
-            except:
-                flash("Tag already exist!!")
+        existing_tag = request.form.get('choose-tag')
+        print(existing_tag)
         return redirect(url_for('display_question', question_id=question_id))
-    else:
-        return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags)
+    return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags)
 
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete', methods=['GET', 'POST'])
