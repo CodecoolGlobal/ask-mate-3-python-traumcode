@@ -57,14 +57,14 @@ def add_question(cursor: RealDictCursor, new_question) -> list:
 
 
 @database_common.connection_handler
-def edit_question(cursor: RealDictCursor, question_id, new_question):
+def edit_question(cursor: RealDictCursor, question_id, edited_question):
     query = """
-            UPDATE question SET title = %(title)s, message = %(message)s
-            WHERE id = %(question_id)s """
+            UPDATE question SET title = %s, message = %s
+            WHERE id = %s """
 
-    cursor.execute(query, {'title': new_question['title'],
-                           'message': new_question['message'],
-                           'question_id': question_id})
+    cursor.execute(query, (edited_question['title'],
+                           edited_question['message'],
+                           question_id))
 
 
 @database_common.connection_handler
@@ -82,13 +82,12 @@ def delete_question(cursor: RealDictCursor, question_id):
 def add_answer(cursor: RealDictCursor, question_id, new_answer) -> list:
     query = """
     INSERT INTO answer (submission_time, vote_number, question_id, message, image) 
-    VALUES (%(submission_time)s, 0, %(question_id)s, %(message)s, %(image)s) """
+    VALUES (%s, 0, %s, %s, %s) """
 
-    cursor.execute(query, {'submission_time': new_answer['submission_time'],
-                           'question_id': question_id,
-                           'message': new_answer['message'],
-                           'image': new_answer['image']
-                           })
+    cursor.execute(query, (new_answer['submission_time'],
+                   question_id,
+                   new_answer['message'],
+                   new_answer['image']))
 
 
 @database_common.connection_handler
@@ -232,14 +231,14 @@ def add_comment_for_answer(cursor: RealDictCursor, new_comment):
 
 @database_common.connection_handler
 def get_answer_by_answer_id(cursor, answer_id):
-    cursor.execute("""
+    query = """
     SELECT * FROM answer 
     WHERE id = %(answer_id)s
     ORDER BY submission_time DESC;
-    """,
-                   {'answer_id': answer_id})
-    answers = cursor.fetchone()
-    return answers
+    """
+    cursor.execute(query, {'answer_id': answer_id})
+    return cursor.fetchone()
+
 
 
 @database_common.connection_handler
@@ -252,11 +251,11 @@ def get_comments_for_answer(cursor: RealDictCursor, answer_id):
 
 
 @database_common.connection_handler
-def edit_answer(cursor: RealDictCursor, answer_id, new_answer):
+def edit_answer(cursor: RealDictCursor, answer_id, edited_answer):
     query = """
-            UPDATE answer SET (message, image) = (%(message)s , %(image)s)
-            WHERE id = %(answer_id)s;
+            UPDATE answer SET (message, image) = (%s , %s)
+            WHERE id = %s;
             """
-    cursor.execute(query, {'message': new_answer['message'],
-                           'image': new_answer['image'],
-                           'answer_id': answer_id})
+    cursor.execute(query, (edited_answer['message'],
+                           edited_answer['image'],
+                           answer_id))
