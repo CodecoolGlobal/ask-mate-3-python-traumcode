@@ -256,7 +256,7 @@ def add_comment_to_question(question_id):
         new_comment_for_q = dict(request.form)
         new_comment_for_q['question_id'] = question_id
         new_comment_for_q['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
-        new_comment_for_q['message'] = new_comment_for_q['message'].capitalize()
+        new_comment_for_q['new-comment'] = new_comment_for_q['new-comment'].capitalize()
         database_manager.add_comment_to_question(new_comment_for_q)
         return redirect(url_for('display_question', question_id=question_id))
 
@@ -272,7 +272,8 @@ def add_comments_to_answer(answer_id):
         new_comment_for_a = dict(request.form)
         new_comment_for_a['answer_id'] = answer_id
         new_comment_for_a['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
-        new_comment_for_a['message'] = new_comment_for_a['message'].capitalize()
+        # todo check the key in html, db, server
+        new_comment_for_a['new-comment'] = new_comment_for_a['new-comment'].capitalize()
         database_manager.add_comment_for_answer(new_comment_for_a)
 
         return redirect(url_for('display_question', question_id=question_id))
