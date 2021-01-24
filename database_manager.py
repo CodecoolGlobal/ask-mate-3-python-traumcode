@@ -13,21 +13,13 @@ def get_all_questions(cursor: RealDictCursor) -> list:
 
 @database_common.connection_handler
 def sort_all_question(cursor: RealDictCursor, order_by, order_direction) -> list:
-    query = f"""
+    query = """
     SELECT * FROM question
-    ORDER BY {order_by} {order_direction}"""
+    ORDER BY %(order_by)s %(order_direction)s"""
 
-    cursor.execute(query)
+    cursor.execute(query, {"order_by": order_by,
+                           'order_direction': order_direction})
     return cursor.fetchall()
-
-
-# @database_common.connection_handler
-# def get_question_id(cursor: RealDictCursor):
-#     query = """
-#     SELECT id FROM question WHERE id = (SELECT max(id) FROM question)"""
-#
-#     cursor.execute(query)
-#     return cursor.fetchone()
 
 
 @database_common.connection_handler
@@ -42,11 +34,11 @@ def display_question(cursor: RealDictCursor, question_id) -> list:
 
 @database_common.connection_handler
 def display_answers(cursor: RealDictCursor, question_id) -> list:
-    query = f"""
+    query = """
     SELECT * FROM answer
-    WHERE CAST (question_id AS text) LIKE '{question_id}' ORDER BY submission_time"""
+    WHERE question_id =  %(question_id)s ORDER BY submission_time DESC"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'question_id': question_id})
     return cursor.fetchall()
 
 
@@ -65,23 +57,25 @@ def add_question(cursor: RealDictCursor, new_question) -> list:
 
 
 @database_common.connection_handler
-def edit_question(cursor: RealDictCursor, question_id, title, message):
-    query = f"""
-    UPDATE question SET title = '{title}', message = '{message}'
-    WHERE CAST (id AS text) LIKE '{question_id}' """
+def edit_question(cursor: RealDictCursor, question_id, new_question):
+    query = """
+            UPDATE question SET title = %(title)s, message = %(message)s
+            WHERE id = %(question_id)s """
 
-    cursor.execute(query)
+    cursor.execute(query, {'title': new_question['title'],
+                           'message': new_question['message'],
+                           'question_id': question_id})
 
 
 @database_common.connection_handler
 def delete_question(cursor: RealDictCursor, question_id):
-    query = f"""
-    DELETE FROM comment WHERE CAST(question_id AS text) LIKE '{question_id}';
-    DELETE FROM answer WHERE CAST(question_id AS text) LIKE '{question_id}';
-    DELETE FROM question_tag WHERE CAST(question_id AS text) LIKE '{question_id}' AND CAST(tag_id AS text) LIKE  '{question_id}';
-    DELETE FROM question WHERE CAST(id AS text) LIKE '{question_id}';  """
+    query = """
+    DELETE FROM comment WHERE question_id = %(question_id)s;
+    DELETE FROM answer WHERE question_id = %(question_id)s;
+    DELETE FROM question_tag WHERE question_id = %(question_id)s AND tag_id = %(question_id)s;
+    DELETE FROM question WHERE id = %(question_id)s;  """
 
-    cursor.execute(query)
+    cursor.execute(query, {'question_id': question_id})
 
 
 @database_common.connection_handler
@@ -104,7 +98,7 @@ def delete_answer(cursor: RealDictCursor, answer_id):
 @database_common.connection_handler
 def get_question_id_for_answer(cursor: RealDictCursor, answer_id):
     query = f"""
-    SELECT question_id FROM answer WHERE id = %s"""
+    SELECT question_id FROM answer WHERE id = %(answer_id)s"""
 
     cursor.execute(query, {'answer_id': answer_id})
     return cursor.fetchone()
@@ -199,7 +193,6 @@ def get_latest_five_questions(cursor: RealDictCursor) -> list:
 
 @database_common.connection_handler
 def add_comment_to_question(cursor: RealDictCursor, new_comment):
-
     query = """
             INSERT INTO comment (question_id, message, submission_time) VALUES (%s, %s, %s);
             """
@@ -254,5 +247,5 @@ def edit_answer(cursor: RealDictCursor, answer_id, new_answer):
             WHERE id = %(answer_id)s;
             """
     cursor.execute(query, {'message': new_answer['message'],
-                            'image': new_answer['image'],
-                            'answer_id': answer_id})
+                           'image': new_answer['image'],
+                           'answer_id': answer_id})

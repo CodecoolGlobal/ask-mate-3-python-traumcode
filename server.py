@@ -51,9 +51,8 @@ def list_page():
     return render_template("list.html", questions=questions)
 
 
-@app.route("/question/<question_id>")
+@app.route("/question/<int:question_id>")
 def display_question(question_id):
-    print(question_id)
     show_question = database_manager.display_question(question_id)
     show_answers = database_manager.display_answers(question_id)
     all_tags = database_manager.get_all_tags()
@@ -87,16 +86,17 @@ def display_question(question_id):
 def add_question():
     if request.method == "POST":
         new_question = dict(request.form)
-
+        # todo dict comprehension for capitalize
         filename = upload_image()
         submission_time = datetime.now()
 
         new_question['submission_time'] = submission_time
         new_question['image'] = filename
+        new_question['message'] = new_question['message'].capitalize()
+        new_question['title'] = new_question['title'].capitalize()
 
         question_id = database_manager.add_question(new_question)
         question_id = question_id['id']
-        database_manager.add_question(new_question)
 
         return redirect(url_for("display_question", question_id=question_id))
     return render_template('add-question.html')
@@ -106,45 +106,40 @@ def add_question():
 def edit_question(question_id):
     if request.method == "POST":
         edited_question = dict(request.form)
+        # todo dict comprehension for capitalize()
+        edited_question['title'] = edited_question['title'].capitalize()
+        edited_question['message'] = edited_question['message'].capitalize()
 
-        title = edited_question['title'].capitalize()
-        message = edited_question['message'].capitalize()
-
-        database_manager.edit_question(question_id, title, message)
-
+        database_manager.edit_question(question_id, edited_question)
         return redirect(url_for("display_question", question_id=question_id))
 
     elif request.method == 'GET':
-        details_question = database_manager.display_question(question_id)
-        for i in details_question:
-            details = {'message': i['message'],
-                       'title': i['title']}
-        if not details_question:
+        question_details = database_manager.display_question(question_id)
+        if not question_details:
             abort(404)
-        return render_template("edit-question.html", details=details, question_id=question_id)
+        return render_template("edit-question.html", question_details=question_details, question_id=question_id)
 
 
-@app.route('/question/<question_id>/delete', methods=['POST'])
+@app.route('/question/<int:question_id>/delete', methods=['POST'])
 def delete_question(question_id):
     questions = database_manager.get_all_questions()
     answers = database_manager.display_answers(question_id)
     if request.method == 'POST':
-        for value in questions:
-            if value['id'] == int(question_id):
-                qimage_name = value['image']
-                print(value['id'])
-                print(qimage_name)
-                try:
-                    os.remove('static/images/' + qimage_name)
-                except:
+        for question in questions:
+            if question['id'] == question_id:
+                q_image_name = question['image']
+
+                if q_image_name:
+                    os.remove('static/images/' + q_image_name)
+                else:
                     pass
 
-        for value in answers:
-            if value['question_id'] == int(question_id):
-                aimage_name = value['image']
-                try:
-                    os.remove('static/images/' + aimage_name)
-                except:
+        for answer in answers:
+            if answer['question_id'] == question_id:
+                a_image_name = answer['image']
+                if a_image_name:
+                    os.remove('static/images/' + a_image_name)
+                else:
                     pass
 
         database_manager.delete_question(question_id)
@@ -166,20 +161,18 @@ def add_answer(question_id):
     return render_template('add-answer.html', question_id=question_id)
 
 
-@app.route('/answer/<answer_id>/delete', methods=['GET', 'POST'])
+@app.route('/answer/<int:answer_id>/delete', methods=['GET', 'POST'])
 def delete_answer(answer_id):
     if request.method == 'POST':
-        data = database_manager.get_question_id_for_answer(answer_id)
-        for value in data.values():
-            question_id = value
+        question_id = database_manager.get_question_id_for_answer(answer_id)
+        question_id = question_id['question_id']
 
         answers = database_manager.display_answers(question_id)
-        for value in answers:
-            image_name = value['image']
+        image_name = answers[0]['image']
 
-        try:
+        if image_name:
             os.remove('static/images/' + image_name)
-        except:
+        else:
             pass
 
         database_manager.delete_answer(answer_id)
@@ -273,12 +266,11 @@ def add_comment_to_question(question_id):
 
 @app.route('/answer/<int:answer_id>/new-comment', methods=['GET', 'POST'])
 def add_comments_to_answer(answer_id):
+    answer_obj = database_manager.get_answer_by_answer_id(answer_id)
+    question_id = answer_obj['question_id']
     if request.method == 'GET':
-        return render_template("add-comment-to-answer.html", answer_id=answer_id)
+        return render_template("add-comment-to-answer.html", answer_id=answer_id, question_id=question_id)
     elif request.method == 'POST':
-        answer_obj = database_manager.get_answer_by_answer_id(answer_id)
-        question_id = answer_obj['question_id']
-
         dt = datetime.now()
         new_comment_for_a = dict(request.form)
         new_comment_for_a['answer_id'] = answer_id
