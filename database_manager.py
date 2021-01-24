@@ -160,28 +160,10 @@ def get_tags_for_question_by_question_id(cursor: RealDictCursor, question_id):
 
 
 @database_common.connection_handler
-def get_all_question_tag(cursor: RealDictCursor) -> list:
-    query = """
-            SELECT * FROM question_tag"""
-
-    cursor.execute(query)
-    return cursor.fetchall()
-
-
-@database_common.connection_handler
-def get_tag_id(cursor: RealDictCursor, name) -> list:
-    query = """
-            SELECT id FROM tag WHERE name = %(name)s;"""
-
-    cursor.execute(query, {'name': name})
-    return cursor.fetchone()
-
-
-@database_common.connection_handler
 def add_tag(cursor: RealDictCursor, name):
     query = """
             INSERT INTO tag (name)
-            VALUES (lower(%(name)s));"""
+            VALUES (%(name)s);"""
 
     cursor.execute(query, {'name': name})
 

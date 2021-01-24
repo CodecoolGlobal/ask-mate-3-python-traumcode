@@ -143,6 +143,7 @@ def add_answer(question_id):
 
         new_answer['submission_time'] = submission_time.strftime('%Y-%m-%d %H:%M:%S')
         new_answer['image'] = filename
+        new_answer['message'] = new_answer['message'].capitalize()
 
         database_manager.add_answer(question_id, new_answer)
 
@@ -172,14 +173,12 @@ def delete_answer(answer_id):
 @app.route('/question/<int:question_id>/vote_up', methods=['POST'])
 def vote_up_question(question_id):
     database_manager.vote_up_down_question(question_id, "up")
-
     return redirect(request.referrer)
 
 
 @app.route('/question/<int:question_id>/vote_down', methods=['POST'])
 def vote_down_question(question_id):
     database_manager.vote_up_down_question(question_id, "down")
-
     return redirect(request.referrer)
 
 
@@ -212,26 +211,31 @@ def add_tag_to_questions(question_id):
     all_tags = database_manager.get_all_tags()
     list_of_tags = [tag['name'] for tag in all_tags]
 
-    # if request.method == 'POST':
-    #     choose_tag = request.form.get('choose-tag')
-    #     inserted_tag = request.form.get('insert-tag')
-    #     if 'choose' in request.form:
-    #         try:
-    #             tag_id = database_manager.get_tag_id(choose_tag)
-    #             database_manager.ad_tag_in_question_tag(question_id, tag_id['id'])
-    #         except:
-    #             flash("Tag already exist!!")
-    #     elif 'insert' in request.form:
-    #         try:
-    #             database_manager.add_tag(inserted_tag)
-    #             tag_id = database_manager.get_tag_id(inserted_tag)
-    #             database_manager.ad_tag_in_question_tag(question_id, tag_id['id'])
-    #         except:
-    #             flash("Tag already exist!!")
     if request.method == 'POST':
-        existing_tag = request.form.get('choose-tag')
+        chosen_tag = request.form.get('choose-tag')
         inserted_tag = request.form.get('insert-tag')
-        print(inserted_tag)
+        inserted_tag = inserted_tag.lower()
+
+        if "insert-tag" in request.form:
+            print('insert')
+            if inserted_tag == "" or inserted_tag.isspace():
+                pass
+            elif inserted_tag in list_of_tags:
+                print("elif")
+                database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
+            else:
+                print('else')
+                database_manager.add_tag(inserted_tag)
+                database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
+
+        elif "choose-tag" in request.form:
+            print('choose')
+            if chosen_tag in list_of_tags:
+                database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
+            else:
+                database_manager.add_tag(chosen_tag)
+                database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
+
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags)
 
@@ -252,6 +256,7 @@ def add_comment_to_question(question_id):
         new_comment_for_q = dict(request.form)
         new_comment_for_q['question_id'] = question_id
         new_comment_for_q['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
+        new_comment_for_q['message'] = new_comment_for_q['message'].capitalize()
         database_manager.add_comment_to_question(new_comment_for_q)
         return redirect(url_for('display_question', question_id=question_id))
 
@@ -267,6 +272,7 @@ def add_comments_to_answer(answer_id):
         new_comment_for_a = dict(request.form)
         new_comment_for_a['answer_id'] = answer_id
         new_comment_for_a['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
+        new_comment_for_a['message'] = new_comment_for_a['message'].capitalize()
         database_manager.add_comment_for_answer(new_comment_for_a)
 
         return redirect(url_for('display_question', question_id=question_id))
@@ -281,6 +287,7 @@ def edit_answer(answer_id):
         edited_answer = dict(request.form)
         filename = upload_image()
         edited_answer['image'] = filename
+        edited_answer['message'] = edited_answer['message'].capitalize()
         database_manager.edit_answer(answer_id, edited_answer)
         return redirect(url_for('display_question', question_id=answer_details['question_id']))
 
