@@ -149,13 +149,15 @@ def delete_question(question_id):
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):
     if request.method == "POST":
-        filename = upload_image()
-        new_answer = request.form
-        submission_time = datetime.now()
-        message = new_answer['message']
-        image = filename
+        new_answer = dict(request.form)
 
-        database_manager.add_answer(submission_time, question_id, message, image)
+        filename = upload_image()
+        submission_time = datetime.now()
+
+        new_answer['submission_time'] = submission_time
+        new_answer['image'] = filename
+
+        database_manager.add_answer(question_id, new_answer)
 
         return redirect(url_for('display_question', question_id=question_id))
     return render_template('add-answer.html', question_id=question_id)
