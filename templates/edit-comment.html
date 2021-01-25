@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+<div class="box">
+    <h1>Edit comment</h1>
+    <form method="POST">
+        <label id="message" for="message">Message</label><br>
+        <textarea required name="message" id="message" rows="5" cols="60">{{ comment[0]['message'] }}</textarea><br><br>
+        <input type="submit"><br><br>
+    </form>
+{#    <a class="text-decoration-return-button text-decoration" href="{{ url_for('display_question', question_id=answer_details['question_id']) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>#}
+</div>
+{% endblock %}

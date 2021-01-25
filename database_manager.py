@@ -202,7 +202,7 @@ def get_latest_five_questions(cursor: RealDictCursor) -> list:
 @database_common.connection_handler
 def add_comment_to_question(cursor: RealDictCursor, new_comment):
     query = """
-            INSERT INTO comment (question_id, message, submission_time) VALUES (%s, %s, %s);
+            INSERT INTO comment (question_id, message, submission_time, edited_count) VALUES (%s, %s, %s, 0);
             """
     cursor.execute(query, (new_comment['question_id'],
                            new_comment['new-comment'],
@@ -221,7 +221,7 @@ def get_comments_for_question(cursor: RealDictCursor, question_id):
 @database_common.connection_handler
 def add_comment_for_answer(cursor: RealDictCursor, new_comment):
     query = """
-            INSERT INTO comment (answer_id, message, submission_time) VALUES (%s, %s, %s);"""
+            INSERT INTO comment (answer_id, message, submission_time, edited_count) VALUES (%s, %s, %s, 0);"""
     cursor.execute(query, (new_comment['answer_id'],
                            new_comment['new-comment'],
                            new_comment['submission_time']))
@@ -259,18 +259,73 @@ def edit_answer(cursor: RealDictCursor, answer_id, edited_answer):
 
 
 @database_common.connection_handler
-def search_questions(cursor: RealDictCursor, phrase):
-    query = f"""
-        SELECT question.id, question.submission_time, question.view_number, question.vote_number,question.title, question.message, question.image
-        FROM question
-        INNER JOIN answer on question.id=answer.question_id
-        WHERE lower(answer.message) LIKE lower('%{phrase}%')
-        UNION
-        SELECT * FROM question
-        WHERE lower(title) LIKE lower('%{phrase}%') or lower(message) LIKE lower('%{phrase}%')
-        """
+def get_comment(cursor: RealDictCursor, comment_id):
+    query = """
+            SELECT * FROM comment WHERE id = %(comment_id)s;"""
 
-    cursor.execute(query)
+    cursor.execute(query, {'comment_id': comment_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def edited_count(cursor: RealDictCursor, comment_id) -> list:
+    if comment_id:
+        query = f"""
+        UPDATE comment SET edited_count = edited_count + 1 WHERE id = %(comment_id)s"""
+
+    cursor.execute(query, {'comment_id': comment_id})
+
+
+@database_common.connection_handler
+def edit_comment(cursor: RealDictCursor, comment_id, comment):
+    query = """
+            UPDATE comment
+            SET message = %s, submission_time = %s
+            WHERE id = %s;
+            """
+    cursor.execute(query, (comment['message'],
+                           comment['submission_time'],
+                           comment_id))
+
+
+@database_common.connection_handler
+def get_ques_id_for_comments(cursor: RealDictCursor, comment_id):
+    query = """
+            SELECT answer.id, answer.question_id FROM answer
+            INNER JOIN comment on answer.id=comment.answer_id
+            WHERE comment.id = %(comment_id)s;"""
+    cursor.execute(query, {'comment_id': comment_id})
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def delete_comment(cursor: RealDictCursor, comment_id):
+    query = """
+            DELETE FROM comment WHERE id = %(comment_id)s;"""
+    cursor.execute(query, {'comment_id': comment_id})
+
+
+@database_common.connection_handler
+def search_questions(cursor: RealDictCursor, phrase):
+    query = """
+        SELECT q.id, q.title, q.message, q.submission_time, q.vote_number, q.view_number, a.message as answer_message 
+        FROM question q
+        LEFT JOIN answer a ON a.question_id = q.id
+        WHERE UPPER(q.title) iLIKE UPPER(%(phrase)s)
+        OR UPPER(q.message) iLIKE UPPER(%(phrase)s)
+        OR UPPER(a.message) iLIKE UPPER(%(phrase)s)
+        ORDER BY q.submission_time ASC;"""
+
+    cursor.execute(query, {'phrase': '%' + phrase + '%'})
+    return cursor.fetchall()
+
+
+def search_message_from_answers(cursor: RealDictCursor, phrase):
+    query = """
+    SELECT message, question_id FROM answer
+    WHERE UPPER(message) iLIKE UPPER(%(phrase)s) """
+
+    cursor.execute(query, {'phrase': '%' + phrase + '%'})
     return cursor.fetchall()
 
 

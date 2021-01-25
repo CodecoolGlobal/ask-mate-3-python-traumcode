@@ -210,7 +210,7 @@ def vote_down_answer(answer_id):
 def add_tag_to_questions(question_id):
     all_tags = database_manager.get_all_tags()
     list_of_tags = [tag['name'] for tag in all_tags]
-    question_tags_by_q_id = database_manager.get_tags_for_question_by_question_id(question_id)
+
     if request.method == 'POST':
         chosen_tag = request.form.get('choose-tag')
         inserted_tag = request.form.get('insert-tag')
@@ -277,6 +277,25 @@ def add_comments_to_answer(answer_id):
         return redirect(url_for('display_question', question_id=question_id))
 
 
+@app.route('/comment/<int:comment_id>/edit', methods=['GET', 'POST'])
+def edit_comment(comment_id):
+    comment = database_manager.get_comment(comment_id)
+    if request.method == 'GET':
+        return render_template('edit-comment.html', comment_id=comment_id, comment=comment)
+    elif request.method == 'POST':
+        question_id = comment[0]['question_id']
+        if not question_id:
+            question_id = database_manager.get_ques_id_for_comments(comment_id)[0]['question_id']
+
+        print(question_id)
+        dt = datetime.now()
+        edited_comment = dict(request.form)
+        edited_comment['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
+        edited_comment['edited_count'] = database_manager.edited_count(comment_id)
+        database_manager.edit_comment(comment_id, edited_comment)
+        return redirect(url_for('display_question', question_id=question_id))
+
+
 @app.route('/answer/<int:answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
     answer_details = database_manager.get_answer_by_answer_id(answer_id)
@@ -289,6 +308,13 @@ def edit_answer(answer_id):
         edited_answer['message'] = edited_answer['message'].capitalize()
         database_manager.edit_answer(answer_id, edited_answer)
         return redirect(url_for('display_question', question_id=answer_details['question_id']))
+
+
+@app.route('/comments/<int:comment_id>/delete', methods=['POST'])
+def delete_comment(comment_id):
+    if request.method == 'POST':
+        database_manager.delete_comment(comment_id)
+        return redirect(request.referrer)
 
 
 @app.route('/search')

@@ -3,49 +3,38 @@
 {% block head %}
     <title>Search results</title>
 {% endblock %}
-
-
 {% block body %}
-    <table class="table table-striped table-bordered" id="questions">
-        <thead class="thead-dark">
-            <th>ID</th>
-            <th>Added</th>
-            <th>Views</th>
-            <th>Votes</th>
-            <th>Title</th>
-            <th>Message</th>
-            <th>Image</th>
-        </thead>
-        <tbody>
-            {% for line in search_results %}
-            <tr>
-                <td>{{line.id}}</td>
-                <td>{{line.submission_time}}</td>
-                <td>{{line.view_number}}</td>
-                <td class="text-center">{{line.vote_number}}
-                    <form action="{{ url_for('vote_up_question', question_id=line.id) }}" method="post">
+
+    {% for line in search_results %}
+        <div class="container-questions">
+            <section class="questions">
+                <div class="title-question">
+                    <a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</a>
+                </div>
+                <div class="message-question flexible">
+                    <p>{{line.message | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</p>
+                </div>
+                <div class="submission-time">
+                    {{line.submission_time}}
+                </div>
+                <div class="view-number">
+                    <smal>Views: {{line.view_number}}</smal>
+                </div>
+                 <div class="vote-number">
+                     <form action="{{ url_for('vote_up_question', question_id=line.id) }}" method="post">
                         <button type="submit">▲</button>
+                     </form>
+                     <small>&nbsp&nbsp{{line.vote_number}}</small>
+                     <form action="{{ url_for('vote_down_question', question_id=line.id) }}" method="post">
+                         <button type="submit">▼</button>
                     </form>
-                    <form action="{{ url_for('vote_down_question', question_id=line.id) }}" method="post">
-                        <button type="submit">▼</button>
-                    </form>
-                </td>
-                <td><a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</a></td>
-                <td>{{line.message | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}<br>
-                <hr>
-                    {% for data in message %}
-                        {% if data['question_id'] == line.id %}
-                            <small style="margin-left: 10px"><strong>A:</strong> {{ data.message | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</small>
-                        {% endif %}
-                    {% endfor %}
-                </td>
-                {% if line.image %}
-                <td><a href="{{ url_for('static', filename='images/' + line.image) }}" target="_blank"><figure> <img src="{{url_for('static', filename='images/' + line.image) }}" height="150"></figure></a></td>
-                {% else %}
-                <td></td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </div>
+                {% for data in message %}
+                    {% if data['question_id'] == line.id %}
+                        <small style="margin-left: 10px"><strong>A:</strong> {{ data.message | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</small>
+                    {% endif %}
+                {% endfor %}
+            </section>
+        </div>
+    {% endfor %}
 {% endblock %}

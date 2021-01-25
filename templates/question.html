@@ -12,11 +12,14 @@
     <h2>{{ question.title }}</h2>
 <hr>
     <p>{{ question.message }}</p>
-{% endfor %}
+
+    {% if question.image %}
+        <figure><a href="{{ url_for('static', filename='images/' + question.image) }}" target="_blank"> <img src="{{url_for('static', filename='images/' + question.image) }}" height="150"></a></figure></a>
+    {% else %}
+    <figure></figure>
+    {% endif %}
 
 
-{% for message in get_flashed_messages() %}
-    <h3 class="alert-message">{{ message }}</h3>
 {% endfor %}
 
 <div class="grid-tags">
@@ -54,40 +57,55 @@
 <hr>
 
 <div class="container-comments-for-question">
-    {% if comments_for_question %}
-        <h3>Comments:</h3>
-    {% else %}
-    {% endif %}
     {% for comment in comments_for_question %}
-        <small>{{ comment['submission_time'] }}</small>
         <p>{{ comment['message'] }}</p>
-        <hr>
-    {% endfor %}
-</div>
+        <div class="grid-details">
+            <div class="edited-count">
+                <small>Edited: {{ comment['edited_count'] }}</small>
+            </div>
+            <div class="submission-time-grid">
+                <small>{{ comment['submission_time'] }}</small>
+            </div>
+        </div>
+        <div class="container-for-buttons"><br>
+            <div class="question-buttons1">
+                <a class="text-decoration2" href="{{url_for('edit_comment', comment_id=comment['id'])}}">Edit Comment</a>
+            </div>
+            <div class="question-buttons2">
+                <form action="{{ url_for('delete_comment', comment_id=comment['id']) }}" method="POST">
+                    <button class="submit-button" type="submit">Delete Comment!</button>
+                </form>
+            </div>
 
+        </div>
+        <hr>
+
+    {% endfor %}
+
+</div>
 </div>
 </div>
 
 
 
 <div class="container-answers-and-comments">
-<div class="box-answers-comments">
-{% if len_answers > 1 %}
-<h3 class="margin-top"> {{ len_answers }} answers </h3>
-<hr>
-{% elif len_answers > 0 %}
-<h3 class="margin-top"> {{ len_answers }} answer </h3>
-<hr>
-{% endif %}
+    <div class="box-answers-comments">
+    {% if len_answers > 1 %}
+        <h3 class="margin-top"> {{ len_answers }} answers </h3>
+        <hr>
+    {% elif len_answers > 0 %}
+        <h3 class="margin-top"> {{ len_answers }} answer </h3>
+        <hr>
+    {% endif %}
 
     {% for item in show_answers %}
         <small>{{item.submission_time}}</small><br>
         <p><strong>A: </strong>{{ item.message }}</p>
         
         {% if item.image %}
-        <figure><a href="{{ url_for('static', filename='images/' + item.image) }}" target="_blank"><img  src="{{ url_for('static', filename='images/' + item.image) }}" height="150"></a></figure><br>
+            <figure><a href="{{ url_for('static', filename='images/' + item.image) }}" target="_blank"><img  src="{{ url_for('static', filename='images/' + item.image) }}" height="150"></a></figure><br>
         {% else %}
-        <figure></figure><br>
+            <figure></figure><br>
         {% endif %}
 
         <form action="{{ url_for('vote_up_answer', answer_id=item.id) }}" method="post">
@@ -111,10 +129,29 @@
         </div>
         <hr>
         <div class="container-comments-for-question">
-           {% for comment in item['comments'] %}
+            {% for comment in item['comments'] %}
                 <p>{{ comment['message'] }}</p>
-               <small>{{ comment['submission_time'] }}</small>
-               <hr>
+                <div class="grid-details">
+                    <div class="edited-count">
+                        <small>Edited: {{ comment['edited_count'] }}</small>
+                    </div>
+                    <div class="submission-time-grid">
+                        <small>{{ comment['submission_time'] }}</small>
+                    </div>
+               </div>
+
+               <div class="container-for-buttons"><br>
+            <div class="question-buttons1">
+                <a class="text-decoration2" href="{{url_for('edit_comment', comment_id=comment['id'])}}">Edit Comment</a>
+            </div>
+            <div class="question-buttons2">
+                <form action="{{ url_for('delete_comment', comment_id=comment['id']) }}" method="POST">
+                    <button class="submit-button" type="submit">Delete Comment!</button>
+                </form>
+            </div>
+
+        </div>
+        <hr>
             {% endfor %}
         </div>
     {% endfor %}
@@ -123,8 +160,4 @@
 
 </div>
 </div>
-    
-    <a class="text-decoration-return-button text-decoration" href="{{ url_for('main_page') }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Return to The List</a><br><br>
-
-
 {% endblock %}
