@@ -33,7 +33,7 @@
 
 <div class="container-for-buttons"><br>
     <div class="question-buttons1">
-        <a class="textdecoration2" href="{{url_for('edit_question', question_id=question_id)}}">Edit this question</a>
+        <a class="text-decoration2" href="{{url_for('edit_question', question_id=question_id)}}">Edit this question</a>
     </div>
     <div class="question-buttons2">
         <form action="{{ url_for('delete_question', question_id=question_id) }}" method="POST">
@@ -41,13 +41,13 @@
         </form>
     </div>
     <div class="question-buttons3">
-        <a class="textdecoration2" href="{{ url_for('add_answer', question_id=question_id) }}">Add answer</a>
+        <a class="text-decoration2" href="{{ url_for('add_answer', question_id=question_id) }}">Add answer</a>
     </div>
     <div>
-        <a class="textdecoration2" href="{{ url_for('add_comment_to_question', question_id=question_id) }}">Add comment</a>
+        <a class="text-decoration2" href="{{ url_for('add_comment_to_question', question_id=question_id) }}">Add comment</a>
     </div>
     <div class="question-button4">
-        <a class="textdecoration2" href="{{ url_for('add_tag_to_questions', question_id=question_id) }}">Add tag</a>
+        <a class="text-decoration2" href="{{ url_for('add_tag_to_questions', question_id=question_id) }}">Add tag</a>
     </div>
 
 </div>
@@ -100,10 +100,10 @@
 
         <div class="container-for-buttons">
             <div>
-                <a class="textdecoration2" href="{{ url_for('edit_answer', answer_id=item.id) }}">Edit answer</a>
+                <a class="text-decoration2" href="{{ url_for('edit_answer', answer_id=item.id) }}">Edit answer</a>
             </div>
             <div>
-                <a class="textdecoration2" href="{{ url_for('add_comments_to_answer', answer_id=item.id) }}">Add comment</a>
+                <a class="text-decoration2" href="{{ url_for('add_comments_to_answer', answer_id=item.id) }}">Add comment</a>
             </div>
             <form action="{{ url_for('delete_answer', answer_id=item.id) }}" method="POST">
                 <button class="submit-button" type="submit">Delete this answer!</button>
@@ -124,7 +124,7 @@
 </div>
 </div>
     
-    <a class="textdecoration-return-button textdecoration" href="{{ url_for('main_page') }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Return to The List</a><br><br>
+    <a class="text-decoration-return-button text-decoration" href="{{ url_for('main_page') }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Return to The List</a><br><br>
 
 
 {% endblock %}

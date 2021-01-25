@@ -210,14 +210,13 @@ def vote_down_answer(answer_id):
 def add_tag_to_questions(question_id):
     all_tags = database_manager.get_all_tags()
     list_of_tags = [tag['name'] for tag in all_tags]
-
+    question_tags_by_q_id = database_manager.get_tags_for_question_by_question_id(question_id)
     if request.method == 'POST':
         chosen_tag = request.form.get('choose-tag')
         inserted_tag = request.form.get('insert-tag')
         inserted_tag = inserted_tag.lower()
 
         if "insert-tag" in request.form:
-            print('insert')
             if inserted_tag == "" or inserted_tag.isspace():
                 pass
             elif inserted_tag in list_of_tags:
@@ -228,8 +227,7 @@ def add_tag_to_questions(question_id):
                 database_manager.add_tag(inserted_tag)
                 database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
 
-        elif "choose-tag" in request.form:
-            print('choose')
+        if "choose-tag" in request.form:
             if chosen_tag in list_of_tags:
                 database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
             else:
@@ -291,6 +289,20 @@ def edit_answer(answer_id):
         edited_answer['message'] = edited_answer['message'].capitalize()
         database_manager.edit_answer(answer_id, edited_answer)
         return redirect(url_for('display_question', question_id=answer_details['question_id']))
+
+
+@app.route('/search')
+def search_question():
+    phrase = request.args.get('search')
+    search_results = database_manager.search_questions(phrase)
+    question_ids = [data['id'] for data in search_results]
+    message = database_manager.search_message_from_answers(phrase)
+    answer_ids = [data['question_id'] for data in message]
+    answer_question_id = [value for value in question_ids if value in answer_ids]
+
+    return render_template('search-results.html', search_results=search_results,
+                           answer_question_id=answer_question_id,
+                           message=message, phrase=phrase)
 
 
 @app.errorhandler(404)

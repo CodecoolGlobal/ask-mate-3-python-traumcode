@@ -256,3 +256,29 @@ def edit_answer(cursor: RealDictCursor, answer_id, edited_answer):
     cursor.execute(query, (edited_answer['message'],
                            edited_answer['image'],
                            answer_id))
+
+
+@database_common.connection_handler
+def search_questions(cursor: RealDictCursor, phrase):
+    query = f"""
+        SELECT question.id, question.submission_time, question.view_number, question.vote_number,question.title, question.message, question.image
+        FROM question
+        INNER JOIN answer on question.id=answer.question_id
+        WHERE lower(answer.message) LIKE lower('%{phrase}%')
+        UNION
+        SELECT * FROM question
+        WHERE lower(title) LIKE lower('%{phrase}%') or lower(message) LIKE lower('%{phrase}%')
+        """
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def search_message_from_answers(cursor: RealDictCursor, phrase):
+    query = f"""
+    SELECT message, question_id FROM answer
+    WHERE message LIKE '%{phrase}%' """
+
+    cursor.execute(query)
+    return cursor.fetchall()

@@ -8,14 +8,22 @@
 <body>
 
         
-<div class="navbar">
-    <div class="navbar-links">
-        <a class="navbar-links-buttons" href="/list">Help Center</a>
-        <a class="navbar-links-buttons" href="/list">Search</a>
+<header class="header">
+    <div class="content-wrapper">
+        <div class="about">
+            <div class="navbar-header"><h1 class="headers-color"><img class="logo-image" src="{{url_for('static', filename='/images/patch-question.svg')}}">&nbsp<a class="text-decoration2" href="/">Ask Mate</a></h1></div>
+        </div>
     </div>
-    <div class="navbar2"><img style="margin-right:5%"src="{{url_for('static', filename='/images/cart2.svg')}}"></div>
-    <div class="navbar-header"><h1 class="headers-color"><img class="logo-image" src="{{url_for('static', filename='/images/patch-question.svg')}}">&nbsp<a class="textdecoration2"href="/">Ask Mate</a></h1></div>
-</div>
+    <nav class="after-header">
+        <ul class="after-header-gray">
+            <li> <a class="" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img src="{{url_for('static', filename='/images/cloud-plus.svg')}}"></span></a> </li>
+            <li class="search"><form action="{{ url_for('search_question') }}">
+                    <input type="text" name="search">
+                    <button class="submit-button-tag" type="submit">Search</button>
+                </form></li>
+        </ul>
+    </nav>
+</header>
 
     
     {% block body %}{% endblock %}
