@@ -5,6 +5,9 @@
      line-height: 1.5;
 }
 
+html {
+    height: 100%;
+}
 
 body {
   background-color: #efefef;
@@ -234,7 +237,9 @@ a {
 
 .container-comments-for-question {
     padding-left: 100px;
+
 }
+
 
 
 
@@ -354,11 +359,11 @@ figure {
 .footer {
     background-color: #39484f;
     color: #000;
-    margin: 4rem 0 0 0;
+    margin: 164px 0 0 0;
     font-size: 85%;
     padding: 1rem 0;
-
-
+    position: sticky;
+    clear:both;
 
 }
 
