@@ -12,7 +12,7 @@
                     <a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</a>
                 </div>
                 <div class="message-question flexible">
-                    <p>{{line.message | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</p>
+                    <p>{{line.message | lower | replace  (phrase | lower, '<mark>' + phrase + '</mark>') | safe}}</p>
                 </div>
                 <div class="submission-time">
                     {{line.submission_time}}
@@ -34,7 +34,9 @@
                         <small style="margin-left: 10px"><strong>A:</strong> {{ data.message | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</small>
                     {% endif %}
                 {% endfor %}
+
             </section>
+        {% endfor %}
         </div>
-    {% endfor %}
+
 {% endblock %}
