@@ -311,9 +311,9 @@ def search_questions(cursor: RealDictCursor, phrase):
         SELECT q.id, q.title, q.message, q.submission_time, q.vote_number, q.view_number, a.message as answer_message 
         FROM question q
         LEFT JOIN answer a ON a.question_id = q.id
-        WHERE LOWER(q.title) iLIKE LOWER(%(phrase)s)
-        OR LOWER(q.message) iLIKE LOWER(%(phrase)s)
-        OR LOWER(a.message) iLIKE LOWER(%(phrase)s)
+        WHERE q.title iLIKE %(phrase)s
+        OR q.message iLIKE %(phrase)s
+        OR a.message iLIKE %(phrase)s
         ORDER BY q.submission_time ASC;"""
 
     cursor.execute(query, {'phrase': '%' + phrase + '%'})
@@ -323,7 +323,7 @@ def search_questions(cursor: RealDictCursor, phrase):
 def search_message_from_answers(cursor: RealDictCursor, phrase):
     query = """
     SELECT message, question_id FROM answer
-    WHERE LOWER(message) iLIKE LOWER(%(phrase)s) """
+    WHERE message ILIKE %(phrase)s """
 
     cursor.execute(query, {'phrase': '%' + phrase + '%'})
     return cursor.fetchall()
@@ -331,9 +331,9 @@ def search_message_from_answers(cursor: RealDictCursor, phrase):
 
 @database_common.connection_handler
 def search_message_from_answers(cursor: RealDictCursor, phrase):
-    query = f"""
+    query = """
     SELECT message, question_id FROM answer
-    WHERE message LIKE '%{phrase}%' """
+    WHERE message ILIKE %(phrase)s """
 
-    cursor.execute(query)
+    cursor.execute(query, {'phrase': '%' + phrase + '%'})
     return cursor.fetchall()
