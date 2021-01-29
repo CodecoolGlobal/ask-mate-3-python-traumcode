@@ -38,15 +38,11 @@ def main_page():
 def list_page():
     questions = database_manager.get_all_questions()
 
-    header = request.args
-    order_by = request.args.get('order_by')
-    order_direction = request.args.get('order_direction')
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'desc')
     reverse = True if order_direction == 'desc' else False
 
-    if order_by in header or order_direction:
-        questions = sorted(questions, key=lambda row: row[order_by], reverse=reverse)
-    else:
-        questions = sorted(questions, key=lambda row: row['submission_time'], reverse=True)
+    questions = sorted(questions, key=lambda row: row[order_by], reverse=reverse)
 
     return render_template("list.html", questions=questions)
 
