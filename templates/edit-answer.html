@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
-{% block head %}
-
+{% block title %}
+Edit answer
 {% endblock %}
 
 
@@ -16,6 +16,6 @@
         <input type="file" name="file"><br><br>
         <input type="submit"><br><br>
     </form>
-    <a class="text-decoration-return-button text-decoration" href="{{ url_for('display_question', question_id=answer_details['question_id']) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
+    <a class="text-decoration-return-button text-decoration" href="{{ url_for('display_question', question_id=answer_details['question_id']) }}"><img alt="image from user" src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
 </div>
 {% endblock %}

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>{% block title %}{% endblock %}</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    {% block head %}{% endblock %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis">
+
 </head>
 <body>
 
@@ -11,14 +13,15 @@
 <header class="header">
     <div class="content-wrapper">
         <div class="about">
-            <div class="navbar-header"><h1 class="headers-color"><img class="logo-image" src="{{url_for('static', filename='/images/patch-question.svg')}}">&nbsp<a class="text-decoration2" href="/">Ask Mate</a></h1></div>
+            <div class="navbar-header"><h1 class="headers-color"><img alt="image from user" class="logo-image" src="{{url_for('static', filename='/images/patch-question.svg')}}">&nbsp<a class="text-decoration2" href="/">Ask Mate</a></h1></div>
         </div>
     </div>
     <nav class="after-header">
         <ul class="after-header-gray">
-            <li> <a class="" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img src="{{url_for('static', filename='/images/cloud-plus.svg')}}"></span></a> </li>
+            <li> <a class="" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img alt="image from user" src="{{url_for('static', filename='/images/cloud-plus.svg')}}"></span></a> </li>
             <li class="search"><form action="{{ url_for('search_question') }}">
-                    <input type="text" name="search">
+                <label for="search"></label>
+                    <input type="text" name="search" id="search">
                     <button class="submit-button-tag" type="submit">Search</button>
                 </form></li>
         </ul>
@@ -27,6 +30,6 @@
 
     
     {% block body %}{% endblock %}
-{% include "footer.html" %}
+{#{% include "footer.html" %}#}
 </body>
 </html>

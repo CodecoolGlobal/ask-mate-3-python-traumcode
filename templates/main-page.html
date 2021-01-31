@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 
 
-{% block head %}
-    <title>ASK MATE</title>
+{% block title %}
+    Ask Mate
 {% endblock %}
 
 
@@ -18,6 +18,7 @@
           <option value="vote_number">Vote Number</option>
           <option value="message">Message</option>
         </select>
+        <label for="order_direction"></label>
          <select id="order_direction" name="order_direction">
            <option value="asc">Ascended</option>
           <option value="desc">Descendent</option>
@@ -40,10 +41,10 @@
                     <p>{{line.message}}</p>
                 </div>
                 <div class="submission-time">
-                    {{line.submission_time}}
+                    <small>{{line.submission_time}}</small>
                 </div>
                 <div class="view-number">
-                    <smal>Views: {{line.view_number}}</smal>
+                    <small>Views: {{line.view_number}}</small>
 
                 </div>
                 <div class="vote-number">

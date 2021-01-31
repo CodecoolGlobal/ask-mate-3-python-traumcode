@@ -1,7 +1,9 @@
 {% extends 'layout.html' %}
 
-{% block head %}
-    <title>{{ show_question.title }}</title>
+{% block title %}
+    {% if show_question %}
+    {{ show_question[0]['title'] }}
+    {% endif %}
 {% endblock %}
 
 
@@ -14,7 +16,7 @@
     <p>{{ question.message }}</p>
 
     {% if question.image %}
-        <figure><a href="{{ url_for('static', filename='images/' + question.image) }}" target="_blank"> <img src="{{url_for('static', filename='images/' + question.image) }}" height="150"></a></figure></a>
+        <figure><a href="{{ url_for('static', filename='images/' + question.image) }}" target="_blank"> <img alt="image from user" src="{{url_for('static', filename='images/' + question.image) }}" height="150"></a></figure>
     {% else %}
     <figure></figure>
     {% endif %}
@@ -103,7 +105,7 @@
         <p><strong>A: </strong>{{ item.message }}</p>
         
         {% if item.image %}
-            <figure><a href="{{ url_for('static', filename='images/' + item.image) }}" target="_blank"><img  src="{{ url_for('static', filename='images/' + item.image) }}" height="150"></a></figure><br>
+            <figure><a href="{{ url_for('static', filename='images/' + item.image) }}" target="_blank"><img alt="image from user" src="{{ url_for('static', filename='images/' + item.image) }}" height="150"></a></figure><br>
         {% else %}
             <figure></figure><br>
         {% endif %}

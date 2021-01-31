@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for, abort, flash
+from flask import Flask, render_template, redirect, request, url_for, abort
 import database_manager
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -50,6 +50,8 @@ def list_page():
 @app.route("/question/<int:question_id>")
 def display_question(question_id):
     show_question = database_manager.display_question(question_id)
+    if not show_question:
+        abort(404)
     show_answers = database_manager.display_answers(question_id)
     question_tags_by_q_id = database_manager.get_tags_for_question_by_question_id(question_id)
 
@@ -78,8 +80,8 @@ def add_question():
         new_question['message'] = new_question['message'].capitalize()
         new_question['title'] = new_question['title'].capitalize()
 
-        question_id = database_manager.add_question(new_question)
-        question_id = question_id['id']
+        question_obj = dict(database_manager.add_question(new_question))
+        question_id = question_obj['id']
 
         return redirect(url_for("display_question", question_id=question_id))
     return render_template('add-question.html')
@@ -131,6 +133,7 @@ def delete_question(question_id):
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def add_answer(question_id):
+    # todo verify if the question_id really exists
     if request.method == "POST":
         new_answer = dict(request.form)
 
@@ -214,10 +217,8 @@ def add_tag_to_questions(question_id):
             if inserted_tag == "" or inserted_tag.isspace():
                 pass
             elif inserted_tag in list_of_tags:
-                print("elif")
                 database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
             else:
-                print('else')
                 database_manager.add_tag(inserted_tag)
                 database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
 
@@ -241,6 +242,7 @@ def delete_tag(question_id, tag_id):
 
 @app.route('/question/<int:question_id>/new-comment', methods=['GET', 'POST'])
 def add_comment_to_question(question_id):
+    # todo verify if the question_id really exists
     if request.method == 'GET':
         return render_template('add-comment-to-question.html', question_id=question_id)
     elif request.method == 'POST':
@@ -256,6 +258,8 @@ def add_comment_to_question(question_id):
 @app.route('/answer/<int:answer_id>/new-comment', methods=['GET', 'POST'])
 def add_comments_to_answer(answer_id):
     answer_obj = database_manager.get_answer_by_answer_id(answer_id)
+    if not answer_obj:
+        abort(404)
     question_id = answer_obj['question_id']
     if request.method == 'GET':
         return render_template("add-comment-to-answer.html", answer_id=answer_id, question_id=question_id)
@@ -275,6 +279,8 @@ def add_comments_to_answer(answer_id):
 def edit_comment(comment_id):
     comment = database_manager.get_comment(comment_id)
     if request.method == 'GET':
+        if not comment:
+            abort(404)
         return render_template('edit-comment.html', comment_id=comment_id, comment=comment)
     elif request.method == 'POST':
         question_id = comment[0]['question_id']
@@ -293,6 +299,8 @@ def edit_comment(comment_id):
 def edit_answer(answer_id):
     answer_details = database_manager.get_answer_by_answer_id(answer_id)
     if request.method == 'GET':
+        if not answer_details:
+            abort(404)
         return render_template('edit-answer.html', answer_id=answer_id, answer_details=answer_details)
     elif request.method == 'POST':
         edited_answer = dict(request.form)

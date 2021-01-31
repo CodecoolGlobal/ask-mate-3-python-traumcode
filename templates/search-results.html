@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
-{% block head %}
-    <title>Search results</title>
+{% block title %}
+    Search results
 {% endblock %}
 {% block body %}
 
@@ -15,10 +15,10 @@
                     <p>{{line.message | lower | replace  (phrase, '<mark>' + phrase | lower + '</mark>') | safe}}</p>
                 </div>
                 <div class="submission-time">
-                    {{line.submission_time}}
+                    <small>{{line.submission_time}}</small>
                 </div>
                 <div class="view-number">
-                    <smal>Views: {{line.view_number}}</smal>
+                    <small>Views: {{line.view_number}}</small>
                 </div>
                  <div class="vote-number">
                      <form action="{{ url_for('vote_up_question', question_id=line.id) }}" method="post">
