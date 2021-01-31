@@ -180,10 +180,9 @@ def vote_down_question(question_id):
 
 @app.route('/answer/<int:answer_id>/vote_up', methods=['POST'])
 def vote_up_answer(answer_id):
-    data = database_manager.get_question_id_for_answer(answer_id)
+    question_obj = database_manager.get_question_id_for_answer(answer_id)
 
-    for value in data.values():
-        question_id = value
+    question_id = question_obj['question_id']
 
     database_manager.vote_up_down_answer(answer_id, "up")
 
@@ -192,10 +191,9 @@ def vote_up_answer(answer_id):
 
 @app.route('/answer/<int:answer_id>/vote_down', methods=['POST'])
 def vote_down_answer(answer_id):
-    data = database_manager.get_question_id_for_answer(answer_id)
+    question_obj = database_manager.get_question_id_for_answer(answer_id)
 
-    for value in data.values():
-        question_id = value
+    question_id = question_obj['question_id']
 
     database_manager.vote_up_down_answer(answer_id, "down")
 
@@ -283,7 +281,6 @@ def edit_comment(comment_id):
         if not question_id:
             question_id = database_manager.get_ques_id_for_comments(comment_id)[0]['question_id']
 
-        print(question_id)
         dt = datetime.now()
         edited_comment = dict(request.form)
         edited_comment['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
