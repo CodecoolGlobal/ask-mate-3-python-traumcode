@@ -9,10 +9,10 @@
         <div class="container-questions">
             <section class="questions">
                 <div class="title-question">
-                    <a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</a>
+                    <a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title | lower | replace (phrase, '<mark>' + phrase | lower + '</mark>') | safe}}</a>
                 </div>
                 <div class="message-question flexible">
-                    <p>{{line.message | lower | replace  (phrase | lower, '<mark>' + phrase + '</mark>') | safe}}</p>
+                    <p>{{line.message | lower | replace  (phrase, '<mark>' + phrase | lower + '</mark>') | safe}}</p>
                 </div>
                 <div class="submission-time">
                     {{line.submission_time}}
@@ -31,7 +31,7 @@
                 </div>
                 {% for data in message %}
                     {% if data['question_id'] == line.id %}
-                        <small style="margin-left: 10px"><strong>A:</strong> {{ data.message | replace (phrase, '<mark>' + phrase + '</mark>') | safe}}</small>
+                        <small style="margin-left: 10px"><strong>A:</strong> {{ data.message | lower | replace (phrase, '<mark>' + phrase | lower + '</mark>') | safe}}</small>
                     {% endif %}
                 {% endfor %}
 

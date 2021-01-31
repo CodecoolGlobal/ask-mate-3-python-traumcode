@@ -316,6 +316,7 @@ def delete_comment(comment_id):
 @app.route('/search')
 def search_question():
     phrase = request.args.get('search')
+    phrase = phrase.lower()
     search_results = database_manager.search_questions(phrase)
     question_ids = [data['id'] for data in search_results]
     message = database_manager.search_message_from_answers(phrase)
