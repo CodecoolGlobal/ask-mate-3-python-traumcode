@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+
+{% block head %}
+    <title>ASK MATE</title>
+{% endblock %}
+
+
+{% block body %}
+<div class="container">
+    <div class="item-2">
+    <form class='text' method="get">
+        <label for="order_by">Sort by:</label>
+        <select id="order_by" name="order_by">
+          <option value="title">Title</option>
+          <option value="submission_time">Submission Time</option>
+          <option value="view_number">View Number</option>
+          <option value="vote_number">Vote Number</option> 
+          <option value="message">Message</option>
+        </select>
+        <label for="order_direction"></label>
+         <select id="order_direction" name="order_direction">
+           <option value="asc">Ascended</option>
+          <option value="desc">Descendent</option>
+         </select>
+        <input type="submit">
+    </form>
+</div>
+</div>
+
+
+    {% for line in questions %}
+        <div class="container-questions">
+            <section class="questions">
+                <div class="title-question">
+                    <a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title}}</a>
+                </div>
+                <div class="message-question flexible">
+                    <p>{{line.message}}</p>
+                </div>
+                <div class="submission-time">
+                    <small>{{line.submission_time}}</small>
+                </div>
+                <div class="view-number">
+                    <small>Views: {{line.view_number}}</small>
+
+                </div>
+                <div class="vote-number">
+                    <form action="{{ url_for('vote_up_question', question_id=line.id) }}" method="post">
+                        <button type="submit">▲</button>
+                    </form>
+                    <small>&nbsp&nbsp{{line.vote_number}}</small>
+                    <form action="{{ url_for('vote_down_question', question_id=line.id) }}" method="post">
+                        <button type="submit">▼</button>
+                    </form>
+                </div>
+
+
+{#                {% if line.image %}#}
+{#                <figure> <img src="{{url_for('static', filename='images/' + line.image) }}" height="150"></figure></a>#}
+{#                {% else %}#}
+{#                <figure></figure>#}
+{#                {% endif %}#}
+
+
+            </section>
+        </div>
+{% endfor %}
+{% endblock %}

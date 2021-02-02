@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Add tag
+{% endblock %}
+
+
+{% block body %}
+
+
+    <div class="box">
+
+    <h1>Add tag</h1>
+    <form action="{{ url_for('add_tag_to_questions', question_id=question_id) }}" method="POST">
+        <select id="choose-tag" name="choose-tag">
+            {% for tag in list_of_tags %}
+            <option value="{{ tag }}">{{ tag }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <input id="insert-tag" type="text" name="insert-tag"><br><br>
+        <button class="submit-button-tag" type="submit">Add tag</button>
+    </form><br><br><br>
+    <a class="text-decoration-return-button text-decoration" href="{{ url_for('display_question', question_id=question_id) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
+    </div>
+
+
+{% endblock %}

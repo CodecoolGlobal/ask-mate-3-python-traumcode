@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+<div class="box">
+    <h1>Edit question</h1>
+    <form method="POST">
+        <label for="title">Title</label><br>
+        <input required type="text" name="title" id="title" value="{{ question_details[0]['title'] }}"> <br><br>
+
+        <label for="message">Message</label><br>
+        <textarea required name="message" id="message" rows="5" cols="60">{{ question_details[0]['message'] }}</textarea><br><br>
+        <input type="submit"><br><br>
+    </form>
+    <a class="text-decoration-return-button text-decoration" href="{{ url_for('display_question', question_id=question_id) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
+</div>
+{% endblock %}

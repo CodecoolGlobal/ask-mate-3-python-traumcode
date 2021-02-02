@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Add Question
+{% endblock %}
+
+
+{% block body %}
+<div class="box">
+    <h1>Ask a question</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="title">Title</label><br>
+        <input type="text" name="title" id="title" required><br><br>
+
+        <label for="message">Message</label><br>
+        <textarea name="message" id="message" rows="5" cols="60" required></textarea><br><br>
+
+        <label for="image">Image</label><br>
+        <input type="file" name="file"><br><br>
+        <input type="submit"><br><br>
+
+    </form>
+</div>
+
+{% endblock %}
