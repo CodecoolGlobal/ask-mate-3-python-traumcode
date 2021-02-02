@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Users Page
+{% endblock %}
+
+
+{% block body %}
+    {% for user in all_users %}
+        {{ user.username }}
+    {% endfor %}
+{% endblock %}

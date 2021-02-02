@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    Registration Page
+{% endblock %}
+
+
+{% block body %}
+    <form method="post" enctype="multipart/form-data">
+        <label for="username"></label>
+        <input type="text" name="username" id="username" required placeholder="Enter username">
+        <label for="email"></label>
+        <input type="email" name="email" id="email" required placeholder="Enter email">
+        <label for="password"></label>
+        <input type="password" name="password" id="password" required placeholder="Password">
+        <label for="image">Upload an avatar</label>
+        <input type="file" id="image" name="file">
+        <input type="submit">
+    </form>
+{% endblock %}

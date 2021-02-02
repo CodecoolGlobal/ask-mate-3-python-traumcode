@@ -22,8 +22,11 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_
 DROP TABLE IF EXISTS public.users;
 CREATE TABLE users (
     id serial NOT NULL,
+    username text,
     email text,
-    password text
+    password text,
+    image text,
+    registration_date timestamp without time zone
 );
 
 DROP TABLE IF EXISTS public.question;
@@ -113,7 +116,7 @@ ALTER TABLE ONLY question_tag
     ADD CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id);
 
 
-INSERT INTO users VALUES (1, 'silviu@gmail.com', '$2b$12$j/Ik06kwSIt9LYOJW53PieliSoy0NmQRdS6BZOU4a4aCUHDjO2gRi');
+INSERT INTO users VALUES (1, 'traumcode', 'silviu@gmail.com', '$2b$12$j/Ik06kwSIt9LYOJW53PieliSoy0NmQRdS6BZOU4a4aCUHDjO2gRi');
 SELECT pg_catalog.setval('users_id_seq', 1, true);
 
 INSERT INTO question VALUES (0,1, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', NULL);

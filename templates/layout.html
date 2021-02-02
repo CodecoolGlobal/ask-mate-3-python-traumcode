@@ -9,27 +9,41 @@
 </head>
 <body>
 
-        
 <header class="header">
     <div class="content-wrapper">
         <div class="about">
-            <div class="navbar-header"><h1 class="headers-color"><img alt="image from user" class="logo-image" src="{{url_for('static', filename='/images/patch-question.svg')}}">&nbsp<a class="text-decoration2" href="/">Ask Mate</a></h1></div>
+            <div class="navbar-header"><h1 class="headers-color"><img alt="image from user" class="logo-image"
+                                                                      src="{{ url_for('static', filename='/images/patch-question.svg') }}">&nbsp<a
+                    class="text-decoration2" href="/">Ask Mate</a></h1></div>
         </div>
     </div>
     <nav class="after-header">
         <ul class="after-header-gray">
-            <li> <a class="" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img alt="image from user" src="{{url_for('static', filename='/images/cloud-plus.svg')}}"></span></a> </li>
-            <li class="search"><form action="{{ url_for('search_question') }}">
-                <label for="search"></label>
+            <li><a class="" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img
+                    alt="image from user" src="{{ url_for('static', filename='/images/cloud-plus.svg') }}"></span></a>
+            </li>
+            <li class="search">
+                <form action="{{ url_for('search_question') }}">
+                    <label for="search"></label>
                     <input type="text" name="search" id="search">
                     <button class="submit-button-tag" type="submit">Search</button>
-                </form></li>
+                </form>
+            </li>
+            {% if 'id' in session %}
+            <li><a href="{{ url_for('logout') }}">Log out</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login_page') }}">Log in</a></li>
+                <li><a href="{{ url_for('registration_page') }}">Sign up</a></li>
+            {% endif %}
+            {% for message in get_flashed_messages() %}
+                <li>{{ message }}</li>
+            {% endfor %}
         </ul>
     </nav>
 </header>
 
-    
-    {% block body %}{% endblock %}
+
+{% block body %}{% endblock %}
 {#{% include "footer.html" %}#}
 </body>
 </html>
