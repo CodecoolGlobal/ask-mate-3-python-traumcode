@@ -6,28 +6,32 @@
 
 
 {% block body %}
-    {% for details in show_details %}
-        {% if details.image %}<figure> <img class="profile-avatar" alt="image from user" src="{{url_for('static', filename='images/' + details.image) }}" height="150"></figure>{% else %}<figure></figure>{% endif %}
-        {{ details.id }}
-        {{ details.username }}
-        {{ details.registration_date }}
-        {{ details.asked_question }}
-        {{ details.answers }}
-        {{ details.comments }}
-        {{ details.reputation }}
-    {% endfor %}
-    Questions:
-    {% for question in questions %}
-        {{ question.submission_time }}
-        {{ question.title }} - {{ question.message }} - {{ question.vote_number }} - {{ question.view_number }}
-    {% endfor %}
-    Answers:
-    {% for answer in answers %}
-        {{ answer.message }} - {{ answer.submission_time }} - {{ answer.vote_number }}
-    {% endfor %}
-    Comments:
-    {% for comment in comments %}
-        {{ comment.message }} - {{ comment.submission_time }}
-    {% endfor %}
-
+    <div class="box">
+        {% for details in show_details %}
+            {% if details.image %}
+                <figure><img class="profile-avatar" alt="image from user" src="{{ url_for('static', filename='images/' + details.image) }}" height="150"></figure>
+            {% else %}
+                <figure></figure>{% endif %}
+            {{ details.id }}
+            {{ details.username }}
+            {{ details.registration_date }}
+            {{ details.asked_question }}
+            {{ details.answers }}
+            {{ details.comments }}
+            {{ details.reputation }}
+        {% endfor %}
+        Questions:
+        {% for question in questions %}
+            {{ question.submission_time }}
+            {{ question.title }} - {{ question.message }} - {{ question.vote_number }} - {{ question.view_number }}
+        {% endfor %}
+        Answers:
+        {% for answer in answers %}
+            {{ answer.message }} - {{ answer.submission_time }} - {{ answer.vote_number }}
+        {% endfor %}
+        Comments:
+        {% for comment in comments %}
+            {{ comment.message }} - {{ comment.submission_time }}
+        {% endfor %}
+    </div>
 {% endblock %}

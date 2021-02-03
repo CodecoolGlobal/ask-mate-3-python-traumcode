@@ -160,6 +160,9 @@ def display_question(question_id):
     for answer in show_answers:
         answer['comments'] = database_manager.get_comments_for_answer(answer['id'])
 
+    for item in answer['comments']:
+        print(item['user_id'])
+
     return render_template('question.html', show_question=show_question,
                            show_answers=show_answers,
                            question_id=question_id, len_answers=len_answers,
@@ -343,14 +346,14 @@ def add_tag_to_questions(question_id):
 
     if request.method == 'POST':
         tags_by_qs_id = database_manager.get_tags_by_qs_id(question_id)
+        list_of_tags_from_question = [tag['name'] for tag in tags_by_qs_id]
         chosen_tag = request.form.get('choose-tag')
 
         inserted_tag = request.form.get('insert-tag')
         inserted_tag = inserted_tag.lower()
 
-        list_of_tags_from_question = [tag['name'] for tag in tags_by_qs_id]
-
-        if chosen_tag not in list_of_tags_from_question:
+        if chosen_tag not in list_of_tags_from_question and inserted_tag not in list_of_tags_from_question:
+            print("")
 
             if "insert-tag" in request.form:
                 if inserted_tag == "" or inserted_tag.isspace():
@@ -482,7 +485,6 @@ def search_question():
 @app.route('/tags')
 def list_tags():
     tags_details_obj = database_users_manager.get_all_tags_and_count_of_tags()
-    print(tags_details_obj)
     return render_template('list-tags.html', tags_details_obj=tags_details_obj)
 
 
