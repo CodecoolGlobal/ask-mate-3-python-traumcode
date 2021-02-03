@@ -175,8 +175,7 @@ def ad_tag_in_question_tag(cursor: RealDictCursor, tag, question_id):
     query = """
             INSERT INTO question_tag (tag_id, question_id) 
             VALUES ((SELECT id FROM tag WHERE name = %(tag)s), %(question_id)s)
-            ON CONFLICT ON CONSTRAINT pk_question_tag_id
-            DO NOTHING"""
+            """
 
     cursor.execute(query, {'tag': tag,
                            'question_id': question_id})
@@ -190,6 +189,17 @@ def delete_tag(cursor: RealDictCursor, question_id, tag_id):
 
     cursor.execute(query, {'question_id': question_id,
                            'tag_id': tag_id})
+
+
+@database_common.connection_handler
+def get_tags_by_qs_id(cursor: RealDictCursor, question_id):
+    query = f"""SELECT name from tag
+    INNER JOIN question_tag on
+    tag.id = question_tag.tag_id
+    where question_id = {question_id}"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
 
 
 @database_common.connection_handler

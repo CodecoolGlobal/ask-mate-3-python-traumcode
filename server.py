@@ -339,31 +339,39 @@ def vote_down_answer(answer_id):
 @login_required
 def add_tag_to_questions(question_id):
     all_tags = database_manager.get_all_tags()
-    list_of_tags = [tag['name'] for tag in all_tags]
+    list_of_tags_from_database = [tag['name'] for tag in all_tags]
 
     if request.method == 'POST':
+        tags_by_qs_id = database_manager.get_tags_by_qs_id(question_id)
         chosen_tag = request.form.get('choose-tag')
+
         inserted_tag = request.form.get('insert-tag')
         inserted_tag = inserted_tag.lower()
 
-        if "insert-tag" in request.form:
-            if inserted_tag == "" or inserted_tag.isspace():
-                pass
-            elif inserted_tag in list_of_tags:
-                database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
-            else:
-                database_manager.add_tag(inserted_tag)
-                database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
+        list_of_tags_from_question = [tag['name'] for tag in tags_by_qs_id]
 
-        if "choose-tag" in request.form:
-            if chosen_tag in list_of_tags:
-                database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
-            else:
-                database_manager.add_tag(chosen_tag)
-                database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
+        if chosen_tag not in list_of_tags_from_question:
+
+            if "insert-tag" in request.form:
+                if inserted_tag == "" or inserted_tag.isspace():
+                    pass
+                elif inserted_tag in list_of_tags_from_database:
+                    database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
+                else:
+                    database_manager.add_tag(inserted_tag)
+                    database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
+
+            if "choose-tag" in request.form:
+                if chosen_tag in list_of_tags_from_database:
+                    database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
+                else:
+                    database_manager.add_tag(chosen_tag)
+                    database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
+        else:
+            flash('This tag already exists!!!')
 
         return redirect(url_for('display_question', question_id=question_id))
-    return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags)
+    return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags_from_database)
 
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete', methods=['GET', 'POST'])
@@ -469,6 +477,13 @@ def search_question():
     return render_template('search-results.html', search_results=search_results,
                            answer_question_id=answer_question_id,
                            message=message, phrase=phrase)
+
+
+@app.route('/tags')
+def list_tags():
+    tags_details_obj = database_users_manager.get_all_tags_and_count_of_tags()
+    print(tags_details_obj)
+    return render_template('list-tags.html', tags_details_obj=tags_details_obj)
 
 
 @app.errorhandler(404)

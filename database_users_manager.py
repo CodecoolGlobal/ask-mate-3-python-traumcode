@@ -155,3 +155,17 @@ def valid_invalid_answer(cursor: RealDictCursor, answer_id, validation):
     WHERE id = {answer_id}"""
 
     cursor.execute(query)
+
+
+@database_common.connection_handler
+def get_all_tags_and_count_of_tags(cursor: RealDictCursor):
+    query = """
+    SELECT name, count(question_tag.question_id) as number_ques from tag
+    INNER JOIN question_tag on
+    tag.id = question_tag.tag_id
+    group by name;"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+

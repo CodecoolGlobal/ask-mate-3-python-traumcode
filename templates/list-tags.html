@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Tags
+{% endblock %}
+
+
+{% block body %}
+    <h1>Tags</h1>
+    {% for detail in tags_details_obj %}
+        {{ detail['name'] }}
+        {{ detail['number_ques'] }}<br>
+    {% endfor %}
+{% endblock %}

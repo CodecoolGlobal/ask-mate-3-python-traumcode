@@ -36,7 +36,9 @@
             {% else %}
                 <li><a href="{{ url_for('login_page') }}">Log in</a></li>
                 <li><a href="{{ url_for('registration_page') }}">Sign up</a></li>
+                <li><a href="{{ url_for('list_tags') }}">Tags</a></li>
             {% endif %}
+                 <li><a href="{{ url_for('list_tags') }}">Tags</a></li>
             {% for message in get_flashed_messages() %}
                 <li>{{ message }}</li>
             {% endfor %}
