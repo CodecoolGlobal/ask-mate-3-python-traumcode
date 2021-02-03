@@ -57,8 +57,16 @@ def login_forbidden(func):
 @login_required
 def show_users():
     all_users = database_users_manager.get_all_users_details()
-    questions = database_users_manager.count_question_for_all_users()
-    return render_template('users-list.html', all_users=all_users, questions=questions)
+    count_a = database_users_manager.count_answer()
+
+    for user in all_users:
+        for count in count_a:
+            if user['id'] == count['id']:
+                count_ans = count['answer_count']
+                details = user
+                print(details, count_ans)
+
+    return render_template('users-list.html', all_users=all_users)
 
 
 @app.route("/registration")

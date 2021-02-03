@@ -36,13 +36,14 @@ def get_all_users_details(cursor: RealDictCursor) -> list:
 
 
 @database_common.connection_handler
-def count_question_for_all_users(cursor: RealDictCursor) -> list:
-    query = """
-    SELECT users.username, users.email, users.image, users.registration_date,
-       count(q.user_id) as asked_question
-    FROM users
-    LEFT JOIN question q on users.id = q.user_id
-    GROUP BY users.username, users.email, users.image, users.registration_date """
-
+def get_all_users_stories(cursor: RealDictCursor):
+    query = """ 
+    select  u.id, u.username, u.registration_date,count (distinct q.id) as count_questions, count (distinct a.id) as count_answers, count (distinct c.id) as count_comments
+    from users u
+    left join question q on u.id = q.user_id
+    left join answer a on u.id = a.user_id
+    left join comment c on u.id = c.user_id
+    group by  u.id
+            """
     cursor.execute(query)
     return cursor.fetchall()
