@@ -234,8 +234,9 @@ def get_comments_for_question(cursor: RealDictCursor, question_id):
 @database_common.connection_handler
 def add_comment_for_answer(cursor: RealDictCursor, new_comment):
     query = """
-            INSERT INTO comment (answer_id, message, submission_time, edited_count) VALUES (%s, %s, %s, 0);"""
-    cursor.execute(query, (new_comment['answer_id'],
+            INSERT INTO comment (user_id, answer_id, message, submission_time, edited_count) VALUES (%s, %s, %s, %s, 0);"""
+    cursor.execute(query, (new_comment['user_id'],
+                           new_comment['answer_id'],
                            new_comment['new-comment'],
                            new_comment['submission_time']))
 

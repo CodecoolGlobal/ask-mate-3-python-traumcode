@@ -161,8 +161,6 @@ def display_question(question_id):
     for answer in show_answers:
         answer['comments'] = database_manager.get_comments_for_answer(answer['id'])
 
-    print(show_answers)
-
     return render_template('question.html', show_question=show_question,
                            show_answers=show_answers,
                            question_id=question_id, len_answers=len_answers,
@@ -397,6 +395,7 @@ def add_comments_to_answer(answer_id):
     elif request.method == 'POST':
         dt = datetime.now()
         new_comment_for_a = dict(request.form)
+        new_comment_for_a['user_id'] = session['id']
         new_comment_for_a['answer_id'] = answer_id
         new_comment_for_a['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
         new_comment_for_a['new-comment'] = new_comment_for_a['new-comment'].capitalize()

@@ -11,15 +11,15 @@
 <body>
 
 <header class="header">
-    <div class="content-wrapper">
+    <div class="header-logo-wrapper">
         <div class="about">
-            <div class="navbar-header"><h1 class="headers-color"><img alt="image from user" class="logo-image"
-                                                                      src="{{ url_for('static', filename='/images/patch-question.svg') }}">&nbsp<a
-                    class="headers-color" href="/">Ask Mate</a></h1></div>
+            <div class="navbar-header"><h1 class="header-h1"><img alt="image from user" class="logo-image"
+                                                                  src="{{ url_for('static', filename='/images/patch-question.svg') }}">&nbsp<a
+                    class="header-h1" href="/">Ask Mate</a></h1></div>
         </div>
     </div>
     <nav class="after-header">
-        <ul class="after-header-gray">
+        <ul class="after-header-wrapper">
             <li><a class="" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img
                     alt="image from user" src="{{ url_for('static', filename='/images/cloud-plus.svg') }}"></span></a>
             </li>
