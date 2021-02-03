@@ -30,7 +30,9 @@
                 </form>
             </li>
             {% if 'id' in session %}
-            <li><a href="{{ url_for('logout') }}">Log out</a></li>
+                <li><a href="{{ url_for('show_profile', user_id=session['id']) }}">Profile</a></li>
+                <li><a href="{{ url_for('show_users') }}">Users</a></li>
+                <li><a href="{{ url_for('logout') }}">Log out</a></li>
             {% else %}
                 <li><a href="{{ url_for('login_page') }}">Log in</a></li>
                 <li><a href="{{ url_for('registration_page') }}">Sign up</a></li>

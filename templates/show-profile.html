@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+
+{% block body %}
+    {% for details in show_details %}
+        {{ details.id }}
+        {{ details.username }}
+        {{ details.registration_date }}
+        {{ details.asked_question }}
+        {{ details.answers }}
+        {{ details.comments }}
+        {{ details.reputation }}
+    {% endfor %}
+
+{% endblock %}

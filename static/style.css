@@ -382,8 +382,31 @@ figure {
 
 }
 
+.avatar {
+    vertical-align: middle;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
 
+/* Color Theme Swatches in Hex */
+.Tema-colore-2-1-hex { color: #D99C9C; }
+.Tema-colore-2-2-hex { color: #D0D8DA; }
+.Tema-colore-2-3-hex { color: #F2F2F2; }
+.Tema-colore-2-4-hex { color: #596C73; }
+.Tema-colore-2-5-hex { color: #DDC3C1; }
 
+/* Color Theme Swatches in RGBA */
+.Tema-colore-2-1-rgba { color: rgba(217, 156, 156, 1); }
+.Tema-colore-2-2-rgba { color: rgba(208, 216, 218, 1); }
+.Tema-colore-2-3-rgba { color: rgba(242, 242, 242, 1); }
+.Tema-colore-2-4-rgba { color: rgba(89, 108, 115, 1); }
+.Tema-colore-2-5-rgba { color: rgba(221, 195, 193, 1); }
 
-
+/* Color Theme Swatches in HSLA */
+.Tema-colore-2-1-hsla { color: hsla(0, 44, 73, 1); }
+.Tema-colore-2-2-hsla { color: hsla(191, 11, 83, 1); }
+.Tema-colore-2-3-hsla { color: hsla(0, 0, 94, 1); }
+.Tema-colore-2-4-hsla { color: hsla(196, 12, 40, 1); }
+.Tema-colore-2-5-hsla { color: hsla(4, 29, 81, 1); }
 

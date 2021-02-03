@@ -57,8 +57,14 @@ def login_forbidden(func):
 @login_required
 def show_users():
     all_users = database_users_manager.get_all_users_details()
-    questions = database_users_manager.count_question_for_all_users()
-    return render_template('users-list.html', all_users=all_users, questions=questions)
+    return render_template('users-list.html', all_users=all_users)
+
+
+@app.route("/user/<int:user_id>")
+@login_required
+def show_profile(user_id):
+    show_details = database_users_manager.get_user_details_by_user_id(user_id)
+    return render_template('show-profile.html', user_id=user_id, show_details=show_details)
 
 
 @app.route("/registration")
@@ -264,6 +270,7 @@ def delete_answer(answer_id):
 @login_required
 def vote_up_question(question_id):
     database_manager.vote_up_down_question(question_id, "up")
+    database_users_manager.gain_lose_reputation_on_question(database_users_manager.get_user_id_by_question_id(question_id), 'up')
     return redirect(request.referrer)
 
 
@@ -271,6 +278,7 @@ def vote_up_question(question_id):
 @login_required
 def vote_down_question(question_id):
     database_manager.vote_up_down_question(question_id, "down")
+    database_users_manager.gain_lose_reputation_on_question(database_users_manager.get_user_id_by_question_id(question_id), 'down')
     return redirect(request.referrer)
 
 
@@ -282,6 +290,7 @@ def vote_up_answer(answer_id):
     question_id = question_obj['question_id']
 
     database_manager.vote_up_down_answer(answer_id, "up")
+    database_users_manager.gain_lose_reputation_on_answer(database_users_manager.get_user_id_by_answer_id(answer_id), 'up')
 
     return redirect(url_for('display_question', question_id=question_id))
 
@@ -294,6 +303,7 @@ def vote_down_answer(answer_id):
     question_id = question_obj['question_id']
 
     database_manager.vote_up_down_answer(answer_id, "down")
+    database_users_manager.gain_lose_reputation_on_answer(database_users_manager.get_user_id_by_answer_id(answer_id), 'down')
 
     return redirect(url_for('display_question', question_id=question_id))
 

@@ -7,6 +7,6 @@
 
 {% block body %}
     {% for user in all_users %}
-        {{ user.username }}
+        {% if user.image %}<figure><a href="{{ url_for('static', filename='images/' + user.image) }}" target="_blank"> <img class="avatar" alt="image from user" src="{{url_for('static', filename='images/' + user.image) }}" height="150"></a></figure>{% else %}<figure></figure>{% endif %} - <a href="{{ url_for('show_profile', user_id=user.id) }}">{{ user.username }}</a> - {{ user.email }} - {{ user.registration_date }} - {{ user.question_asked }} - {{ user.answers }} - {{ user.comments }} - {{ user.reputation }}<br>
     {% endfor %}
 {% endblock %}
