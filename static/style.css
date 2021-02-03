@@ -332,6 +332,7 @@ figure {
     height: 50px;
     border-radius: 50%;
 }
+
 .profile-avatar {
     vertical-align: middle;
     width: 200px;
@@ -344,6 +345,14 @@ figure {
     margin-left: auto;
     margin-right: auto;
     width: 50%;
+    text-align: center;
+}
+
+.box-card-profile {
+    margin: 0 auto;
+    width: 70%;
+    text-align: left;
+    line-height: 1.5;
 }
 
 .main-card-profile {
@@ -356,14 +365,18 @@ figure {
 
 .main-card-profile > .copilul {
     overflow: hidden;
-    width: 50%;
+    width: 100%;
     background-color: white;
     padding: 1rem;
     margin: 10px auto;
     border-radius: 0.25rem;
     box-shadow: 0 20px 20px -10px rgba(0,0,0,0.25);
-    text-align: left;
     line-height: 1.5;
+}
+
+.profile-details-card {
+    text-align: left;
+    padding-top: 80px;
 }
 
 /* Color Theme Swatches in Hex */
