@@ -388,6 +388,13 @@ figure {
     height: 50px;
     border-radius: 50%;
 }
+.profile-avatar {
+    vertical-align: middle;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+}
+
 
 /* Color Theme Swatches in Hex */
 .Tema-colore-2-1-hex { color: #D99C9C; }

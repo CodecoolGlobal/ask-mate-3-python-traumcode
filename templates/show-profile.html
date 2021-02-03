@@ -7,6 +7,7 @@
 
 {% block body %}
     {% for details in show_details %}
+        {% if details.image %}<figure> <img class="profile-avatar" alt="image from user" src="{{url_for('static', filename='images/' + details.image) }}" height="150"></figure>{% else %}<figure></figure>{% endif %}
         {{ details.id }}
         {{ details.username }}
         {{ details.registration_date }}

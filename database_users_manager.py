@@ -29,7 +29,7 @@ def get_user_details(cursor: RealDictCursor, email):
 @database_common.connection_handler
 def get_user_details_by_user_id(cursor: RealDictCursor, user_id):
     query = f"""
-    SELECT u.id, u.username, u.registration_date, u.reputation,
+    SELECT u.id, u.username, u.registration_date, u.reputation, u.image,
     count(distinct q.id) as asked_question,
     count(distinct a.id) as answers,
     count(distinct c.id) as comments
@@ -135,5 +135,23 @@ def gain_lose_reputation_on_answer(cursor: RealDictCursor, user_id, action):
         query = f"""
         UPDATE users SET reputation = reputation - 2
         WHERE id = '{user_id}'"""
+
+    cursor.execute(query)
+
+
+@database_common.connection_handler
+def gain_reputation_on_accepted_answer(cursor: RealDictCursor, user_id):
+    query = f"""
+    UPDATE users SET reputation = reputation + 15
+    WHERE id = '{user_id}'"""
+
+    cursor.execute(query)
+
+
+@database_common.connection_handler
+def valid_invalid_answer(cursor: RealDictCursor, answer_id, validation):
+    query = f"""
+    UPDATE answer SET accepted = {validation}
+    WHERE id = {answer_id}"""
 
     cursor.execute(query)

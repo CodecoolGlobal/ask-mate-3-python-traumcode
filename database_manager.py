@@ -82,8 +82,8 @@ def delete_question(cursor: RealDictCursor, question_id):
 @database_common.connection_handler
 def add_answer(cursor: RealDictCursor, question_id, new_answer) -> list:
     query = """
-    INSERT INTO answer (user_id, submission_time, vote_number, question_id, message, image) 
-    VALUES (%s, %s, 0, %s, %s, %s) """
+    INSERT INTO answer (user_id, submission_time, vote_number, question_id, message, image, accepted) 
+    VALUES (%s, %s, 0, %s, %s, %s, FALSE) """
 
     cursor.execute(query, (new_answer['user_id'],
                            new_answer['submission_time'],

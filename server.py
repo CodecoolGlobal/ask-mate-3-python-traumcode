@@ -273,6 +273,26 @@ def delete_answer(answer_id):
         return redirect(url_for('display_question', question_id=question_id, answer_id=answer_id))
 
 
+@app.route('/answer/<int:answer_id>', methods=['POST'])
+@login_required
+def valid_invalid_answer(answer_id):
+    user_id_by_answer = database_users_manager.get_user_id_by_answer_id(answer_id)
+    question_id = database_manager.get_question_id_for_answer(answer_id)['question_id']
+    user_id_by_question = database_users_manager.get_user_id_by_question_id(question_id)
+    if user_id_by_answer != session['id'] and user_id_by_question == session['id']:
+        validation = request.form['validation']
+        database_users_manager.valid_invalid_answer(answer_id, validation)
+        if validation == 'true':
+            database_users_manager.gain_reputation_on_accepted_answer(user_id_by_answer)
+        return redirect(url_for('display_question', question_id=question_id))
+    else:
+        if user_id_by_answer == session['id']:
+            flash("You cannot accept your own answer")
+        else:
+            flash("You cannot accept answer on others questions")
+        return redirect(url_for('display_question', question_id=question_id))
+
+
 @app.route('/question/<int:question_id>/vote_up', methods=['POST'])
 @login_required
 def vote_up_question(question_id):
