@@ -40,32 +40,45 @@
 
             </div>
 
-
-            <div class="container-for-buttons"><br>
-                <div class="question-buttons1">
-                    <a class="text-decoration2" href="{{ url_for('edit_question', question_id=question_id) }}">Edit this
-                        question</a>
+            {% for question in show_question %}
+                <div class="container-for-buttons"><br>
+                    {% if session['id'] == question.user_id %}
+                        <div class="question-buttons1">
+                            <a class="links-decoration2" href="{{ url_for('edit_question', question_id=question_id) }}">Edit
+                                this
+                                question</a>
+                        </div>
+                        <div class="question-buttons2">
+                            <form action="{{ url_for('delete_question', question_id=question_id) }}" method="POST">
+                                <button class="submit-button" type="submit">Delete Question!</button>
+                            </form>
+                        </div>
+                        <div class="question-buttons3">
+                            <a class="links-decoration2"
+                               href="{{ url_for('add_tag_to_questions', question_id=question_id) }}">Add
+                                tag</a>
+                        </div>
+                        <div>
+                            <a class="links-decoration2"
+                               href="{{ url_for('add_comment_to_question', question_id=question_id) }}">Add comment</a>
+                        </div>
+                        <div class="question-button4">
+                            <a class="links-decoration2" href="{{ url_for('add_answer', question_id=question_id) }}">Add
+                                answer</a>
+                        </div>
+                    {% else %}
+                        <div class="question-buttons1">
+                            <a class="links-decoration2"
+                               href="{{ url_for('add_comment_to_question', question_id=question_id) }}">Add comment</a>
+                        </div>
+                        <div class="question-buttons2">
+                            <a class="links-decoration2" href="{{ url_for('add_answer', question_id=question_id) }}">Add
+                                answer</a>
+                        </div>
+                    {% endif %}
                 </div>
-                <div class="question-buttons2">
-                    <form action="{{ url_for('delete_question', question_id=question_id) }}" method="POST">
-                        <button class="submit-button" type="submit">Delete Question!</button>
-                    </form>
-                </div>
-                <div class="question-buttons3">
-                    <a class="text-decoration2" href="{{ url_for('add_answer', question_id=question_id) }}">Add
-                        answer</a>
-                </div>
-                <div>
-                    <a class="text-decoration2"
-                       href="{{ url_for('add_comment_to_question', question_id=question_id) }}">Add comment</a>
-                </div>
-                <div class="question-button4">
-                    <a class="text-decoration2" href="{{ url_for('add_tag_to_questions', question_id=question_id) }}">Add
-                        tag</a>
-                </div>
-
-            </div>
-            <hr>
+                <hr>
+            {% endfor %}
 
             <div class="container-comments-for-question">
                 {% for comment in comments_for_question %}
@@ -78,9 +91,10 @@
                             <small>{{ comment['submission_time'] }}</small>
                         </div>
                     </div>
-                    <div class="container-for-buttons"><br>
+                    {% if comment['user_id'] == session['id'] %}
+                        <div class="container-for-buttons"><br>
                         <div class="question-buttons1">
-                            <a class="text-decoration2" href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit
+                            <a class="links-decoration2" href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit
                                 Comment</a>
                         </div>
                         <div class="question-buttons2">
@@ -88,8 +102,8 @@
                                 <button class="submit-button" type="submit">Delete Comment!</button>
                             </form>
                         </div>
-
-                    </div>
+                    {% endif %}
+                </div>
                     <hr>
 
                 {% endfor %}
@@ -139,17 +153,26 @@
                 </form>
 
                 <div class="container-for-buttons">
-                    <div>
-                        <a class="text-decoration2" href="{{ url_for('edit_answer', answer_id=item.id) }}">Edit
-                            answer</a>
-                    </div>
-                    <div>
-                        <a class="text-decoration2" href="{{ url_for('add_comments_to_answer', answer_id=item.id) }}">Add
-                            comment</a>
-                    </div>
-                    <form action="{{ url_for('delete_answer', answer_id=item.id) }}" method="POST">
-                        <button class="submit-button" type="submit">Delete this answer!</button>
-                    </form>
+                    {% if session['id'] == item.user_id %}
+                        <div>
+                            <a class="links-decoration2"
+                               href="{{ url_for('add_comments_to_answer', answer_id=item.id) }}">Add
+                                comment</a>
+                        </div>
+                        <div>
+                            <a class="links-decoration2" href="{{ url_for('edit_answer', answer_id=item.id) }}">Edit
+                                answer</a>
+                        </div>
+                        <form action="{{ url_for('delete_answer', answer_id=item.id) }}" method="POST">
+                            <button class="submit-button" type="submit">Delete this answer!</button>
+                        </form>
+                    {% else %}
+                        <div>
+                            <a class="links-decoration2"
+                               href="{{ url_for('add_comments_to_answer', answer_id=item.id) }}">Add
+                                comment</a>
+                        </div>
+                    {% endif %}
                 </div>
                 <hr>
                 <div class="container-comments-for-question">
@@ -163,19 +186,21 @@
                                 <small>{{ comment['submission_time'] }}</small>
                             </div>
                         </div>
+                        {% if session['id'] == comment.user_id %}
+                            <div class="container-for-buttons"><br>
+                                <div class="question-buttons1">
+                                    <a class="links-decoration2"
+                                       href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit Comment</a>
+                                </div>
+                                <div class="question-buttons2">
+                                    <form action="{{ url_for('delete_comment', comment_id=comment['id']) }}"
+                                          method="POST">
+                                        <button class="submit-button" type="submit">Delete Comment!</button>
+                                    </form>
+                                </div>
 
-                        <div class="container-for-buttons"><br>
-                            <div class="question-buttons1">
-                                <a class="text-decoration2"
-                                   href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit Comment</a>
                             </div>
-                            <div class="question-buttons2">
-                                <form action="{{ url_for('delete_comment', comment_id=comment['id']) }}" method="POST">
-                                    <button class="submit-button" type="submit">Delete Comment!</button>
-                                </form>
-                            </div>
-
-                        </div>
+                        {% endif %}
                         <hr>
                     {% endfor %}
                 </div>

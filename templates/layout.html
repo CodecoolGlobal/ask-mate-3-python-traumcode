@@ -4,7 +4,8 @@
     <title>{% block title %}{% endblock %}</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet">
 
 </head>
 <body>
@@ -14,7 +15,7 @@
         <div class="about">
             <div class="navbar-header"><h1 class="headers-color"><img alt="image from user" class="logo-image"
                                                                       src="{{ url_for('static', filename='/images/patch-question.svg') }}">&nbsp<a
-                    class="text-decoration2" href="/">Ask Mate</a></h1></div>
+                    class="headers-color" href="/">Ask Mate</a></h1></div>
         </div>
     </div>
     <nav class="after-header">
@@ -32,12 +33,14 @@
             {% if 'id' in session %}
                 <li><a href="{{ url_for('show_profile', user_id=session['id']) }}">Profile</a></li>
                 <li><a href="{{ url_for('show_users') }}">Users</a></li>
+                <li><a href="{{ url_for('list_tags') }}">Tags</a></li>
                 <li><a href="{{ url_for('logout') }}">Log out</a></li>
             {% else %}
+                <li><a href="{{ url_for('list_tags') }}">Tags</a></li>
                 <li><a href="{{ url_for('login_page') }}">Log in</a></li>
                 <li><a href="{{ url_for('registration_page') }}">Sign up</a></li>
             {% endif %}
-        <li><a href="{{ url_for('list_tags') }}">Tags</a></li>
+
             {% for message in get_flashed_messages() %}
                 <li>{{ message }}</li>
             {% endfor %}

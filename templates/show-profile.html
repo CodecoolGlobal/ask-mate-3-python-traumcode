@@ -6,28 +6,46 @@
 
 
 {% block body %}
-    {% for details in show_details %}
-        {% if details.image %}<figure> <img class="profile-avatar" alt="image from user" src="{{url_for('static', filename='images/' + details.image) }}" height="150"></figure>{% else %}<figure></figure>{% endif %}
-        {{ details.id }}
-        {{ details.username }}
-        {{ details.registration_date }}
-        {{ details.asked_question }}
-        {{ details.answers }}
-        {{ details.comments }}
-        {{ details.reputation }}
-    {% endfor %}
-    Questions:
-    {% for question in questions %}
-        {{ question.submission_time }}
-        {{ question.title }} - {{ question.message }} - {{ question.vote_number }} - {{ question.view_number }}
-    {% endfor %}
-    Answers:
-    {% for answer in answers %}
-        {{ answer.message }} - {{ answer.submission_time }} - {{ answer.vote_number }}
-    {% endfor %}
-    Comments:
-    {% for comment in comments %}
-        {{ comment.message }} - {{ comment.submission_time }}
-    {% endfor %}
-
+    <div class="box">
+        <div class="main-card-profie">
+            {% for details in show_details %}
+                {% if details.image %}
+                    <div class="image-card">
+                        <figure><img class="profile-avatar" alt="image from user"
+                                     src="{{ url_for('static', filename='images/' + details.image) }}" height="150">
+                        </figure>
+                    </div>
+                {% else %}
+                    <figure></figure>{% endif %}
+                <div class="profile-details-card">
+                    Registered: {{ details.registration_date }}
+                    Username: {{ details.username }}
+                    Questions: {{ details.asked_question }}
+                    Answers: {{ details.answers }}
+                    Comments: {{ details.comments }}
+                    Reputation: {{ details.reputation }}
+                </div>
+            {% endfor %}
+            <div class="profile-questions-answers-comments-card">
+                Questions:
+                {% for question in questions %}
+                    {{ question.submission_time }}
+                    {{ question.title }} - {{ question.message }} - {{ question.vote_number }} -
+                    {{ question.view_number }}
+                {% endfor %}
+            </div>
+            <div class="profile-questions-answers-comments-card">
+                Answers:
+                {% for answer in answers %}
+                    {{ answer.message }} - {{ answer.submission_time }} - {{ answer.vote_number }}
+                {% endfor %}
+            </div>
+            <div class="profile-questions-answers-comments-card">
+                Comments:
+                {% for comment in comments %}
+                    {{ comment.message }} - {{ comment.submission_time }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

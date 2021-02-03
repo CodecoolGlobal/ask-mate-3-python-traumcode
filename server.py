@@ -67,6 +67,7 @@ def show_profile(user_id):
     questions = database_users_manager.get_all_user_questions(user_id)
     answers = database_users_manager.get_all_user_answers(user_id)
     comments = database_users_manager.get_all_user_comments(user_id)
+    show_details['submission_time'] =
     return render_template('show-profile.html', user_id=user_id,
                            show_details=show_details,
                            questions=questions,
@@ -148,6 +149,7 @@ def list_page():
 
 @app.route("/question/<int:question_id>")
 def display_question(question_id):
+
     show_question = database_manager.display_question(question_id)
     if not show_question:
         abort(404)
@@ -159,6 +161,8 @@ def display_question(question_id):
 
     for answer in show_answers:
         answer['comments'] = database_manager.get_comments_for_answer(answer['id'])
+
+    print(show_answers)
 
     return render_template('question.html', show_question=show_question,
                            show_answers=show_answers,

@@ -9,12 +9,21 @@ html {
 }
 
 body {
-  background-color: #efefef;
+  background-color: #FFFBD8;
   font-family: "Dosis", sans-serif; 
   font-weight: 500;
   font-size: 1.125rem;
+    line-height: 1.5;
   color: black;
   margin: 0;
+}
+
+p {
+    color: rgba(22,22,22,0.87);
+}
+
+small {
+   color: rgba(22,22,22,0.87);
 }
 
 
@@ -22,13 +31,13 @@ body {
 text-decoration: none;
 }
 
-.text-decoration2:hover {
+.links-decoration2:hover {
   text-decoration: none;
-  color: #4ac8ad
+  color: #FED15A
 }
-.text-decoration2 {
+.links-decoration2 {
   text-decoration: none;
-  color: #4ac8ad
+  color: #BA4937
 }
 
 .text-decoration-return-button {
@@ -70,13 +79,6 @@ margin-top: 3.125rem;
     padding-left: 40%;
 }
 
-.navbar2 {
-  grid-column: 1 / 4;
-  grid-row: 1 / 2;
-  background-color: #88eed8;
-  height: 20%;
-  text-align: right;
-}
 
 .navbar {
   display: grid;
@@ -122,9 +124,10 @@ margin-top: 3.125rem;
 
 
 .headers-color {
-  color: #4ac8ad;
-  text-align: left;
-  font-size: 50px;
+    color: #FFFBD8;
+    text-align: left;
+    font-size: 50px;
+    font-family: "Montserrat";
 }
 
 .logo-image {
@@ -172,8 +175,9 @@ text-align: left;
 
 
 .submit-button {
-  font-size: 16px;
-  color: #4ac8ad;
+    font-size: 16px;
+    color: #BA4937;
+    background-color: #FFFBD8;
 
 }
 
@@ -184,13 +188,13 @@ border-radius: 5px;
 
 
 .submit-button-tag {
-  font-size: 16px;
-  color: #4ac8ad;
-
+    font-size: 16px;
+    color: #BA4937;
+    background-color: #FFFBD8;
 }
 
 .submit-button-tag:hover{
-border: 1px solid #4ac8ad;
+border: 1px solid #BA4937;
 border-radius: 5px;
 }
 
@@ -243,15 +247,14 @@ a {
 
 
 .header {
-    background-color: #39484f;
+    background-color: #BA4937;
     padding: .5rem 0 0 0;
     margin: 0;
     color: #fff;
 }
 
 .after-header {
-    border-bottom: 1px solid #222;
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: #FED15A;
     margin-bottom: 20px;
 
 }
@@ -271,8 +274,6 @@ a {
     padding: 0;
     display: flex;
     align-items: center;
-
-
 }
 
 .after-header .after-header-gray a:link, .after-header .after-header-gray a:visited {
@@ -280,8 +281,11 @@ a {
     display: block;
     padding: .5rem 2rem;
     margin: 0;
-    font-weight: bold;
-    color: #000;
+    color: #BA4937;
+}
+
+.after-header .after-header-gray a:hover {
+    color: #FFFBD8;
 }
 
 a {
@@ -333,7 +337,7 @@ figure {
     padding: 1rem;
     margin: 10px auto;
     border-radius: 0.25rem;
-    box-shadow: 0 20px 40px -14px rgba(0,0,0,0.25);
+    box-shadow: 0 20px 20px -10px rgba(0,0,0,0.25);
     text-align: left;
     line-height: 1.5;
 
@@ -397,23 +401,23 @@ figure {
 
 
 /* Color Theme Swatches in Hex */
-.Tema-colore-2-1-hex { color: #D99C9C; }
-.Tema-colore-2-2-hex { color: #D0D8DA; }
-.Tema-colore-2-3-hex { color: #F2F2F2; }
-.Tema-colore-2-4-hex { color: #596C73; }
-.Tema-colore-2-5-hex { color: #DDC3C1; }
+.color-theme_PaletteFinal-1-hex { color: #165D63; }
+.color-theme_PaletteFinal-2-hex { color: #FFFBD8; }
+.color-theme_PaletteFinal-3-hex { color: #FED15A; }
+.color-theme_PaletteFinal-4-hex { color: #DA9D42; }
+.color-theme_PaletteFinal-5-hex { color: #BA4937; }
 
 /* Color Theme Swatches in RGBA */
-.Tema-colore-2-1-rgba { color: rgba(217, 156, 156, 1); }
-.Tema-colore-2-2-rgba { color: rgba(208, 216, 218, 1); }
-.Tema-colore-2-3-rgba { color: rgba(242, 242, 242, 1); }
-.Tema-colore-2-4-rgba { color: rgba(89, 108, 115, 1); }
-.Tema-colore-2-5-rgba { color: rgba(221, 195, 193, 1); }
+.color-theme_PaletteFinal-1-rgba { color: rgba(22, 93, 99, 1); }
+.color-theme_PaletteFinal-2-rgba { color: rgba(255, 251, 216, 1); }
+.color-theme_PaletteFinal-3-rgba { color: rgba(254, 209, 90, 1); }
+.color-theme_PaletteFinal-4-rgba { color: rgba(218, 157, 66, 1); }
+.color-theme_PaletteFinal-5-rgba { color: rgba(186, 73, 55, 1); }
 
 /* Color Theme Swatches in HSLA */
-.Tema-colore-2-1-hsla { color: hsla(0, 44, 73, 1); }
-.Tema-colore-2-2-hsla { color: hsla(191, 11, 83, 1); }
-.Tema-colore-2-3-hsla { color: hsla(0, 0, 94, 1); }
-.Tema-colore-2-4-hsla { color: hsla(196, 12, 40, 1); }
-.Tema-colore-2-5-hsla { color: hsla(4, 29, 81, 1); }
+.color-theme_PaletteFinal-1-hsla { color: hsla(184, 63, 23, 1); }
+.color-theme_PaletteFinal-2-hsla { color: hsla(53, 100, 92, 1); }
+.color-theme_PaletteFinal-3-hsla { color: hsla(43, 98, 67, 1); }
+.color-theme_PaletteFinal-4-hsla { color: hsla(35, 67, 55, 1); }
+.color-theme_PaletteFinal-5-hsla { color: hsla(8, 54, 47, 1); }
 
