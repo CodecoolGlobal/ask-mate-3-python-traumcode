@@ -15,5 +15,18 @@
         {{ details.comments }}
         {{ details.reputation }}
     {% endfor %}
+    Questions:
+    {% for question in questions %}
+        {{ question.submission_time }}
+        {{ question.title }} - {{ question.message }} - {{ question.vote_number }} - {{ question.view_number }}
+    {% endfor %}
+    Answers:
+    {% for answer in answers %}
+        {{ answer.message }} - {{ answer.submission_time }} - {{ answer.vote_number }}
+    {% endfor %}
+    Comments:
+    {% for comment in comments %}
+        {{ comment.message }} - {{ comment.submission_time }}
+    {% endfor %}
 
 {% endblock %}

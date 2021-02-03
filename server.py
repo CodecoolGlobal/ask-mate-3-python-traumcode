@@ -64,7 +64,14 @@ def show_users():
 @login_required
 def show_profile(user_id):
     show_details = database_users_manager.get_user_details_by_user_id(user_id)
-    return render_template('show-profile.html', user_id=user_id, show_details=show_details)
+    questions = database_users_manager.get_all_user_questions(user_id)
+    answers = database_users_manager.get_all_user_answers(user_id)
+    comments = database_users_manager.get_all_user_comments(user_id)
+    return render_template('show-profile.html', user_id=user_id,
+                           show_details=show_details,
+                           questions=questions,
+                           answers=answers,
+                           comments=comments)
 
 
 @app.route("/registration")

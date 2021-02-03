@@ -60,6 +60,36 @@ def get_all_users_details(cursor: RealDictCursor) -> list:
 
 
 @database_common.connection_handler
+def get_all_user_questions(cursor: RealDictCursor, user_id) -> list:
+    query = f"""
+    SELECT title, message, submission_time, view_number, vote_number FROM question
+    WHERE user_id = {user_id}"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_all_user_answers(cursor: RealDictCursor, user_id) -> list:
+    query = f"""
+    SELECT message, submission_time, vote_number FROM answer
+    WHERE user_id = {user_id}"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
+def get_all_user_comments(cursor: RealDictCursor, user_id) -> list:
+    query = f"""
+    SELECT message, submission_time FROM comment
+    WHERE user_id = {user_id}"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_user_id_by_question_id(cursor: RealDictCursor, question_id):
     query = f"""
     SELECT user_id FROM question
