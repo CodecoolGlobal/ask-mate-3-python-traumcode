@@ -12,13 +12,12 @@ Add tag
 
     <h1>Add tag</h1>
     <form action="{{ url_for('add_tag_to_questions', question_id=question_id) }}" method="POST">
-        <select id="choose-tag" name="choose-tag">
+        <input type="text" id="choose-tag" name="choose-tag" list="tags">
+        <datalist id="tags">
             {% for tag in list_of_tags %}
             <option value="{{ tag }}">{{ tag }}</option>
             {% endfor %}
-        </select><br><br>
-
-        <input id="insert-tag" type="text" name="insert-tag"><br><br>
+        </datalist><br><br>
         <button class="submit-button-tag" type="submit">Add tag</button>
     </form><br><br><br>
     <a class="text-decoration-return-button text-decoration" href="{{ url_for('display_question', question_id=question_id) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
