@@ -7,7 +7,7 @@
 
 body {
   background-color: #f2f0ee;
-  font-family: "Dosis", sans-serif; 
+  font-family: "Montserrat";
   font-weight: 500;
   font-size: 1.125rem;
     line-height: 1.5;
@@ -17,23 +17,43 @@ body {
 
 h2 {
     font-weight: normal;
+    font-family: Montserrat;
 }
 
 h3 {
     font-weight: normal;
+    font-family: Montserrat;
 }
 
+h4 {
+    font-weight: normal;
+    font-family: Montserrat;
+}
+
+h5 {
+    font-weight: normal;
+    font-family: Montserrat;
+}
 .header {
     background-color: #0b0c10;
     padding: .5rem 0 0 0;
     margin: 0;
     color: #ffffff;
+    height: 300px;
+    background: url("https://cdn.discordapp.com/attachments/779877697203601440/806877736563114043/3096110.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
 
+.header h1 {
+    text-align: center;
 }
 
 .after-header {
     background-color: #1f2833;
     margin-bottom: 20px;
+    margin-top: 90px;
 }
 
 .header-logo-wrapper {
@@ -90,7 +110,7 @@ text-decoration: none;
 
 .links-decoration2 {
   text-decoration: none;
-  color: #45a29e;
+  color: #46a29e;
 }
 
 .text-decoration-return-button {
@@ -133,10 +153,13 @@ margin-top: 3.125rem;
 .header-h1 {
     color: #FFFBD8;
     text-align: left;
-    font-size: 50px;
+    font-size: 100px;
     font-family: "Montserrat";
     font-weight: lighter;
+    margin: auto;
+    display: flex;
 }
+
 
 .logo-image {
   color: white;
@@ -379,14 +402,14 @@ figure {
 
 }
 
-.copilul {
+.main-card-profile-body {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     width:100%;
 }
 
-.copilul > .profile-questions-answers-comments-card {
+.main-card-profile-body > .profile-questions-answers-comments-card {
     overflow: hidden;
     width: 80%;
     background-color: #f2f0ee;
@@ -397,7 +420,7 @@ figure {
     line-height: 1.5;
 }
 
-.main-card-profile > .copilul {
+.main-card-profile > .main-card-profile-body {
     overflow: hidden;
     width: 100%;
     background-color: white;
@@ -423,6 +446,7 @@ figure {
     border-collapse: collapse;
     width: 100%;
     font-size: 15px;
+    font-family: Montserrat;
 }
 
 #users td, #users th {

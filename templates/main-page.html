@@ -35,10 +35,10 @@
         <div class="container-questions">
             <section class="questions">
                 <div class="title-question">
-                    <a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}">{{line.title}}</a>
+                    <a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}"><h3>{{line.title}}</h3></a>
                 </div>
                 <div class="message-question flexible">
-                    <p>{{line.message}}</p>
+                    <h5>{{line.message}}</h5>
                 </div>
                 <div class="submission-time">
                     <small>{{line.submission_time}}</small>
