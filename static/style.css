@@ -59,6 +59,7 @@ body {
 
 p {
     color: rgba(22,22,22,0.87);
+    word-wrap: break-word;
 }
 
 
@@ -159,7 +160,7 @@ text-align: left;
 }
 
 .submit-button {
-    font-size: 16px;
+    font-size: 19px;
     color: #BA4937;
     background-color: #FFFBD8;
 
@@ -283,9 +284,10 @@ figure {
 
 }
 
+/*#todo silviu si simina*/
 .grid-details {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr ;
     color: gray;
 }
 
