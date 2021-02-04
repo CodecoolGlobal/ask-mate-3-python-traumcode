@@ -42,6 +42,10 @@ def login_required(func):
     return wrap
 
 
+def owner_authorization_required(func):
+    pass
+
+
 def login_forbidden(func):
     @wraps(func)
     def wrap(*args, **kwargs):

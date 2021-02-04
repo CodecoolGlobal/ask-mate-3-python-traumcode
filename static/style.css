@@ -6,7 +6,7 @@
 
 
 body {
-  background-color: #FFFBD8;
+  background-color: #f2f0ee;
   font-family: "Dosis", sans-serif; 
   font-weight: 500;
   font-size: 1.125rem;
@@ -15,17 +15,25 @@ body {
   margin: 0;
 }
 
+h2 {
+    font-weight: normal;
+}
+
+h3 {
+    font-weight: normal;
+}
+
 .header {
-    background-color: #BA4937;
+    background-color: #0b0c10;
     padding: .5rem 0 0 0;
     margin: 0;
-    color: #fff;
+    color: #ffffff;
+
 }
 
 .after-header {
-    background-color: #FED15A;
+    background-color: #1f2833;
     margin-bottom: 20px;
-
 }
 
 .header-logo-wrapper {
@@ -43,6 +51,7 @@ body {
     padding: 0;
     display: flex;
     align-items: center;
+    font-family: "Montserrat";
 }
 
 .after-header .after-header-wrapper a:link, .after-header .after-header-wrapper a:visited {
@@ -50,11 +59,11 @@ body {
     display: block;
     padding: .5rem 2rem;
     margin: 0;
-    color: #BA4937;
+    color: #66fcf1;
 }
 
 .after-header .after-header-wrapper a:hover {
-    color: #FFFBD8;
+    color: #45a29e;
 }
 
 p {
@@ -75,13 +84,13 @@ text-decoration: none;
 
 .links-decoration2:hover {
   text-decoration: none;
-  color: #FED15A
+  color: #66fcf1;
 }
 
 
 .links-decoration2 {
   text-decoration: none;
-  color: #BA4937
+  color: #45a29e;
 }
 
 .text-decoration-return-button {
@@ -126,6 +135,7 @@ margin-top: 3.125rem;
     text-align: left;
     font-size: 50px;
     font-family: "Montserrat";
+    font-weight: lighter;
 }
 
 .logo-image {
@@ -137,7 +147,7 @@ margin-top: 3.125rem;
 
 .box {
     margin: 0 auto;
-    width: 50%;
+    width: 70%;
     text-align: left;
     line-height: 1.5;
   
@@ -146,7 +156,7 @@ margin-top: 3.125rem;
 
 .box-answers-comments {
 margin: 0 auto;
-width: 50%;
+width: 70%;
 text-align: left;
 
 }
@@ -160,27 +170,29 @@ text-align: left;
 }
 
 .submit-button {
-    font-size: 19px;
-    color: #BA4937;
-    background-color: #FFFBD8;
+    font-size: 18px;
+    color: #45a29e;
+    background-color: #f2f0ee;
 
 }
 
 .submit-button:hover{
-border: 1px solid red;
-border-radius: 5px;
+    border: 1px solid red;
+    border-radius: 5px;
+    color: #66fcf1;
 }
 
 
 .submit-button-tag {
     font-size: 16px;
-    color: #BA4937;
-    background-color: #FFFBD8;
+    color: #1f2833;
+    background-color: white;
+    font-family: "Montserrat";
 }
 
-.submit-button-tag:hover{
-border: 1px solid #BA4937;
-border-radius: 5px;
+.submit-button-tag:hover {
+    border: 1px solid #66fcf1;
+    font-size: 16px;
 }
 
 .margin-top {
@@ -278,7 +290,7 @@ figure {
     padding: 1rem;
     margin: 10px auto;
     border-radius: 0.25rem;
-    box-shadow: 0 20px 20px -10px rgba(0,0,0,0.25);
+    box-shadow: 10px 12px 10px -10px rgba(0, 0, 0, 0.25);
     text-align: left;
     line-height: 1.5;
 
@@ -336,18 +348,20 @@ figure {
 }
 
 .profile-avatar {
-    vertical-align: middle;
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
 }
 
-.image-card {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
+.image-and-details-card {
+    display: flex;
     text-align: center;
+}
+
+.image-card {
+    display: flex;
+    width: 40%;
+    flex-direction: column;
 }
 
 .box-card-profile {
@@ -365,6 +379,24 @@ figure {
 
 }
 
+.copilul {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width:100%;
+}
+
+.copilul > .profile-questions-answers-comments-card {
+    overflow: hidden;
+    width: 80%;
+    background-color: #f2f0ee;
+    padding: 1rem;
+    margin: 10px auto;
+    border-radius: 0.25rem;
+    box-shadow: 10px 12px 10px -10px rgba(0, 0, 0, 0.25);
+    line-height: 1.5;
+}
+
 .main-card-profile > .copilul {
     overflow: hidden;
     width: 100%;
@@ -372,33 +404,66 @@ figure {
     padding: 1rem;
     margin: 10px auto;
     border-radius: 0.25rem;
-    box-shadow: 0 20px 20px -10px rgba(0,0,0,0.25);
+    box-shadow: 10px 12px 10px -10px rgba(0, 0, 0, 0.25);
     line-height: 1.5;
 }
 
 .profile-details-card {
     text-align: left;
-    padding-top: 80px;
+    display: flex;
+    width: 80%;
+}
+
+.profile-details-card-arrange {
+    margin-right: 20%;
+}
+
+#users {
+    word-wrap: break-word;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 15px;
+}
+
+#users td, #users th {
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+#users tr:nth-child(even){background-color: #f2f0ee}
+/*#users tr:hover {background-color: #66fcf1}*/
+
+#users th {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    text-align: left;
+    background-color: #1f2833;
+    color: white;
+}
+
+
+.sign-up-log-in-button {
+    background-color: #49c5b6;
+    border: none;
+    color: white;
+    padding: 5px 50px;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size: 20px;
+    font-family: "Montserrat";
+    font-weight: lighter;
+}
+
+.page-titles {
+    font-weight: lighter;
+    font-family: "Montserrat";
+    text-align: center;
 }
 
 /* Color Theme Swatches in Hex */
-.color-theme_PaletteFinal-1-hex { color: #165D63; }
-.color-theme_PaletteFinal-2-hex { color: #FFFBD8; }
-.color-theme_PaletteFinal-3-hex { color: #FED15A; }
-.color-theme_PaletteFinal-4-hex { color: #DA9D42; }
-.color-theme_PaletteFinal-5-hex { color: #ba4937; }
-
-/* Color Theme Swatches in RGBA */
-.color-theme_PaletteFinal-1-rgba { color: rgba(22, 93, 99, 1); }
-.color-theme_PaletteFinal-2-rgba { color: rgba(255, 251, 216, 1); }
-.color-theme_PaletteFinal-3-rgba { color: rgba(254, 209, 90, 1); }
-.color-theme_PaletteFinal-4-rgba { color: rgba(218, 157, 66, 1); }
-.color-theme_PaletteFinal-5-rgba { color: rgba(186, 73, 55, 1); }
-
-/* Color Theme Swatches in HSLA */
-.color-theme_PaletteFinal-1-hsla { color: hsla(184, 63, 23, 1); }
-.color-theme_PaletteFinal-2-hsla { color: hsla(53, 100, 92, 1); }
-.color-theme_PaletteFinal-3-hsla { color: hsla(43, 98, 67, 1); }
-.color-theme_PaletteFinal-4-hsla { color: hsla(35, 67, 55, 1); }
-.color-theme_PaletteFinal-5-hsla { color: hsla(8, 54, 47, 1); }
+.color-theme_PaletteFinal-1-hex { color: #0b0c10; }
+.color-theme_PaletteFinal-2-hex { color: #1f2833; }
+.color-theme_PaletteFinal-3-hex { color: #ffffff; }
+.color-theme_PaletteFinal-4-hex { color: #66fcf1; }
+.color-theme_PaletteFinal-5-hex { color: #46a29e; }
 

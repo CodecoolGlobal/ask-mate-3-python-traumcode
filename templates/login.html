@@ -6,14 +6,21 @@
 
 
 {% block body %}
-    <form method="post">
-        <label for="email"></label>
-        <input type="email" name="email" id="email" required placeholder="Enter email">
-        <label for="password"></label>
-        <input type="password" name="password" id="password" required placeholder="Password">
-        <input type="submit">
-    </form>
-    {% for message in get_flashed_messages() %}
-        {{ message }}
-    {% endfor %}
+    <div class="box-card-profile">
+        <div class="main-card-profile">
+            <div class="copilul">
+                <h1 class="page-titles">Log in</h1>
+                <div style="margin: 0px auto">
+                    <form method="post">
+                        <label for="email"></label>
+                        <input type="email" name="email" id="email" required placeholder="Enter email"><br><br>
+                        <label for="password"></label>
+                        <input type="password" name="password" id="password" required placeholder="Password"><br><br>
+                        <input class="sign-up-log-in-button" style="padding: 5px 55px" type="submit" value="LOG IN">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
