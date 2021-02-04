@@ -13,7 +13,7 @@
             {% for question in show_question %}
                 <h2>{{ question.title }}</h2>
                 <hr>
-                <p>{{ question.message }}</p>
+                <p style="white-space: pre-wrap">{{ question.message }}</p>
 
                 {% if question.image %}
                     <figure><a href="{{ url_for('static', filename='images/' + question.image) }}" target="_blank"> <img
@@ -102,8 +102,9 @@
                                 <button class="submit-button" type="submit"><small class="links-decoration2">Delete Comment!</small></button>
                             </form>
                         </div>
+                        </div>
                     {% endif %}
-                </div>
+
                     <hr>
 
                 {% endfor %}

@@ -38,7 +38,7 @@
                     <a class="text-decoration" href="{{ url_for('display_question', question_id=line.id) }}"><h3>{{line.title}}</h3></a>
                 </div>
                 <div class="message-question flexible">
-                    <h5>{{line.message}}</h5>
+                    <h5 style="white-space: pre-wrap">{{line.message}}</h5>
                 </div>
                 <div class="submission-time">
                     <small>{{line.submission_time}}</small>

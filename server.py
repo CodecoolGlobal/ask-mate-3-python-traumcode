@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = 'alleluia'
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
+app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif', 'jpeg', 'JPG']
 app.config['UPLOAD_PATH'] = 'static/images'
 
 

@@ -34,6 +34,20 @@ h5 {
     font-weight: normal;
     font-family: Montserrat;
 }
+
+input {
+    border-radius: 0;
+    border: 1px solid gray;
+    background-color: white;
+}
+
+input:focus {
+    background-color: #E8FEFC ;
+    outline: none;
+    border: 2px solid #555;
+    box-shadow: 0 0 10px rgba(102,252,241,0.16);
+}
+
 .header {
     background-color: #0b0c10;
     padding: .5rem 0 0 0;
@@ -479,11 +493,20 @@ figure {
     font-weight: lighter;
 }
 
+.sign-up-log-in-button:hover {
+    background-color: #39484f;
+}
+
+.sign-up-log-in-button:active {
+    background-color: #49c5b6;
+}
+
 .page-titles {
     font-weight: lighter;
     font-family: "Montserrat";
     text-align: center;
 }
+
 
 /* Color Theme Swatches in Hex */
 .color-theme_PaletteFinal-1-hex { color: #0b0c10; }
