@@ -41,7 +41,7 @@
                     <div class="profile-questions-answers-comments-card">
                         <small>{{ question.submission_time }}</small>
                         <h3>{{ question.title }}</h3>
-                        <h5>{{ question.message }}</h5>
+                        <h5 style="white-space: pre-wrap">{{ question.message }}</h5>
                         <small style="font-family: Montserrat">Votes: {{ question.vote_number }}</small>
                         <small style="float: right; font-family: Montserrat">Views: {{ question.view_number }}</small>
 
@@ -52,7 +52,7 @@
                 {% for answer in answers %}
                     <div class="profile-questions-answers-comments-card">
                         <small>{{ answer.submission_time }}</small>
-                        <p>{{ answer.message }}</p>
+                        <p style="white-space: pre-wrap">{{ answer.message }}</p>
                         <small>Votes: {{ answer.vote_number }}</small>
                     </div>
                 {% endfor %}
@@ -61,7 +61,7 @@
                 {% for comment in comments %}
                     <div class="profile-questions-answers-comments-card">
                         <small>{{ comment.submission_time }}</small>
-                        <p>{{ comment.message }}</p>
+                        <p style="white-space: pre-wrap">{{ comment.message }}</p>
                     </div>
                 {% endfor %}
 
