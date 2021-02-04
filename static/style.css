@@ -40,7 +40,7 @@ h5 {
     margin: 0;
     color: #ffffff;
     height: 300px;
-    background: url("https://cdn.discordapp.com/attachments/779877697203601440/806877736563114043/3096110.jpg");
+    background: url("https://cdn.discordapp.com/attachments/779877697203601440/806913040276127774/177889.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -227,8 +227,9 @@ color: #406967;
 }
 
 button[type="submit"] {
-border: none;
-outline: none;
+    border: none;
+    outline: none;
+    font-family: Montserrat;
 }
 
 a {

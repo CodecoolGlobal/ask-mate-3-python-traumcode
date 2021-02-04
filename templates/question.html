@@ -94,12 +94,12 @@
                     {% if comment['user_id'] == session['id'] %}
                         <div class="container-for-buttons">
                         <div>
-                            <a class="links-decoration2" href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit
-                                Comment</a>
+                            <small><a class="links-decoration2" href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit
+                                Comment</a></small>
                         </div>
                         <div>
                             <form action="{{ url_for('delete_comment', comment_id=comment['id']) }}" method="POST">
-                                <button class="submit-button" type="submit">Delete Comment!</button>
+                                <button class="submit-button" type="submit"><small class="links-decoration2">Delete Comment!</small></button>
                             </form>
                         </div>
                     {% endif %}
@@ -189,13 +189,13 @@
                         {% if session['id'] == comment.user_id %}
                             <div class="container-for-buttons">
                                 <div>
-                                    <a class="links-decoration2"
-                                       href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit Comment</a>
+                                    <small><a class="links-decoration2"
+                                       href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit Comment</a></small>
                                 </div>
                                 <div>
                                     <form action="{{ url_for('delete_comment', comment_id=comment['id']) }}"
                                           method="POST">
-                                        <button class="submit-button" type="submit">Delete Comment!</button>
+                                        <button class="submit-button" type="submit"><small class="links-decoration2">Delete Comment!</small></button>
                                     </form>
                                 </div>
 

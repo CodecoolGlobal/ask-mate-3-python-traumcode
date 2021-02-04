@@ -197,7 +197,6 @@ def add_question():
 def edit_question(question_id):
     if request.method == "POST":
         edited_question = dict(request.form)
-        # todo dict comprehension for capitalize()
         edited_question['title'] = edited_question['title'].capitalize()
         edited_question['message'] = edited_question['message'].capitalize()
 
@@ -206,6 +205,8 @@ def edit_question(question_id):
 
     elif request.method == 'GET':
         question_details = database_manager.display_question(question_id)
+        if session['id'] != question_details[0]['user_id']:
+            abort(403)
         if not question_details:
             abort(404)
         return render_template("edit-question.html", question_details=question_details, question_id=question_id)
@@ -360,7 +361,11 @@ def add_tag_to_questions(question_id):
         else:
             flash("Tag already exists")
         return redirect(url_for('display_question', question_id=question_id))
-    return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags_from_database)
+    question_details = database_manager.display_question(question_id)
+    if session['id'] != question_details[0]['user_id']:
+        abort(403)
+    else:
+        return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags_from_database)
 
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete', methods=['GET', 'POST'])
@@ -434,6 +439,8 @@ def edit_comment(comment_id):
 def edit_answer(answer_id):
     answer_details = database_manager.get_answer_by_answer_id(answer_id)
     if request.method == 'GET':
+        if session['id'] != answer_details['user_id']:
+            abort(403)
         if not answer_details:
             abort(404)
         return render_template('edit-answer.html', answer_id=answer_id, answer_details=answer_details)
@@ -478,6 +485,16 @@ def list_tags():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
+
+
+@app.errorhandler(403)
+def page_forbidden(e):
+    return render_template("403.html"), 403
+
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return render_template("405.html"), 405
 
 
 if __name__ == "__main__":
