@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+
+{% block body %}
+    <div class="box-card-profile">
+        <div class="main-card-profile">
+            <div class="main-card-profile-body">
+                <h1 class="page-titles">Profile</h1>
+                {% for details in show_details %}
+
+                    <h3 style="font-weight:normal;border-bottom: 1px solid #f2f0ee;padding: 5px">{{ details.username }}<br>
+                        <p style="font-size: 15px">Registered: {{ details.registration_date }}</p></h3>
+
+                    {% if details.image %}
+                        <div class="image-and-details-card">
+                        <div class="image-card">
+                            <figure><img class="profile-avatar" alt="image from user"
+                                         src="{{ url_for('static', filename='images/' + details.image) }}" height="150">
+                            </figure>
+                        </div>
+                    {% else %}
+                        <figure></figure>{% endif %}
+                <div class="profile-details-card">
+                    <div class="profile-details-card-arrange">
+                        <h4>Questions: {{ details.asked_question }}</h4>
+                        <h4>Answers: {{ details.answers }}</h4>
+                    </div>
+                    <div class="profile-details-card-arrange">
+                        <h4>Comments: {{ details.comments }}</h4>
+                        <h4>Reputation: {{ details.reputation }}</h4>
+                    </div>
+                </div>
+                </div>
+                {% endfor %}
+                <h2 class="text-center">Questions</h2>
+                {% for question in questions %}
+                    <div class="profile-questions-answers-comments-card">
+                        <small>{{ question.submission_time }}</small>
+                        <h3>{{ question.title }}</h3>
+                        <h5 style="white-space: pre-wrap">{{ question.message }}</h5>
+                        <small style="font-family: Montserrat">Votes: {{ question.vote_number }}</small>
+                        <small style="float: right; font-family: Montserrat">Views: {{ question.view_number }}</small>
+
+                    </div>
+                {% endfor %}
+
+                <h2 class="text-center">Answers</h2>
+                {% for answer in answers %}
+                    <div class="profile-questions-answers-comments-card">
+                        <small>{{ answer.submission_time }}</small>
+                        <p style="white-space: pre-wrap">{{ answer.message }}</p>
+                        <small>Votes: {{ answer.vote_number }}</small>
+                    </div>
+                {% endfor %}
+
+                <h2 class="text-center">Comments</h2>
+                {% for comment in comments %}
+                    <div class="profile-questions-answers-comments-card">
+                        <small>{{ comment.submission_time }}</small>
+                        <p style="white-space: pre-wrap">{{ comment.message }}</p>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

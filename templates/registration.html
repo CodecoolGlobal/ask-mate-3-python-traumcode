@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    Registration Page
+{% endblock %}
+
+
+{% block body %}
+    <div class="box-card-profile">
+        <div class="main-card-profile">
+            <div class="main-card-profile-body">
+                <h1 class="page-titles">Registration form</h1>
+                <div style="margin: 0px auto; padding-left: 15%">
+                    <form method="post" enctype="multipart/form-data">
+                        <label for="username"></label>
+                        <input type="text" name="username" id="username" required placeholder="Enter username"><br><br>
+                        <label for="email"></label>
+                        <input type="email" name="email" id="email" required placeholder="Enter email"><br><br>
+                        <label for="password"></label>
+                        <input type="password" name="password" id="password" required placeholder="Password"><br><br>
+                        <label for="image">Upload an avatar</label><br>
+                        <input type="file" id="image" name="file"><br><br>
+                        <input class="sign-up-log-in-button" type="submit" value="SIGN UP">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

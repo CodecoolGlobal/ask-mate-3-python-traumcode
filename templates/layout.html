@@ -4,32 +4,51 @@
     <title>{% block title %}{% endblock %}</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet">
 
 </head>
 <body>
 
-        
 <header class="header">
-    <div class="content-wrapper">
+    <div class="header-logo-wrapper">
         <div class="about">
-            <div class="navbar-header"><h1 class="headers-color"><img alt="image from user" class="logo-image" src="{{url_for('static', filename='/images/patch-question.svg')}}">&nbsp<a class="text-decoration2" href="/">Ask Mate</a></h1></div>
+            <div class="navbar-header"><h1 class="header-h1"><a
+                    class="header-h1" href="/">Ask Mate</a></h1></div>
         </div>
     </div>
     <nav class="after-header">
-        <ul class="after-header-gray">
-            <li> <a class="" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img alt="image from user" src="{{url_for('static', filename='/images/cloud-plus.svg')}}"></span></a> </li>
-            <li class="search"><form action="{{ url_for('search_question') }}">
-                <label for="search"></label>
+        <ul class="after-header-wrapper">
+            <li><a class="" href="{{ url_for('add_question') }}"><span title="Add a Question!"><img
+                    alt="image from user" src="{{ url_for('static', filename='/images/cloud-plus.svg') }}"></span></a>
+            </li>
+            <li class="search">
+                <form action="{{ url_for('search_question') }}">
+                    <label for="search"></label>
                     <input type="text" name="search" id="search">
                     <button class="submit-button-tag" type="submit">Search</button>
-                </form></li>
+                </form>
+            </li>
+            {% if 'id' in session %}
+                <li><a href="{{ url_for('show_profile', user_id=session['id']) }}">Profile</a></li>
+                <li><a href="{{ url_for('show_users') }}">Users</a></li>
+                <li><a href="{{ url_for('list_tags') }}">Tags</a></li>
+                <li><a href="{{ url_for('logout') }}">Log out</a></li>
+            {% else %}
+                <li><a href="{{ url_for('list_tags') }}">Tags</a></li>
+                <li><a href="{{ url_for('login_page') }}">Log in</a></li>
+                <li><a href="{{ url_for('registration_page') }}">Sign up</a></li>
+            {% endif %}
+
+            {% for message in get_flashed_messages() %}
+                <li class="alert-message">{{ message }}</li>
+            {% endfor %}
         </ul>
     </nav>
 </header>
 
-    
-    {% block body %}{% endblock %}
+
+{% block body %}{% endblock %}
 {#{% include "footer.html" %}#}
 </body>
 </html>

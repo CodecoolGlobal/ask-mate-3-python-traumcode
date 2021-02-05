@@ -1,16 +1,19 @@
-from flask import Flask, render_template, redirect, request, url_for, abort
+from flask import Flask, render_template, redirect, request, url_for, abort, session, flash
 import database_manager
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4 as uuid
+import util_password
+import database_users_manager
+from functools import wraps
 
 app = Flask(__name__)
 
 app.secret_key = 'alleluia'
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
+app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif', 'jpeg', 'JPG']
 app.config['UPLOAD_PATH'] = 'static/images'
 
 
@@ -26,6 +29,106 @@ def upload_image():
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
 
     return filename
+
+
+def login_required(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        if 'id' in session:
+            return func(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect(url_for('login_page'))
+    return wrap
+
+
+def owner_authorization_required(func):
+    pass
+
+
+def login_forbidden(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        if 'id' not in session:
+            return func(*args, **kwargs)
+        else:
+            flash(f"You are already logged with {session['username']}")
+            return redirect(url_for('main_page'))
+    return wrap
+
+
+@app.route("/users-list")
+@login_required
+def show_users():
+    all_users = database_users_manager.get_all_users_details()
+    return render_template('users-list.html', all_users=all_users)
+
+
+@app.route("/user/<int:user_id>")
+@login_required
+def show_profile(user_id):
+    show_details = database_users_manager.get_user_details_by_user_id(user_id)
+    questions = database_users_manager.get_all_user_questions(user_id)
+    answers = database_users_manager.get_all_user_answers(user_id)
+    comments = database_users_manager.get_all_user_comments(user_id)
+    return render_template('show-profile.html', user_id=user_id,
+                           show_details=show_details,
+                           questions=questions,
+                           answers=answers,
+                           comments=comments)
+
+
+@app.route("/registration")
+def registration_page():
+    return render_template('registration.html')
+
+
+@app.route("/registration", methods=['POST'])
+@login_forbidden
+def registration_page_post():
+    new_user_obj = dict(request.form)
+    filename = upload_image()
+    hashed_password = util_password.generate_hash_password(request.form.get('password'))
+    new_user_obj['password'] = hashed_password
+    new_user_obj['image'] = filename
+    database_users_manager.add_user(new_user_obj)
+    user_details = database_users_manager.get_user_details(new_user_obj['email'])
+    session['id'] = user_details[0]['id']
+    session['username'] = user_details[0]['username']
+    return redirect(url_for('main_page'))
+
+
+@app.route("/login")
+@login_forbidden
+def login_page():
+    return render_template('login.html')
+
+
+@app.route("/login", methods=['POST'])
+def login_page_post():
+    email = request.form.get('email')
+    plain_text_password = request.form.get('password')
+    user_details = database_users_manager.get_user_details(email)
+
+    if not user_details:
+        flash("Invalid username/password combination")
+        return redirect(url_for('login_page'))
+    else:
+        verified_password = util_password.check_hash_password(user_details[0]['password'], plain_text_password)
+
+    if not verified_password:
+        flash("Invalid username/password combination")
+        return redirect(url_for('login_page'))
+    else:
+        session['id'] = user_details[0]['id']
+        session['username'] = user_details[0]['username']
+        return redirect(url_for('main_page'))
+
+
+@app.route("/logout")
+def logout():
+    session.pop('id', None)
+    return redirect(url_for('login_page'))
 
 
 @app.route("/")
@@ -49,6 +152,7 @@ def list_page():
 
 @app.route("/question/<int:question_id>")
 def display_question(question_id):
+
     show_question = database_manager.display_question(question_id)
     if not show_question:
         abort(404)
@@ -68,10 +172,10 @@ def display_question(question_id):
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
+@login_required
 def add_question():
     if request.method == "POST":
         new_question = dict(request.form)
-        # todo dict comprehension for capitalize
         filename = upload_image()
         submission_time = datetime.now()
 
@@ -79,6 +183,7 @@ def add_question():
         new_question['image'] = filename
         new_question['message'] = new_question['message'].capitalize()
         new_question['title'] = new_question['title'].capitalize()
+        new_question['user_id'] = session['id']
 
         question_obj = dict(database_manager.add_question(new_question))
         question_id = question_obj['id']
@@ -88,10 +193,10 @@ def add_question():
 
 
 @app.route('/question/<int:question_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_question(question_id):
     if request.method == "POST":
         edited_question = dict(request.form)
-        # todo dict comprehension for capitalize()
         edited_question['title'] = edited_question['title'].capitalize()
         edited_question['message'] = edited_question['message'].capitalize()
 
@@ -100,12 +205,15 @@ def edit_question(question_id):
 
     elif request.method == 'GET':
         question_details = database_manager.display_question(question_id)
+        if session['id'] != question_details[0]['user_id']:
+            abort(403)
         if not question_details:
             abort(404)
         return render_template("edit-question.html", question_details=question_details, question_id=question_id)
 
 
 @app.route('/question/<int:question_id>/delete', methods=['POST'])
+@login_required
 def delete_question(question_id):
     questions = database_manager.get_all_questions()
     answers = database_manager.display_answers(question_id)
@@ -132,14 +240,15 @@ def delete_question(question_id):
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
+@login_required
 def add_answer(question_id):
-    # todo verify if the question_id really exists
     if request.method == "POST":
         new_answer = dict(request.form)
 
         filename = upload_image()
         submission_time = datetime.now()
 
+        new_answer['user_id'] = session['id']
         new_answer['submission_time'] = submission_time.strftime('%Y-%m-%d %H:%M:%S')
         new_answer['image'] = filename
         new_answer['message'] = new_answer['message'].capitalize()
@@ -151,6 +260,7 @@ def add_answer(question_id):
 
 
 @app.route('/answer/<int:answer_id>/delete', methods=['GET', 'POST'])
+@login_required
 def delete_answer(answer_id):
     if request.method == 'POST':
         question_id = database_manager.get_question_id_for_answer(answer_id)
@@ -169,71 +279,97 @@ def delete_answer(answer_id):
         return redirect(url_for('display_question', question_id=question_id, answer_id=answer_id))
 
 
+@app.route('/answer/<int:answer_id>', methods=['POST'])
+@login_required
+def valid_invalid_answer(answer_id):
+    user_id_by_answer = database_users_manager.get_user_id_by_answer_id(answer_id)
+    question_id = database_manager.get_question_id_for_answer(answer_id)['question_id']
+    user_id_by_question = database_users_manager.get_user_id_by_question_id(question_id)
+    if user_id_by_answer != session['id'] and user_id_by_question == session['id']:
+        validation = request.form['validation']
+        database_users_manager.valid_invalid_answer(answer_id, validation)
+        if validation == 'true':
+            database_users_manager.gain_reputation_on_accepted_answer(user_id_by_answer)
+        return redirect(url_for('display_question', question_id=question_id))
+    else:
+        if user_id_by_answer == session['id']:
+            flash("You cannot accept your own answer")
+        else:
+            flash("You cannot accept answer on others questions")
+        return redirect(url_for('display_question', question_id=question_id))
+
+
 @app.route('/question/<int:question_id>/vote_up', methods=['POST'])
+@login_required
 def vote_up_question(question_id):
     database_manager.vote_up_down_question(question_id, "up")
+    database_users_manager.gain_lose_reputation_on_question(database_users_manager.get_user_id_by_question_id(question_id), 'up')
     return redirect(request.referrer)
 
 
 @app.route('/question/<int:question_id>/vote_down', methods=['POST'])
+@login_required
 def vote_down_question(question_id):
     database_manager.vote_up_down_question(question_id, "down")
+    database_users_manager.gain_lose_reputation_on_question(database_users_manager.get_user_id_by_question_id(question_id), 'down')
     return redirect(request.referrer)
 
 
 @app.route('/answer/<int:answer_id>/vote_up', methods=['POST'])
+@login_required
 def vote_up_answer(answer_id):
     question_obj = database_manager.get_question_id_for_answer(answer_id)
 
     question_id = question_obj['question_id']
 
     database_manager.vote_up_down_answer(answer_id, "up")
+    database_users_manager.gain_lose_reputation_on_answer(database_users_manager.get_user_id_by_answer_id(answer_id), 'up')
 
     return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/answer/<int:answer_id>/vote_down', methods=['POST'])
+@login_required
 def vote_down_answer(answer_id):
     question_obj = database_manager.get_question_id_for_answer(answer_id)
 
     question_id = question_obj['question_id']
 
     database_manager.vote_up_down_answer(answer_id, "down")
+    database_users_manager.gain_lose_reputation_on_answer(database_users_manager.get_user_id_by_answer_id(answer_id), 'down')
 
     return redirect(url_for('display_question', question_id=question_id))
 
 
 @app.route('/question/<int:question_id>/new-tag', methods=['GET', 'POST'])
+@login_required
 def add_tag_to_questions(question_id):
     all_tags = database_manager.get_all_tags()
-    list_of_tags = [tag['name'] for tag in all_tags]
+    list_of_tags_from_database = [tag['name'] for tag in all_tags]
 
     if request.method == 'POST':
         chosen_tag = request.form.get('choose-tag')
-        inserted_tag = request.form.get('insert-tag')
-        inserted_tag = inserted_tag.lower()
-
-        if "insert-tag" in request.form:
-            if inserted_tag == "" or inserted_tag.isspace():
-                pass
-            elif inserted_tag in list_of_tags:
-                database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
-            else:
-                database_manager.add_tag(inserted_tag)
-                database_manager.ad_tag_in_question_tag(inserted_tag, question_id)
-
-        if "choose-tag" in request.form:
-            if chosen_tag in list_of_tags:
-                database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
-            else:
-                database_manager.add_tag(chosen_tag)
-                database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
-
+        list_of_tags_from_question = database_manager.get_tags_by_qs_id(question_id)
+        verified_tags = [tag['name'] for tag in list_of_tags_from_question]
+        if chosen_tag not in verified_tags:
+            if "choose-tag" in request.form:
+                if chosen_tag in list_of_tags_from_database:
+                    database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
+                else:
+                    database_manager.add_tag(chosen_tag)
+                    database_manager.ad_tag_in_question_tag(chosen_tag, question_id)
+        else:
+            flash("Tag already exists")
         return redirect(url_for('display_question', question_id=question_id))
-    return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags)
+    question_details = database_manager.display_question(question_id)
+    if session['id'] != question_details[0]['user_id']:
+        abort(403)
+    else:
+        return render_template('add-tag.html', question_id=question_id, list_of_tags=list_of_tags_from_database)
 
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete', methods=['GET', 'POST'])
+@login_required
 def delete_tag(question_id, tag_id):
     if request.method == 'POST':
         database_manager.delete_tag(question_id, tag_id)
@@ -241,13 +377,14 @@ def delete_tag(question_id, tag_id):
 
 
 @app.route('/question/<int:question_id>/new-comment', methods=['GET', 'POST'])
+@login_required
 def add_comment_to_question(question_id):
-    # todo verify if the question_id really exists
     if request.method == 'GET':
         return render_template('add-comment-to-question.html', question_id=question_id)
     elif request.method == 'POST':
         dt = datetime.now()
         new_comment_for_q = dict(request.form)
+        new_comment_for_q['user_id'] = session['id']
         new_comment_for_q['question_id'] = question_id
         new_comment_for_q['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
         new_comment_for_q['new-comment'] = new_comment_for_q['new-comment'].capitalize()
@@ -256,6 +393,7 @@ def add_comment_to_question(question_id):
 
 
 @app.route('/answer/<int:answer_id>/new-comment', methods=['GET', 'POST'])
+@login_required
 def add_comments_to_answer(answer_id):
     answer_obj = database_manager.get_answer_by_answer_id(answer_id)
     if not answer_obj:
@@ -266,9 +404,9 @@ def add_comments_to_answer(answer_id):
     elif request.method == 'POST':
         dt = datetime.now()
         new_comment_for_a = dict(request.form)
+        new_comment_for_a['user_id'] = session['id']
         new_comment_for_a['answer_id'] = answer_id
         new_comment_for_a['submission_time'] = dt.strftime('%Y-%m-%d %H:%M:%S')
-        # todo check the key in html, db, server
         new_comment_for_a['new-comment'] = new_comment_for_a['new-comment'].capitalize()
         database_manager.add_comment_for_answer(new_comment_for_a)
 
@@ -276,6 +414,7 @@ def add_comments_to_answer(answer_id):
 
 
 @app.route('/comment/<int:comment_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_comment(comment_id):
     comment = database_manager.get_comment(comment_id)
     if request.method == 'GET':
@@ -296,9 +435,12 @@ def edit_comment(comment_id):
 
 
 @app.route('/answer/<int:answer_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_answer(answer_id):
     answer_details = database_manager.get_answer_by_answer_id(answer_id)
     if request.method == 'GET':
+        if session['id'] != answer_details['user_id']:
+            abort(403)
         if not answer_details:
             abort(404)
         return render_template('edit-answer.html', answer_id=answer_id, answer_details=answer_details)
@@ -312,6 +454,7 @@ def edit_answer(answer_id):
 
 
 @app.route('/comments/<int:comment_id>/delete', methods=['POST'])
+@login_required
 def delete_comment(comment_id):
     if request.method == 'POST':
         database_manager.delete_comment(comment_id)
@@ -333,9 +476,25 @@ def search_question():
                            message=message, phrase=phrase)
 
 
+@app.route('/tags')
+def list_tags():
+    tag_details_obj = database_users_manager.get_all_tags_and_count_of_tags()
+    return render_template('list-tags.html', tag_details_obj=tag_details_obj)
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
+
+
+@app.errorhandler(403)
+def page_forbidden(e):
+    return render_template("403.html"), 403
+
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return render_template("405.html"), 405
 
 
 if __name__ == "__main__":

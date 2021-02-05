@@ -45,10 +45,11 @@ def display_answers(cursor: RealDictCursor, question_id) -> list:
 @database_common.connection_handler
 def add_question(cursor: RealDictCursor, new_question) -> list:
     query = """ 
-    INSERT INTO question (submission_time, view_number, vote_number, title, message, image) 
-    VALUES (%s,0 ,0, %s, %s, %s) returning id;"""
+    INSERT INTO question (user_id, submission_time, view_number, vote_number, title, message, image) 
+    VALUES (%s, %s,0 ,0, %s, %s, %s) returning id;"""
 
-    cursor.execute(query, (new_question['submission_time'],
+    cursor.execute(query, (new_question['user_id'],
+                           new_question['submission_time'],
                            new_question['title'],
                            new_question['message'],
                            new_question['image']))
@@ -81,13 +82,14 @@ def delete_question(cursor: RealDictCursor, question_id):
 @database_common.connection_handler
 def add_answer(cursor: RealDictCursor, question_id, new_answer) -> list:
     query = """
-    INSERT INTO answer (submission_time, vote_number, question_id, message, image) 
-    VALUES (%s, 0, %s, %s, %s) """
+    INSERT INTO answer (user_id, submission_time, vote_number, question_id, message, image, accepted) 
+    VALUES (%s, %s, 0, %s, %s, %s, FALSE) """
 
-    cursor.execute(query, (new_answer['submission_time'],
-                   question_id,
-                   new_answer['message'],
-                   new_answer['image']))
+    cursor.execute(query, (new_answer['user_id'],
+                           new_answer['submission_time'],
+                           question_id,
+                           new_answer['message'],
+                           new_answer['image']))
 
 
 @database_common.connection_handler
@@ -172,9 +174,7 @@ def add_tag(cursor: RealDictCursor, name):
 def ad_tag_in_question_tag(cursor: RealDictCursor, tag, question_id):
     query = """
             INSERT INTO question_tag (tag_id, question_id) 
-            VALUES ((SELECT id FROM tag WHERE name = %(tag)s), %(question_id)s)
-            ON CONFLICT ON CONSTRAINT pk_question_tag_id
-            DO NOTHING"""
+            VALUES ((SELECT id FROM tag WHERE name = %(tag)s), %(question_id)s)"""
 
     cursor.execute(query, {'tag': tag,
                            'question_id': question_id})
@@ -191,6 +191,17 @@ def delete_tag(cursor: RealDictCursor, question_id, tag_id):
 
 
 @database_common.connection_handler
+def get_tags_by_qs_id(cursor: RealDictCursor, question_id):
+    query = f"""SELECT name from tag
+    INNER JOIN question_tag on
+    tag.id = question_tag.tag_id
+    where question_id = {question_id}"""
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def get_latest_five_questions(cursor: RealDictCursor) -> list:
     query = """
                 SELECT * FROM question ORDER BY submission_time DESC LIMIT 5"""
@@ -202,9 +213,11 @@ def get_latest_five_questions(cursor: RealDictCursor) -> list:
 @database_common.connection_handler
 def add_comment_to_question(cursor: RealDictCursor, new_comment):
     query = """
-            INSERT INTO comment (question_id, message, submission_time, edited_count) VALUES (%s, %s, %s, 0);
+            INSERT INTO comment (user_id,question_id, message, submission_time, edited_count) 
+            VALUES (%s, %s, %s, %s, 0);
             """
-    cursor.execute(query, (new_comment['question_id'],
+    cursor.execute(query, (new_comment['user_id'],
+                           new_comment['question_id'],
                            new_comment['new-comment'],
                            new_comment['submission_time']))
 
@@ -221,8 +234,9 @@ def get_comments_for_question(cursor: RealDictCursor, question_id):
 @database_common.connection_handler
 def add_comment_for_answer(cursor: RealDictCursor, new_comment):
     query = """
-            INSERT INTO comment (answer_id, message, submission_time, edited_count) VALUES (%s, %s, %s, 0);"""
-    cursor.execute(query, (new_comment['answer_id'],
+            INSERT INTO comment (user_id, answer_id, message, submission_time, edited_count) VALUES (%s, %s, %s, %s, 0);"""
+    cursor.execute(query, (new_comment['user_id'],
+                           new_comment['answer_id'],
                            new_comment['new-comment'],
                            new_comment['submission_time']))
 

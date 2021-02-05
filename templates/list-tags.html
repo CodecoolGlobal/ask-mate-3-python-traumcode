@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Tags
+{% endblock %}
+
+
+{% block body %}
+    <div class="box-card-profile">
+        <div class="main-card-profile">
+            <div class="main-card-profile-body">
+                <h1 class="page-titles">Tags</h1>
+                {% for details in tag_details_obj %}
+                    {{ details.name }}
+                    {{ details.number_of_questions }}<br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

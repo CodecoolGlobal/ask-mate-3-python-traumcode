@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Users Page
+{% endblock %}
+
+
+{% block body %}
+    <div class="box-card-profile">
+        <div class="main-card-profile">
+            <div class="main-card-profile-body">
+            <h1 class="page-titles">Users</h1>
+                <table id="users">
+                    <thead>
+                    <th>Avatar</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Registered</th>
+                    <th>Questions</th>
+                    <th>Answers</th>
+                    <th>Comments</th>
+                    <th>Reputation</th>
+                    </thead>
+                    <tbody>
+                    {% for user in all_users %}
+                        <tr>
+                            {% if user.image %}
+                                <td>
+                                    <figure>
+                                        <a href="{{ url_for('static', filename='images/' + user.image) }}" target="_blank"> <img class="avatar" alt="image from user"
+                                                                                                                                 src="{{ url_for('static', filename='images/' + user.image) }}"
+                                                                                                                                 height="150"></a>
+                                    </figure>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <figure></figure>
+                                </td>
+                            {% endif %}
+                            <td><a href="{{ url_for('show_profile', user_id=user.id) }}">{{ user.username }}</a></td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.registration_date }}</td>
+                            <td>{{ user.question_asked }}</td>
+                            <td>{{ user.answers }}</td>
+                            <td>{{ user.comments }}</td>
+                            <td>{{ user.reputation }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
