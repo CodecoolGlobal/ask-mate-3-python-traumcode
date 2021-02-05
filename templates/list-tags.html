@@ -11,9 +11,11 @@
             <div class="main-card-profile-body">
                 <h1 class="page-titles">Tags</h1>
                 {% for details in tag_details_obj %}
+                    <div class="tags-page">
                     {{ details.name }}
                     {{ details.number_of_questions }}<br>
                 {% endfor %}
+                </div>
             </div>
         </div>
     </div>

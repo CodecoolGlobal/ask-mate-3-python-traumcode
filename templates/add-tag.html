@@ -12,6 +12,7 @@ Add tag
 
     <h1>Add tag</h1>
     <form action="{{ url_for('add_tag_to_questions', question_id=question_id) }}" method="POST">
+    <label for="choose-tag"></label>
         <input type="text" id="choose-tag" name="choose-tag" list="tags">
         <datalist id="tags">
             {% for tag in list_of_tags %}
@@ -20,7 +21,7 @@ Add tag
         </datalist><br><br>
         <button class="submit-button-tag" type="submit">Add tag</button>
     </form><br><br><br>
-    <a class="text-decoration-return-button text-decoration" href="{{ url_for('display_question', question_id=question_id) }}"><img src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
+    <a class="text-decoration-return-button text-decoration" href="{{ url_for('display_question', question_id=question_id) }}"><img alt="back to question" src="{{url_for('static', filename='/images/back.svg')}}"> Back to Question</a><br><br>
     </div>
 
 

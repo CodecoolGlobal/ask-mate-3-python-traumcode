@@ -12,39 +12,39 @@
                 <h1 class="page-titles">Profile</h1>
                 {% for details in show_details %}
 
-                    <h3 style="font-weight:normal;border-bottom: 1px solid #f2f0ee;padding: 5px">{{ details.username }}<br>
-                        <p style="font-size: 15px">Registered: {{ details.registration_date }}</p></h3>
+                    <h3 style="border-bottom: 1px solid #f2f0ee;padding: 5px">{{ details.username }}<br>
+                        <small>Registered: {{ details.registration_date }}</small></h3>
 
                     {% if details.image %}
                         <div class="image-and-details-card">
+                        <div class="image-and-details-body">
                         <div class="image-card">
-                            <figure><img class="profile-avatar" alt="image from user"
-                                         src="{{ url_for('static', filename='images/' + details.image) }}" height="150">
-                            </figure>
+                            <figure><img class="profile-avatar" alt="image from user" src="{{ url_for('static', filename='images/' + details.image) }}" height="150"></figure>
                         </div>
                     {% else %}
+                        <div class="image-card">
                         <figure></figure>{% endif %}
-                    <div class="profile-details-card">
-                        <div class="profile-details-card-arrange">
-                            <h4>Questions: {{ details.asked_question }}</h4>
-                            <h4>Answers: {{ details.answers }}</h4>
-                        </div>
-                        <div class="profile-details-card-arrange">
-                            <h4>Comments: {{ details.comments }}</h4>
-                            <h4>Reputation: {{ details.reputation }}</h4>
-                        </div>
+                </div>
+                    <div class="details">
+                    <div class="profile-details-card-arrange">
+                        <h4>Questions: {{ details.asked_question }}</h4>
+                        <h4>Answers: {{ details.answers }}</h4>
                     </div>
-
+                    <div class="profile-details-card-arrange">
+                        <h4>Comments: {{ details.comments }}</h4>
+                        <h4>Reputation: {{ details.reputation }}</h4>
+                    </div>
+                    </div>
+                </div>
                 {% endfor %}
                 <h2 class="text-center">Questions</h2>
                 {% for question in questions %}
                     <div class="profile-questions-answers-comments-card">
                         <small>{{ question.submission_time }}</small>
                         <h3>{{ question.title }}</h3>
-                        <h5 style="white-space: pre-wrap">{{ question.message }}</h5>
-                        <small style="font-family: Montserrat">Votes: {{ question.vote_number }}</small>
-                        <small style="float: right; font-family: Montserrat">Views: {{ question.view_number }}</small>
-
+                        <p>{{ question.message }}</p>
+                        <small>Votes: {{ question.vote_number }}</small>
+                        <small style="float: right">Views: {{ question.view_number }}</small>
                     </div>
                 {% endfor %}
 

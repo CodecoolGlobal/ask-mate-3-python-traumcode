@@ -1,39 +1,27 @@
 
 * {
+     font-family: "Montserrat", sans-serif;
     box-sizing: border-box;
      line-height: 1.5;
 }
 
 
 body {
-  background-color: #f2f0ee;
-  font-family: "Montserrat";
-  font-weight: 500;
-  font-size: 1.125rem;
+    background-color: #f2f0ee;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-size: 1.125rem;
     line-height: 1.5;
-  color: black;
-  margin: 0;
+    color: black;
+    margin: 0;
 }
 
-h2 {
+h2, h3, h4, h5 {
     font-weight: normal;
-    font-family: Montserrat;
+
+
 }
 
-h3 {
-    font-weight: normal;
-    font-family: Montserrat;
-}
-
-h4 {
-    font-weight: normal;
-    font-family: Montserrat;
-}
-
-h5 {
-    font-weight: normal;
-    font-family: Montserrat;
-}
 
 input {
     border-radius: 0;
@@ -49,14 +37,11 @@ input:focus {
 }
 
 .header {
-    background-color: #0b0c10;
     padding: .5rem 0 0 0;
     margin: 0;
     color: #ffffff;
     height: 300px;
-    background: url("https://cdn.discordapp.com/attachments/779877697203601440/806913040276127774/177889.png");
-    background-repeat: no-repeat;
-    background-position: center;
+    background: #0b0c10 url("https://cdn.discordapp.com/attachments/779877697203601440/806913040276127774/177889.png") no-repeat center;
     background-size: cover;
 }
 
@@ -85,7 +70,7 @@ input:focus {
     padding: 0;
     display: flex;
     align-items: center;
-    font-family: "Montserrat";
+
 }
 
 .after-header .after-header-wrapper a:link, .after-header .after-header-wrapper a:visited {
@@ -103,6 +88,7 @@ input:focus {
 p {
     color: rgba(22,22,22,0.87);
     word-wrap: break-word;
+    white-space: pre-wrap
 }
 
 
@@ -149,10 +135,10 @@ text-decoration: none;
 
 
 .sort-container {
-display: grid;
-grid-template-columns: 1fr 1fr;
-margin-bottom: 0.625rem;
-margin-top: 3.125rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 0.625rem;
+    margin-top: 3.125rem;
 }
 
 .sort-bar {
@@ -168,7 +154,7 @@ margin-top: 3.125rem;
     color: #FFFBD8;
     text-align: left;
     font-size: 100px;
-    font-family: "Montserrat";
+    font-family: "Montserrat", serif;
     font-weight: lighter;
     margin: auto;
     display: flex;
@@ -192,9 +178,9 @@ margin-top: 3.125rem;
 
 
 .box-answers-comments {
-margin: 0 auto;
-width: 70%;
-text-align: left;
+    margin: 0 auto;
+    width: 70%;
+    text-align: left;
 
 }
 
@@ -224,7 +210,7 @@ text-align: left;
     font-size: 16px;
     color: #1f2833;
     background-color: white;
-    font-family: "Montserrat";
+    font-family: "Montserrat", sans-serif;
 }
 
 .submit-button-tag:hover {
@@ -233,43 +219,43 @@ text-align: left;
 }
 
 .margin-top {
-  margin-top: 40px;
+     margin-top: 40px;
 }
 
 .up-down {
-color: #406967;
+    color: #406967;
 }
 
 button[type="submit"] {
     border: none;
     outline: none;
-    font-family: Montserrat;
+    font-family: "Montserrat", sans-serif;
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .alert-message {
-  color: orangered;
+    color: orangered;
 }
 
 .grid-tags {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
 
 .tag {
-  background-color: #f6f3d9;
-  width: fit-content;
-  padding: 3px 6px;
-  border-radius: 2px;
+    background-color: #f6f3d9;
+    width: fit-content;
+    padding: 3px 6px;
+    border-radius: 2px;
 }
 
 
 .x:hover {
-  color: orangered;
+    color: orangered;
 
 }
 
@@ -309,9 +295,7 @@ img {
     vertical-align: middle;
 }
 
-figure {
-    margin: 0 0 20px 0;
-}
+
 
 .container-questions {
     display: flex;
@@ -334,7 +318,6 @@ figure {
 
 }
 
-/*#todo silviu si simina*/
 .grid-details {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr ;
@@ -350,38 +333,10 @@ figure {
 }
 
 
-/*##############FOOTER#########*/
-.footer {
-    background-color: #39484f;
-    color: #000;
-    margin: 400px 0 0 0;
-    font-size: 85%;
-    padding: 1rem 0;
-    position: sticky;
-    clear:both;
-
-}
-
-
-.footer .footer-wrapper {
-    background-color: rgba(255, 255, 255, 0.6);
-    padding: 1rem;
-    border-radius: 3px;
-    list-style: none;
-
-}
-
-.footer-wrapper {
-    margin: 0 auto;
-    width: 90%;
-    max-width: 1600px;
-
-}
-
 .avatar {
     vertical-align: middle;
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
 }
 
@@ -389,18 +344,46 @@ figure {
     width: 100px;
     height: 100px;
     border-radius: 50%;
+
 }
 
 .image-and-details-card {
     display: flex;
-    text-align: center;
+    margin: 10px auto;
+    width: 80%;
+
 }
 
-.image-card {
+.details {
     display: flex;
-    width: 40%;
-    flex-direction: column;
+    min-width: 50%;
+    margin-left: 80px;
+    padding-block-start: 8px;
+
 }
+
+figure {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+}
+
+
+
+.profile-details-card-arrange {
+    margin-right: 4%;
+
+}
+
+
+.profile-details-card {
+    text-align: left;
+    width: 80%;
+}
+
+
 
 .box-card-profile {
     margin: 0 auto;
@@ -446,22 +429,13 @@ figure {
     line-height: 1.5;
 }
 
-.profile-details-card {
-    text-align: left;
-    display: flex;
-    width: 80%;
-}
 
-.profile-details-card-arrange {
-    margin-right: 20%;
-}
 
 #users {
     word-wrap: break-word;
     border-collapse: collapse;
     width: 100%;
     font-size: 15px;
-    font-family: Montserrat;
 }
 
 #users td, #users th {
@@ -470,7 +444,7 @@ figure {
 }
 
 #users tr:nth-child(even){background-color: #f2f0ee}
-/*#users tr:hover {background-color: #66fcf1}*/
+
 
 #users th {
     padding-top: 3px;
@@ -489,7 +463,6 @@ figure {
     margin: 4px 2px;
     cursor: pointer;
     font-size: 20px;
-    font-family: "Montserrat";
     font-weight: lighter;
 }
 
@@ -503,8 +476,11 @@ figure {
 
 .page-titles {
     font-weight: lighter;
-    font-family: "Montserrat";
     text-align: center;
+}
+
+.tags-page {
+    margin-bottom: 10px;
 }
 
 

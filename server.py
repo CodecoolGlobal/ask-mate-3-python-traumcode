@@ -482,6 +482,11 @@ def list_tags():
     return render_template('list-tags.html', tag_details_obj=tag_details_obj)
 
 
+@app.errorhandler(400)
+def page_not_found(e):
+    return render_template("400.html"), 404
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
