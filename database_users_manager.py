@@ -2,16 +2,17 @@ from psycopg2.extras import RealDictCursor
 import database_common
 
 
+
 @database_common.connection_handler
 def add_user(cursor: RealDictCursor, user_obj):
     query = """
     INSERT INTO users (username, email, password, image, registration_date, reputation) 
-    VALUES (%s, %s, %s, %s, now(),0) RETURNING id;"""
+    VALUES (%s, %s, %s, %s, NOW(), 0) RETURNING id;"""
 
     cursor.execute(query, (user_obj['username'],
                            user_obj['email'],
                            user_obj['password'],
-                           user_obj['image']))
+                           user_obj['image'],))
     user_id = cursor.fetchone()
     return user_id
 
