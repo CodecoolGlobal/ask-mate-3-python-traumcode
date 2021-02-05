@@ -24,17 +24,17 @@
                         </div>
                     {% else %}
                         <figure></figure>{% endif %}
-                <div class="profile-details-card">
-                    <div class="profile-details-card-arrange">
-                        <h4>Questions: {{ details.asked_question }}</h4>
-                        <h4>Answers: {{ details.answers }}</h4>
+                    <div class="profile-details-card">
+                        <div class="profile-details-card-arrange">
+                            <h4>Questions: {{ details.asked_question }}</h4>
+                            <h4>Answers: {{ details.answers }}</h4>
+                        </div>
+                        <div class="profile-details-card-arrange">
+                            <h4>Comments: {{ details.comments }}</h4>
+                            <h4>Reputation: {{ details.reputation }}</h4>
+                        </div>
                     </div>
-                    <div class="profile-details-card-arrange">
-                        <h4>Comments: {{ details.comments }}</h4>
-                        <h4>Reputation: {{ details.reputation }}</h4>
-                    </div>
-                </div>
-                </div>
+
                 {% endfor %}
                 <h2 class="text-center">Questions</h2>
                 {% for question in questions %}
@@ -64,7 +64,7 @@
                         <p style="white-space: pre-wrap">{{ comment.message }}</p>
                     </div>
                 {% endfor %}
-
+                </div>
             </div>
         </div>
     </div>
