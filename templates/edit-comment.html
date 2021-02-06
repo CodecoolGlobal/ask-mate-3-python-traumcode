@@ -7,7 +7,7 @@ Edit comment
 
 {% block body %}
 <div class="box">
-    <h1>Edit comment</h1>
+    <h1 style="text-align: left" class="page-titles">Edit comment</h1>
     <form method="POST">
         <label id="message" for="message">Message</label><br>
         <textarea required name="message" id="message" rows="5" cols="60">{{ comment[0]['message'] }}</textarea><br><br>

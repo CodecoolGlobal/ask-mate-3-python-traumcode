@@ -7,7 +7,7 @@
 
 {% block body %}
 <div class="box">
-    <h1>Add new comment</h1>
+    <h1 style="text-align: left" class="page-titles">Add new comment</h1>
     <form action="{{ url_for('add_comment_to_question', question_id=question_id) }}" method="POST">
         <label for="new-comment">Message:</label><br>
         <textarea name="new-comment" id="new-comment" required rows="5" cols="32"></textarea><br>

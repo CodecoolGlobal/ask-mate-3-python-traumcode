@@ -352,30 +352,43 @@ figure {
 
 /*##############FOOTER#########*/
 .footer {
-    background-color: #39484f;
+    background-color: #1f2833;
     color: #000;
-    margin: 400px 0 0 0;
     font-size: 85%;
-    padding: 1rem 0;
+    padding: 1rem 1rem;
     position: sticky;
     clear:both;
+    color: white;
+    margin-top: 100px;
 
 }
 
 
-.footer .footer-wrapper {
-    background-color: rgba(255, 255, 255, 0.6);
-    padding: 1rem;
-    border-radius: 3px;
-    list-style: none;
+
+.footer-container1 {
+    display: flex;
 
 }
 
-.footer-wrapper {
-    margin: 0 auto;
-    width: 90%;
-    max-width: 1600px;
+.footer-box1 {
+    flex: 1;
+}
 
+.footer-box2 {
+   flex: 1;
+}
+
+.footer-box3 {
+    flex: 1;
+}
+
+.footer-container2 {
+    display: flex;
+    text-align: center;
+}
+
+.footer-box4 {
+    flex: 1;
 }
 
 .avatar {

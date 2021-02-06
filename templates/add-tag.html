@@ -10,7 +10,7 @@ Add tag
 
     <div class="box">
 
-    <h1>Add tag</h1>
+    <h1 style="text-align: left" class="page-titles">Add tag</h1>
     <form action="{{ url_for('add_tag_to_questions', question_id=question_id) }}" method="POST">
         <input type="text" id="choose-tag" name="choose-tag" list="tags">
         <datalist id="tags">
