@@ -15,27 +15,30 @@
                     <h3 style="font-weight:normal;border-bottom: 1px solid #f2f0ee;padding: 5px">{{ details.username }}<br>
                         <p style="font-size: 15px">Registered: {{ details.registration_date }}</p></h3>
 
-                    {% if details.image %}
-                        <div class="image-and-details-card">
-                        <div class="image-card">
-                            <figure><img class="profile-avatar" alt="image from user"
-                                         src="{{ url_for('static', filename='images/' + details.image) }}" height="150">
-                            </figure>
-                        </div>
-                    {% else %}
-                        <figure></figure>
-                    {% endif %}
-                    <div class="profile-details-card">
-                        <div class="profile-details-card-arrange">
-                            <h4>Questions: {{ details.asked_question }}</h4>
-                            <h4>Answers: {{ details.answers }}</h4>
-                        </div>
-                        <div class="profile-details-card-arrange">
-                            <h4>Comments: {{ details.comments }}</h4>
-                            <h4>Reputation: {{ details.reputation }}</h4>
+
+                    <div class="image-and-details-card">
+                        {% if details.image %}
+                            <div class="image-card">
+                                <figure><img class="profile-avatar" alt="image from user"
+                                             src="{{ url_for('static', filename='images/' + details.image) }}" height="150">
+                                </figure>
+                            </div>
+                        {% else %}
+                            <div class="image-card">
+                                <figure></figure>
+                            </div>
+                        {% endif %}
+                        <div class="profile-details-card">
+                            <div class="profile-details-card-arrange">
+                                <h4>Questions: {{ details.asked_question }}</h4>
+                                <h4>Answers: {{ details.answers }}</h4>
+                            </div>
+                            <div class="profile-details-card-arrange">
+                                <h4>Comments: {{ details.comments }}</h4>
+                                <h4>Reputation: {{ details.reputation }}</h4>
+                            </div>
                         </div>
                     </div>
-
                 {% endfor %}
                 <h2 class="text-center">Questions</h2>
                 {% for question in questions %}
@@ -65,7 +68,6 @@
                         <p style="white-space: pre-wrap">{{ comment.message }}</p>
                     </div>
                 {% endfor %}
-                </div>
             </div>
         </div>
     </div>

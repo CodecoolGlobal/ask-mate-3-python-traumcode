@@ -5,11 +5,6 @@ import psycopg2.extras
 
 def get_connection_string():
 
-    os.environ['PSQL_USER_NAME'] = 'darkp'
-    os.environ['PSQL_PASSWORD'] = '12345'
-    os.environ['PSQL_HOST'] = 'localhost'
-    os.environ['PSQL_DB_NAME'] = 'askmate'
-
     user_name = os.environ.get('PSQL_USER_NAME')
     password = os.environ.get('PSQL_PASSWORD')
     host = os.environ.get('PSQL_HOST')

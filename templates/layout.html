@@ -39,14 +39,12 @@
                 <li><a href="{{ url_for('login_page') }}">Log in</a></li>
                 <li><a href="{{ url_for('registration_page') }}">Sign up</a></li>
             {% endif %}
-
-            {% for message in get_flashed_messages() %}
-                <li class="alert-message">{{ message }}</li>
-            {% endfor %}
         </ul>
     </nav>
 </header>
-
+{% for message in get_flashed_messages() %}
+    <h2 class="alert-message text-center">{{ message }}</h2>
+{% endfor %}
 
 {% block body %}{% endblock %}
 {#{% include "footer.html" %}#}

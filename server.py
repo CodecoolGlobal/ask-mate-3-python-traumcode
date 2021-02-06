@@ -470,6 +470,8 @@ def search_question():
     message = database_manager.search_message_from_answers(phrase)
     answer_ids = [data['question_id'] for data in message]
     answer_question_id = [value for value in question_ids if value in answer_ids]
+    if not search_results:
+        flash("Nothing found")
 
     return render_template('search-results.html', search_results=search_results,
                            answer_question_id=answer_question_id,
