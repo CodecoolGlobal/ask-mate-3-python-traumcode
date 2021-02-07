@@ -499,6 +499,7 @@ svg:hover {
     flex-direction: column;
     flex-wrap: wrap;
     width: 100%;
+    margin-top: 50px;
 
 }
 
