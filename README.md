@@ -175,10 +175,18 @@ from the beginning of the list as much as you can.
 - <i class="far fa-book-open"></i> [Jinja2 documentation](https://jinja.palletsprojects.com/en/2.10.x/templates/)
 - <i class="far fa-book-open"></i> [Collection of web resources](project/curriculum/materials/pages/web/resources.md)
 
-![Screenshot from 2021-10-07 20-04-49](https://user-images.githubusercontent.com/65081685/136437502-3fea04fc-98b1-4898-a0a2-c9271846ba9c.png)
-![Screenshot from 2021-10-07 20-05-16](https://user-images.githubusercontent.com/65081685/136437509-025bdcb8-2bd0-485c-9bf2-f9a52a0cb814.png)
-![Screenshot from 2021-10-07 20-05-55](https://user-images.githubusercontent.com/65081685/136437526-8a9ec74a-9b0c-4152-af7e-3d9c32dac3c1.png)
-![Screenshot from 2021-10-07 20-06-34](https://user-images.githubusercontent.com/65081685/136437537-ecc59ae8-7324-4e1c-b477-17b3![Screenshot from 2021-10-07 20-07-53](https://user-images.githubusercontent.com/65081685/136437551-fad79e7d-f68f-4676-b598-32f58a10431e.png)
-19eda3f9.png)
+![Screenshot from 2021-10-07 20-04-49](https://user-images.githubusercontent.com/65081685/136437799-b9e052d7-1fca-4aeb-b766-a6ad7a4a1931.png)
+
+![Screenshot from 2021-10-07 20-05-16](https://user-images.githubusercontent.com/65081685/136437812-f7009f35-55f0-4d7b-8b7c-7882e83e3289.png)
+
+![Screenshot from 2021-10-07 20-05-55](https://user-images.githubusercontent.com/65081685/136437822-edf24254-f097-4bc2-bad6-5ca3bec8f06a.png)
+
+![Screenshot from 2021-10-07 20-06-34](https://user-images.githubusercontent.com/65081685/136437834-69a2b5c2-1d8e-47bd-b1bc-1bfa278d0473.png)
+
+![Screenshot from 2021-10-07 20-07-53](https://user-images.githubusercontent.com/65081685/136437850-8c60fa45-459b-422e-8481-23dda40dd94a.png)
+
+
+
+
 
 
